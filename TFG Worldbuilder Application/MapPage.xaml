@@ -1,0 +1,77 @@
+﻿<Page
+    x:Class="TFG_Worldbuilder_Application.MapPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:TFG_Worldbuilder_Application"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+    <Page.Resources>
+        <MenuFlyout x:Name = "FileMenu" x:Key="FileMenu">
+            <MenuFlyoutItem Text="New" Click="File_New_Click"/>
+            <MenuFlyoutItem Text="Open" Click="File_Open_Click"/>
+            <MenuFlyoutSeparator/>
+            <MenuFlyoutItem Text="Save" Click="File_Save_Click"/>
+            <MenuFlyoutItem Text="Save As" Click="File_SaveAs_Click"/>
+            <MenuFlyoutItem Text="Close" Click="File_Close_Click"/>
+            <MenuFlyoutSeparator/>
+            <MenuFlyoutItem Text="Exit" Click="File_Exit_Click"/>
+            <ToggleMenuFlyoutItem></ToggleMenuFlyoutItem>
+        </MenuFlyout>
+        <MenuFlyout x:Name= "ViewMenu" x:Key="ViewMenu">
+            <MenuFlyoutSubItem Text="National">
+                <ToggleMenuFlyoutItem Text="Countries"/>
+                <ToggleMenuFlyoutItem Text="Territories"/>
+                <ToggleMenuFlyoutItem Text="Major Cities"/>
+                <ToggleMenuFlyoutItem Text="Minor Cities"/>
+                <MenuFlyoutSeparator/>
+                <ToggleMenuFlyoutItem Text="Country Labels"/>
+                <ToggleMenuFlyoutItem Text="Territory Labels"/>
+                <ToggleMenuFlyoutItem Text="Major City Labels"/>
+                <ToggleMenuFlyoutItem Text="Minor City Labels"/>
+            </MenuFlyoutSubItem>
+            <MenuFlyoutSubItem Text="Geographical">
+                <ToggleMenuFlyoutItem Text="Mountains"/>
+                <ToggleMenuFlyoutItem Text="Rivers"/>
+                <ToggleMenuFlyoutItem Text="Oceans"/>
+                <MenuFlyoutSeparator/>
+                <ToggleMenuFlyoutItem Text="Mountain Labels"/>
+                <ToggleMenuFlyoutItem Text="Continent Labels"/>
+                <ToggleMenuFlyoutItem Text="River Labels"/>
+                <ToggleMenuFlyoutItem Text="Ocean/Sea Labels"/>
+            </MenuFlyoutSubItem>
+            <MenuFlyoutSubItem Text="Climate">
+                <ToggleMenuFlyoutItem Text="Biomes"/>
+                <ToggleMenuFlyoutItem Text="Rainfall"/>
+                <ToggleMenuFlyoutItem Text="Agrictultural Potential"/>
+                <ToggleMenuFlyoutItem Text="Resource Potential"/>
+            </MenuFlyoutSubItem>
+            <MenuFlyoutSubItem Text="Factional">
+
+            </MenuFlyoutSubItem>
+            <MenuFlyoutSubItem Text="Cultural">
+                <ToggleMenuFlyoutItem Text="Conservative Heatmap"/>
+                <ToggleMenuFlyoutItem Text="Liberal Heatmap"/>
+                <ToggleMenuFlyoutItem Text="Authoritarian Heatmap"/>
+                <ToggleMenuFlyoutItem Text="Anarchist Heatmap"/>
+                <ToggleMenuFlyoutItem Text="Major Exports"/>
+            </MenuFlyoutSubItem>
+            <MenuFlyoutSubItem Text="Biological">
+
+            </MenuFlyoutSubItem>
+        </MenuFlyout>
+    </Page.Resources>
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid HorizontalAlignment="Stretch" Height="75" VerticalAlignment="Top">
+            <Grid HorizontalAlignment="Stretch" Height="25" VerticalAlignment="Top">
+                <TextBlock x:Name="FileNameBlock" Text="" Height="25" Width="300" HorizontalAlignment="Left" Margin="100,0,0,0"/>
+            </Grid>
+            <Grid HorizontalAlignment="Stretch" Height="50" VerticalAlignment="Bottom">
+                <Rectangle Fill="#FFF4F4F5" HorizontalAlignment="Stretch" Height="50" Margin="0,0,0,0" Stroke="Black" VerticalAlignment="Top"/>
+                <Button x:Name="FileButton" Content="File" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Flyout="{StaticResource FileMenu}"/>
+                <Button x:Name="ViewButton" Content="View" HorizontalAlignment="Left" Margin="85,10,0,0" VerticalAlignment="Top" Flyout="{StaticResource ViewMenu}"/>
+            </Grid>
+        </Grid>
+    </Grid>
+</Page>
