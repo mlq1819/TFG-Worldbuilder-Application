@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -1056,7 +1057,6 @@ namespace TFG_Worldbuilder_Application
         string Version;
         string Text;
         string Original;
-        string Invalid;
         char inner_delimiter = ':';
         char outer_delimiter = '\n';
         List<string> NationalDirectory;
@@ -1066,10 +1066,18 @@ namespace TFG_Worldbuilder_Application
         List<string> CulturalDirectory;
         List<string> BiologicalDirectory;
         List<string> Keywords;
-        public List<Level1> Worlds;
-        private List<string> original_lines;
+        public ObservableCollection<Level1> Worlds;
         private List<string> active_lines;
         private List<string> invalid_lines;
+
+        public static ObservableCollection<Level1> WorldList()
+        {
+            ObservableCollection<Level1> WorldList = new ObservableCollection<Level1>()
+            {
+                
+            };
+            return WorldList;
+        }
 
 
         enum DirectoryMode : int
@@ -1093,8 +1101,6 @@ namespace TFG_Worldbuilder_Application
             this.ValidFile = false;
             Original = "";
             Text = "";
-            Invalid = "";
-            original_lines = new List<string>();
             active_lines = new List<string>();
             invalid_lines = new List<string>();
             NationalDirectory = new List<string>();
@@ -1123,7 +1129,7 @@ namespace TFG_Worldbuilder_Application
             Keywords.Add("Level Type");
             Keywords.Add("Invalid");
             Header = "Prime Worldbuilding File" + outer_delimiter + "Created by Michael Quinn" + outer_delimiter + "Version" + inner_delimiter + "1.0.0" + outer_delimiter;
-            Worlds = new List<Level1>();
+            Worlds = FileManager.WorldList();
         }
 
         /// <summary>
@@ -1250,6 +1256,7 @@ namespace TFG_Worldbuilder_Application
                     if (length < 0)
                         length = text.Substring(index).Length;
                     AddLine(text.Substring(index, length).Trim());
+                    index += length + 1;
                 }
                 return true;
             }
@@ -1285,7 +1292,7 @@ namespace TFG_Worldbuilder_Application
                     return -1;
                 for (int i = start; i < active_lines.Count && i < end; i++)
                 {
-                    if (string.Equals(active_lines[i], Equals(line.Trim())))
+                    if (string.Equals(active_lines[i], line.Trim()))
                         return i;
                 }
             }
@@ -1403,7 +1410,7 @@ namespace TFG_Worldbuilder_Application
         {
             if (Readable)
             {
-                if (start < 0 || end >= active_lines.Count || end > start)
+                if (start < 0 || end >= active_lines.Count || end < start)
                     return null;
                 return active_lines.GetRange(start, end - start + 1);
             }
@@ -1432,7 +1439,7 @@ namespace TFG_Worldbuilder_Application
             List<string> output = new List<string>();
             int index = 0;
             int length = 0;
-            while(index < text.Length)
+            while(text!=null && index < text.Length)
             {
                 length = text.Substring(index).IndexOf(outer_delimiter);
                 if (length < 0)
@@ -1449,7 +1456,7 @@ namespace TFG_Worldbuilder_Application
         private string ConvertText(List<string> text)
         {
             string output = "";
-            for(int i=0; i<text.Count; i++)
+            for(int i=0; text!=null && i<text.Count; i++)
             {
                 output += text[i] + outer_delimiter;
             }
@@ -1477,22 +1484,28 @@ namespace TFG_Worldbuilder_Application
             bool got_radius = false;
             bool make_level = false;
             bool made_level = false;
-            while(index < ActiveText.Length)
+
+            //Main loop; begins by checking whether the level information is available, and provides it; then looks for content processing
+            while (index < ActiveText.Length)
             {
                 length = ActiveText.Substring(index).IndexOf(outer_delimiter);
                 line = ActiveText.Substring(index, length).Trim();
+                bool do_it = true;
                 if (!got_name && line.IndexOf("Level Name") == 0) //Beginning of level information processing; starting with Level Name
                 {
+                    do_it = false;
                     level_name = line.Substring("Level Name".Length + 1).Trim();
                     got_name = true;
-                } 
+                }
                 else if (!got_type && line.IndexOf("Level Type") == 0) //Level information processing for Level Type
                 {
+                    do_it = false;
                     level_type = line.Substring("Level Type".Length + 1).Trim();
                     got_type = true;
                 }
                 else if (line.IndexOf("Border Vertex") == 0)//Level information processing for Border Vertices
                 {
+                    do_it = false;
                     line = line.Substring("Border Vertex".Length + 1).Trim();
                     Point2D point = Point2D.FromString(line);
                     if (point != null)
@@ -1506,6 +1519,7 @@ namespace TFG_Worldbuilder_Application
                 }
                 else if (!got_center && line.IndexOf("Center") == 0) //Level information processing for Center point
                 {
+                    do_it = false;
                     line = line.Substring("Center".Length + 1).Trim();
                     center = Point2D.FromString(line);
                     if (center != null)
@@ -1513,19 +1527,21 @@ namespace TFG_Worldbuilder_Application
                         got_center = true;
                     }
                 }
-                else if(!got_radius && line.IndexOf("Radius") == 0) //Level information processing for Radius
+                else if (!got_radius && line.IndexOf("Radius") == 0) //Level information processing for Radius
                 {
+                    do_it = false;
                     line = line.Substring("Radius".Length + 1).Trim();
                     try
                     {
                         radius = Convert.ToInt64(line);
                         got_radius = true;
-                    } catch (InvalidCastException)
+                    }
+                    catch (InvalidCastException)
                     {
                         ;
                     }
                 }
-                else //If the current line does not correspond to level information processing, then it is supposed to be level content
+                if(do_it || index + length + 1 >= ActiveText.Length) //If the current line does not correspond to level information processing, then it is supposed to be level content
                 {
                     if (!made_level && !make_level) //sees that the level has not been made and hasn't been proven to be makable
                     {
@@ -1580,18 +1596,18 @@ namespace TFG_Worldbuilder_Application
                                 make_level = false;
                                 break;
                         }
-                        if(make_level)
+                        if (make_level)
                             made_level = true;
                         make_level = false;
                     }
                     if (made_level) //Now for the actual content processing of the level
                     {
-                        if(line.IndexOf("Start Level") == 0) //If there appears to be a sublevel here
+                        if (line.IndexOf("Start Level") == 0) //If there appears to be a sublevel here
                         {
                             try
                             {
                                 int new_level_num = Convert.ToInt32(line.Substring("Start Level".Length + 1).Trim());
-                                if(new_level_num <= 6 && new_level_num > level_num) //Ensures that the level is valid
+                                if (new_level_num <= 6 && new_level_num > level_num) //Ensures that the level is valid
                                 {
                                     line = ActiveText.Substring(index).Trim();
                                     if (line.IndexOf("End Level" + inner_delimiter + new_level_num.ToString()) >= 0) //Ensures that there is an end to the level
@@ -1603,11 +1619,13 @@ namespace TFG_Worldbuilder_Application
                                             level.AddSublevel(sublevel);
                                         length += partial_length;
                                     } //End sublevel processing
-                                } else //If the number is invalid
+                                }
+                                else //If the number is invalid
                                 {
                                     length = Math.Max(length, line.IndexOf("End Level" + inner_delimiter + new_level_num.ToString()));
                                 }
-                            } catch (InvalidCastException)
+                            }
+                            catch (InvalidCastException)
                             {
                                 ;
                             }
@@ -1619,8 +1637,7 @@ namespace TFG_Worldbuilder_Application
                     } //End content processing
                 } //End of Else Block for content processing
                 index += length + 1;
-            } //End of While block
-
+            }
             return level;
         }
 
@@ -1712,9 +1729,9 @@ namespace TFG_Worldbuilder_Application
                     for(index++; index < this.active_lines.Count; index++)
                     {
                         line = active_lines[index];
-                        if(string.Equals(line.Substring(0, "Level 1".Length), "Level 1"))
+                        if(string.Equals(line, "Start Level" + inner_delimiter + "1"))
                         {
-                            int end = IndexOf("End Level 1", index);
+                            int end = IndexOf("End Level" + inner_delimiter + "1", index);
                             if(end >= index)
                             {
                                 this.Worlds.Add((Level1) ParseLevels(ConvertText(GetLines(index + 1, end - 1)), 1, null));
@@ -1756,8 +1773,7 @@ namespace TFG_Worldbuilder_Application
                 this.Original = await Windows.Storage.FileIO.ReadTextAsync(ActiveFile);
                 this.Text = this.Original;
                 this.active_lines = ConvertText(this.Text);
-                this.original_lines = ConvertText(this.Original);
-                if (string.Equals(this.original_lines[0], "Prime Worldbuilding File"))
+                if (string.Equals(this.active_lines[0], "Prime Worldbuilding File"))
                 {
                     this.ValidFile = true;
                     this.Readable = true;
@@ -1777,7 +1793,6 @@ namespace TFG_Worldbuilder_Application
                 this.Version = GetLine(2);
                 this.Version = this.Version.Substring(this.Version.IndexOf(inner_delimiter) + 1);
                 GetDirectories();
-                this.original_lines = ConvertText(this.Original);
                 this.active_lines = ConvertText(this.Text);
                 this.Writable = true;
             }
@@ -1788,7 +1803,7 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         public void UpdateText()
         {
-            if (this.ValidFile)
+            if ((this.ValidFile && this.Readable) || NewFile)
             {
                 this.active_lines = ConvertText(Header);
                 AddLine("Settings");
@@ -1849,6 +1864,7 @@ namespace TFG_Worldbuilder_Application
                         AddLine(invalid_lines[i]);
                     }
                 }
+                this.Text = this.ConvertText(active_lines);
             }
         }
         
@@ -1857,8 +1873,12 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         public bool MatchesSave()
         {
-            UpdateText();
-            return this.Original.Equals(this.Text);
+            if(ValidFile && Readable && Writable)
+            {
+                UpdateText();
+                return string.Equals(this.Original, this.Text);
+            }
+            return true;
         }
 
         /// <summary>
@@ -1872,7 +1892,7 @@ namespace TFG_Worldbuilder_Application
                 if (!MatchesSave())
                     await Windows.Storage.FileIO.WriteTextAsync(ActiveFile, this.Text);
                 this.Original = this.Text;
-                this.original_lines = ConvertText(this.Original);
+                this.NewFile = false;
             }
         }
 
@@ -1883,18 +1903,9 @@ namespace TFG_Worldbuilder_Application
         {
             if (!this.ValidFile && NewFile)
             {
-                this.active_lines = ConvertText(Header);
-                AddLine("Settings");
-                AddLine("National");
-                AddLine("Geographical");
-                AddLine("Climate");
-                AddLine("Factional");
-                AddLine("Cultural");
-                AddLine("Biological");
-                AddLine("Content");
+                UpdateText();
                 this.ValidFile = true;
                 this.Writable = true;
-                this.NewFile = false;
                 await SaveFile();
             }
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -31,7 +32,7 @@ namespace TFG_Worldbuilder_Application
         private string name = "";
         private string type = "";
         private string ActiveJob = "";
-        
+        public ObservableCollection<Level1> Worlds;
 
         /// <ToDo>
         /// Look into Data Bindings for Xaml; you'll need to master those to understand this
@@ -42,6 +43,7 @@ namespace TFG_Worldbuilder_Application
             this.InitializeComponent();
             this.FileNameBlock.Text = Global.ActiveFile.FileName();
             this.MapCanvas = (Canvas)this.FindName("WorldCanvas");
+            this.DataContext = Global.ActiveFile.Worlds;
         }
 
         /// <summary>
@@ -57,7 +59,6 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         private void UpdateSaveState()
         {
-            Global.ActiveFile.UpdateText();
             if (Global.ActiveFile.MatchesSave())
             {
                 this.FileNameBlock.Text = Global.ActiveFile.FileName();
@@ -130,9 +131,10 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Saves the active file
         /// </summary>
-        private void File_Save_Click(object sender, RoutedEventArgs e)
+        private async void File_Save_Click(object sender, RoutedEventArgs e)
         {
-            Global.ActiveFile.SaveFile();
+            await Global.ActiveFile.SaveFile();
+            UpdateSaveState();
         }
 
         /// <summary>
@@ -152,9 +154,10 @@ namespace TFG_Worldbuilder_Application
                 await Windows.Storage.FileIO.WriteTextAsync(file, Global.ActiveFile.GetCopy());
                 // Application now has read/write access to the picked file
                 Global.ActiveFile = new FileManager(file, true);
-                Global.ActiveFile.FormatNewFile();
+                await Global.ActiveFile.FormatNewFile();
                 this.Frame.Navigate(typeof(MapPage));
             }
+            UpdateSaveState();
         }
 
         /// <summary>
@@ -196,7 +199,6 @@ namespace TFG_Worldbuilder_Application
             ((TextBlock)this.FindName("TextPromptTab")).Text = Label;
             ((Grid)this.FindName("TextPrompt")).Visibility = Visibility.Visible;
         }
-
 
         private void Text_Prompt_Cancel_Click(object sender, RoutedEventArgs e)
         {
