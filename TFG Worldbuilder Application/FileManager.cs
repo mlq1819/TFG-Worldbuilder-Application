@@ -360,6 +360,10 @@ namespace TFG_Worldbuilder_Application
             bool toReturn = level > 0 && level <= 6 && !string.Equals(name, "null") && !string.Equals(leveltype, "null");
             if (parent != null)
                 toReturn = toReturn && level > parent.GetLevel();
+            for(int i=0; i<sublevels.Count && toReturn; i++)
+            {
+                toReturn = toReturn && sublevels[i].Valid();
+            }
             return toReturn;
         }
 
@@ -372,11 +376,67 @@ namespace TFG_Worldbuilder_Application
         }
 
         /// <summary>
-        /// Returns the level name
+        /// Prepares the level for printings with the given delimiters
+        /// </summary>
+        public string PrepareString(char inner_delimiter, char outer_delimiter)
+        {
+            string Text = "Start Level" + inner_delimiter + level + outer_delimiter;
+            Text += "Level Name" + inner_delimiter + name + outer_delimiter;
+            Text += "Level Type" + inner_delimiter + leveltype + outer_delimiter;
+            Polygon border = null;
+            switch (level) //Appends the special properties of each level to Text
+            {
+                case 1:
+                    break;
+                case 2:
+                    border = ((Level2)this).GetBorder();
+                    for (int i = 0; i < border.Size(); i++)
+                    {
+                        Text += "Border Vertex" + inner_delimiter + border.vertices[i].ToString() + outer_delimiter;
+                    }
+                    break;
+                case 3:
+                    border = ((Level3)this).GetBorder();
+                    for (int i = 0; i < border.Size(); i++)
+                    {
+                        Text += "Border Vertex" + inner_delimiter + border.vertices[i].ToString() + outer_delimiter;
+                    }
+                    break;
+                case 4:
+                    border = ((Level4)this).GetBorder();
+                    for (int i = 0; i < border.Size(); i++)
+                    {
+                        Text += "Border Vertex" + inner_delimiter + border.vertices[i].ToString() + outer_delimiter;
+                    }
+                    break;
+                case 5:
+                    Text += "Center" + inner_delimiter + ((Level5)this).GetCenter().ToString() + outer_delimiter;
+                    Text += "Radius" + inner_delimiter + ((Level5)this).radius.ToString() + outer_delimiter;
+                    break;
+                case 6:
+                    Text += "Center" + inner_delimiter + ((Level6)this).GetCenter().ToString() + outer_delimiter;
+                    break;
+                default:
+                    break;
+            } //Now done with the special properties of each level
+            for (int i = 0; i < leveldata.Count; i++) //Add the leveldata
+            {
+                Text += leveldata[i].Trim() + outer_delimiter;
+            }
+            for (int i = 0; i < sublevels.Count; i++)
+            {
+                sublevels[i].PrepareString(inner_delimiter, outer_delimiter);
+            }
+            Text += "End Level" + inner_delimiter + level + outer_delimiter;
+            return Text;
+        }
+
+        /// <summary>
+        /// Prepares the level for printings with the default delimiters
         /// </summary>
         public override string ToString()
         {
-            return this.name;
+            return PrepareString(' ', '\n');
         }
 
         /// <summary>
@@ -987,6 +1047,7 @@ namespace TFG_Worldbuilder_Application
         private bool Readable;
         private bool Writable;
         private bool ValidFile;
+        private bool NewFile;
         String Header;
         String Version;
         String Text;
@@ -1015,8 +1076,9 @@ namespace TFG_Worldbuilder_Application
         }
 
 
-        public FileManager(Windows.Storage.StorageFile file)
+        public FileManager(Windows.Storage.StorageFile file, bool newfile)
         {
+            this.NewFile = newfile;
             this.ActiveFile = file;
             this.Readable = false;
             this.Writable = false;
@@ -1057,6 +1119,21 @@ namespace TFG_Worldbuilder_Application
             Worlds = new List<Level1>();
         }
 
+        public bool Valid()
+        {
+            return this.ValidFile;
+        }
+
+        public bool ReadReady()
+        {
+            return this.Readable;
+        }
+
+        public bool WriteReady()
+        {
+            return this.Writable;
+        }
+
         public String FileName()
         {
             return this.ActiveFile.Name;
@@ -1073,21 +1150,22 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         private bool ReplaceLine(String text, int i)
         {
-            if (!this.Readable)
-                ReadyFile();
-            int index = 0;
-            while (i > 0 && index > -1 && index < this.Text.Length)
-            {
-                index += this.Text.Substring(index).IndexOf(outer_delimiter) + 1;
-                i--;
+            if (this.Readable) {
+                int index = 0;
+                while (i > 0 && index > -1 && index < this.Text.Length)
+                {
+                    index += this.Text.Substring(index).IndexOf(outer_delimiter) + 1;
+                    i--;
+                }
+                if (i == 0)
+                    return false;
+                int length = text.Substring(index).IndexOf(outer_delimiter);
+                if (length == -1) //Last line of file
+                    this.Text = this.Text.Substring(0, index) + text;
+                this.Text = this.Text.Substring(0, index) + text + this.Text.Substring(index + length);
+                return true;
             }
-            if (i == 0)
-                return false;
-            int length = text.Substring(index).IndexOf(outer_delimiter);
-            if (length == -1) //Last line of file
-                this.Text = this.Text.Substring(0, index) + text;
-            this.Text = this.Text.Substring(0, index) + text + this.Text.Substring(index + length);
-            return true;
+            return false;
         }
 
         /// <summary>
@@ -1095,20 +1173,22 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         private String GetLine(int i)
         {
-            if (!this.Readable)
-                ReadyFile();
-            int index = 0;
-            while (i > 0 && index > -1 && index < this.Text.Length)
+            if (this.Readable)
             {
-                index += Text.Substring(index).IndexOf(outer_delimiter) + 1;
-                i--;
+                int index = 0;
+                while (i > 0 && index > -1 && index < this.Text.Length)
+                {
+                    index += Text.Substring(index).IndexOf(outer_delimiter) + 1;
+                    i--;
+                }
+                if (i > 0)
+                    return null;
+                int length = this.Text.Substring(index).IndexOf(outer_delimiter);
+                if (length == -1) //Last line of file
+                    return this.Text.Substring(index);
+                return this.Text.Substring(index, length - 1);
             }
-            if (i > 0)
-                return null;
-            int length = this.Text.Substring(index).IndexOf(outer_delimiter);
-            if(length==-1) //Last line of file
-                return this.Text.Substring(index);
-            return this.Text.Substring(index, length - 1);
+            return null;
         }
 
         /// <summary>
@@ -1333,6 +1413,9 @@ namespace TFG_Worldbuilder_Application
                             activeDirectory.Add(ActiveText.Substring(index, length));
                         index += length + 1;
                     }
+                } else
+                {
+                    index += length + 1;
                 }
             }
             ActiveText = this.Text.Substring(this.Text.IndexOf("Content"));
@@ -1361,134 +1444,89 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Prepares the file for reading and writing
         /// </summary>
-        public async void ReadyFile()
+        public async Task ReadyFile()
         {
             this.Text = await Windows.Storage.FileIO.ReadTextAsync(ActiveFile);
             this.Readable = true;
-            if (this.Text.IndexOf("Prime Worldbuilding File", 0, 1)==0)
+            if (this.Text.IndexOf("Prime Worldbuilding File")==0)
             {
                 this.ValidFile = true;
             }
-            else
+            else if(this.NewFile)
             {
                 FormatNewFile();
+                this.ValidFile = true;
+                this.NewFile = false;
             }
-            this.Version = GetLine(2);
-            this.Version = this.Version.Substring(this.Version.IndexOf(inner_delimiter) + 1);
-            GetDirectories();
-            this.Writable = true;
+            else
+            {
+                this.ValidFile = false;
+            }
+            if (this.ValidFile)
+            {
+                this.Version = GetLine(2);
+                this.Version = this.Version.Substring(this.Version.IndexOf(inner_delimiter) + 1);
+                GetDirectories();
+                this.Writable = true;
+            }
         }
         
-        /// <summary>
-        /// Appends the relevant level information to Text from the given level
-        /// </summary>
-        private void UpdateLevelText(SuperLevel level)
-        {
-            int level_num = level.GetLevel();
-            if (level.Valid()) //Ensures the level number is valid
-            {
-                this.Text += "Start Level" + inner_delimiter + level_num + outer_delimiter;
-                this.Text += "Level Name" + inner_delimiter + level.GetName() + outer_delimiter;
-                this.Text += "Level Type" + inner_delimiter + level.GetType() + outer_delimiter;
-                Polygon border = null;
-                switch (level_num) //Appends the special properties of each level to Text
-                {
-                    case 1:
-                        break;
-                    case 2:
-                        border = ((Level2)level).GetBorder();
-                        for(int i=0; i<border.Size(); i++)
-                        {
-                            this.Text += "Border Vertex" + inner_delimiter + border.vertices[i].ToString() + outer_delimiter;
-                        }
-                        break;
-                    case 3:
-                        border = ((Level3)level).GetBorder();
-                        for (int i = 0; i < border.Size(); i++)
-                        {
-                            this.Text += "Border Vertex" + inner_delimiter + border.vertices[i].ToString() + outer_delimiter;
-                        }
-                        break;
-                    case 4:
-                        border = ((Level4)level).GetBorder();
-                        for (int i = 0; i < border.Size(); i++)
-                        {
-                            this.Text += "Border Vertex" + inner_delimiter + border.vertices[i].ToString() + outer_delimiter;
-                        }
-                        break;
-                    case 5:
-                        this.Text += "Center" + inner_delimiter + ((Level5)level).GetCenter().ToString() + outer_delimiter;
-                        this.Text += "Radius" + inner_delimiter + ((Level5)level).radius.ToString() + outer_delimiter;
-                        break;
-                    case 6:
-                        this.Text += "Center" + inner_delimiter + ((Level6)level).GetCenter().ToString() + outer_delimiter;
-                        break;
-                    default:
-                        break;
-                } //Now done with the special properties of each level
-                for(int i=0; i<level.leveldata.Count; i++) //Add the leveldata
-                {
-                    this.Text += level.leveldata[i].Trim() + outer_delimiter;
-                }
-                List<SuperLevel> sublevels = level.GetSublevels();
-                for(int i=0; i<sublevels.Count; i++)
-                {
-                    UpdateLevelText(sublevels[i]);
-                }
-                this.Text += "End Level" + inner_delimiter + level_num + outer_delimiter;
-            }
-
-        }
-
         /// <summary>
         /// Saves edits to the Text variable by overwriting the Text with the Header followed by the information contained in all directories. Does not update the file itself.
         /// </summary>
         public void UpdateText()
         {
-            this.Text = Header;
-            this.Text += "Settings" + outer_delimiter;
-            this.Text += "National" + outer_delimiter;
-            for (int i = 0; i < NationalDirectory.Count; i++)
+            if (this.ValidFile)
             {
-                this.Text += NationalDirectory[i] + outer_delimiter;
-            }
-            this.Text += "Geographical" + outer_delimiter;
-            for (int i = 0; i < GeographicalDirectory.Count; i++)
-            {
-                this.Text += GeographicalDirectory[i] + outer_delimiter;
-            }
-            this.Text += "Climate" + outer_delimiter;
-            for (int i = 0; i < ClimateDirectory.Count; i++)
-            {
-                this.Text += ClimateDirectory[i] + outer_delimiter;
-            }
-            this.Text += "Factional" + outer_delimiter;
-            for (int i = 0; i < FactionalDirectory.Count; i++)
-            {
-                this.Text += FactionalDirectory[i] + outer_delimiter;
-            }
-            this.Text += "Cultural" + outer_delimiter;
-            for (int i = 0; i < CulturalDirectory.Count; i++)
-            {
-                this.Text += CulturalDirectory[i] + outer_delimiter;
-            }
-            this.Text += "Biological" + outer_delimiter;
-            for (int i = 0; i < BiologicalDirectory.Count; i++)
-            {
-                this.Text += BiologicalDirectory[i] + outer_delimiter;
-            }
-            this.Text += "Content" + outer_delimiter;
-            for (int i=0; i < this.Worlds.Count; i++)
-            {
-                UpdateLevelText(this.Worlds[i]);
+                this.Text = Header;
+                this.Text += "Settings" + outer_delimiter;
+                this.Text += "National" + outer_delimiter;
+                for (int i = 0; i < NationalDirectory.Count; i++)
+                {
+                    this.Text += NationalDirectory[i] + outer_delimiter;
+                }
+                this.Text += "Geographical" + outer_delimiter;
+                for (int i = 0; i < GeographicalDirectory.Count; i++)
+                {
+                    this.Text += GeographicalDirectory[i] + outer_delimiter;
+                }
+                this.Text += "Climate" + outer_delimiter;
+                for (int i = 0; i < ClimateDirectory.Count; i++)
+                {
+                    this.Text += ClimateDirectory[i] + outer_delimiter;
+                }
+                this.Text += "Factional" + outer_delimiter;
+                for (int i = 0; i < FactionalDirectory.Count; i++)
+                {
+                    this.Text += FactionalDirectory[i] + outer_delimiter;
+                }
+                this.Text += "Cultural" + outer_delimiter;
+                for (int i = 0; i < CulturalDirectory.Count; i++)
+                {
+                    this.Text += CulturalDirectory[i] + outer_delimiter;
+                }
+                this.Text += "Biological" + outer_delimiter;
+                for (int i = 0; i < BiologicalDirectory.Count; i++)
+                {
+                    this.Text += BiologicalDirectory[i] + outer_delimiter;
+                }
+                this.Text += "Content" + outer_delimiter;
+                for (int i = 0; i < this.Worlds.Count; i++)
+                {
+                    if (Worlds[i].Valid()) //Ensures the world is valid (every level and sublevel has a correct level number, functional name, and functional level type
+                    {
+                        this.Text += Worlds[i].PrepareString(inner_delimiter, outer_delimiter);
+                    }
+                }
             }
         }
         
         /// <summary>
-        /// Checks if the working version matches the saved version
+        /// Checks if the working version matches the saved version; updates the working version
         /// </summary>
         public bool MatchesSave()
         {
+            UpdateText();
             return this.Original.Equals(this.Text);
         }
 
@@ -1497,9 +1535,12 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         public async void SaveFile()
         {
-            if(!MatchesSave())
-            await Windows.Storage.FileIO.WriteTextAsync(ActiveFile, this.Text);
-            this.Original = this.Text;
+            if (this.ValidFile && this.Writable)
+            {
+                if (!MatchesSave())
+                    await Windows.Storage.FileIO.WriteTextAsync(ActiveFile, this.Text);
+                this.Original = this.Text;
+            }
         }
 
         /// <summary>

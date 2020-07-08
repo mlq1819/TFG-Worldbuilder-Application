@@ -1,10 +1,11 @@
 ﻿<Page
-    x:Class="TFG_Worldbuilder_Application.MapPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:TFG_Worldbuilder_Application"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:Maps="using:Windows.UI.Xaml.Controls.Maps"
+    x:Class="TFG_Worldbuilder_Application.MapPage"
     mc:Ignorable="d">
     <Page.Resources>
         <MenuFlyout x:Name = "FileMenu" x:Key="FileMenu">
@@ -16,7 +17,7 @@
             <MenuFlyoutItem Text="Close" Click="File_Close_Click"/>
             <MenuFlyoutSeparator/>
             <MenuFlyoutItem Text="Exit" Click="File_Exit_Click"/>
-            <ToggleMenuFlyoutItem></ToggleMenuFlyoutItem>
+            <ToggleMenuFlyoutItem/>
         </MenuFlyout>
         <MenuFlyout x:Name= "ViewMenu" x:Key="ViewMenu">
             <MenuFlyoutSubItem Text="National">
@@ -46,9 +47,7 @@
                 <ToggleMenuFlyoutItem Text="Agrictultural Potential"/>
                 <ToggleMenuFlyoutItem Text="Resource Potential"/>
             </MenuFlyoutSubItem>
-            <MenuFlyoutSubItem Text="Factional">
-
-            </MenuFlyoutSubItem>
+            <MenuFlyoutSubItem Text="Factional"/>
             <MenuFlyoutSubItem Text="Cultural">
                 <ToggleMenuFlyoutItem Text="Conservative Heatmap"/>
                 <ToggleMenuFlyoutItem Text="Liberal Heatmap"/>
@@ -56,9 +55,7 @@
                 <ToggleMenuFlyoutItem Text="Anarchist Heatmap"/>
                 <ToggleMenuFlyoutItem Text="Major Exports"/>
             </MenuFlyoutSubItem>
-            <MenuFlyoutSubItem Text="Biological">
-
-            </MenuFlyoutSubItem>
+            <MenuFlyoutSubItem Text="Biological"/>
         </MenuFlyout>
     </Page.Resources>
 
@@ -72,6 +69,16 @@
                 <Button x:Name="FileButton" Content="File" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Flyout="{StaticResource FileMenu}"/>
                 <Button x:Name="ViewButton" Content="View" HorizontalAlignment="Left" Margin="85,10,0,0" VerticalAlignment="Top" Flyout="{StaticResource ViewMenu}"/>
             </Grid>
+        </Grid>
+        <Grid HorizontalAlignment="Center" x:Name="PopupAlert" Visibility="Collapsed" Height="200" Width="200" Margin="100,100,100,100" VerticalAlignment="Top">
+            <Rectangle Fill="#FFF4F4F5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,0,0" Stroke="Black" />
+            <TextBlock x:Name="PopupAlertText" HorizontalAlignment="Center" Margin="10,10,10,10" TextWrapping="Wrap" Text="Alert" VerticalAlignment="Top"/>
+            <Button x:Name="PopupAlertButton" Content="OK" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="30,30,30,30" Click="PopupAlertButton_Click"/>
+        </Grid>
+        <Grid x:Name="MapDisplay" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,75,0,0">
+            <Canvas x:Name="MapCanvas" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <Polygon Fill="LightBlue" Stroke="Black" Name="Continent" Points="0,0 1000,0 0,1000"></Polygon>
+            </Canvas>
         </Grid>
     </Grid>
 </Page>
