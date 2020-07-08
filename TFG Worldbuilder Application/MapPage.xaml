@@ -57,6 +57,10 @@
             </MenuFlyoutSubItem>
             <MenuFlyoutSubItem Text="Biological"/>
         </MenuFlyout>
+        <MenuFlyout x:Name="CreateMenu" x:Key="CreateMenu">
+            <MenuFlyoutItem x:Name="Create_World" Text="New World" Click="Create_World_Click"/>
+            <MenuFlyoutItem x:Name="Create_Continent" Text="New Continent" Click="Create_Continent_Click"/>
+        </MenuFlyout>
     </Page.Resources>
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
@@ -66,19 +70,32 @@
             </Grid>
             <Grid HorizontalAlignment="Stretch" Height="50" VerticalAlignment="Bottom">
                 <Rectangle Fill="#FFF4F4F5" HorizontalAlignment="Stretch" Height="50" Margin="0,0,0,0" Stroke="Black" VerticalAlignment="Top"/>
-                <Button x:Name="FileButton" Content="File" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Flyout="{StaticResource FileMenu}"/>
-                <Button x:Name="ViewButton" Content="View" HorizontalAlignment="Left" Margin="85,10,0,0" VerticalAlignment="Top" Flyout="{StaticResource ViewMenu}"/>
+                <Button x:Name="FileButton" Content="File" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="80" Flyout="{StaticResource FileMenu}"/>
+                <Button x:Name="ViewButton" Content="View" HorizontalAlignment="Left" Margin="110,10,0,0" VerticalAlignment="Top" Width="80" Flyout="{StaticResource ViewMenu}"/>
+                <Button x:Name="CreateButton" Content="Create" HorizontalAlignment="Left" Margin="210,10,0,0" VerticalAlignment="Top" Width="80" Flyout="{StaticResource CreateMenu}"/>
+            </Grid>
+        </Grid>
+        <Grid x:Name="MapDisplay" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,75,0,0">
+            <Canvas x:Name="WorldCanvas" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <Polygon Fill="LightBlue" Stroke="Black" Name="Continent" Points="0,0 1000,0 0,1000"></Polygon>
+            </Canvas>
+        </Grid>
+        <Grid x:Name="TextPrompt" HorizontalAlignment="Center" VerticalAlignment="Center" Width="500" Height="200" Visibility="Collapsed">
+            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="50">
+                <Rectangle Fill="#FFF4F4F5" HorizontalAlignment="Stretch" Margin="0,0,0,0" Stroke="Black" VerticalAlignment="Stretch"/>
+                <TextBlock x:Name="TextPromptTab" Text="Name Me!" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" Margin="10,5,10,5"/>
+            </Grid>
+            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,50,0,0">
+                <Rectangle Fill="#FFFFFFFF" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Stroke="Black"/>
+                <TextBox x:Name="TextPromptBox" Margin="10,10,10,40" Text="Name"/>
+                <Button x:Name="Text_Prompt_Cancel" Content="Cancel" HorizontalAlignment="Left" VerticalAlignment="Bottom" Height="30" Width="100" Margin="10,5,10,5" Click="Text_Prompt_Cancel_Click"/>
+                <Button x:Name="Text_Prompt_Confirm" Content="Confirm" HorizontalAlignment="Right" VerticalAlignment="Bottom" Height="30" Width="100" Margin="10,5,10,5" Click="Text_Prompt_Confirm_Click"/>
             </Grid>
         </Grid>
         <Grid HorizontalAlignment="Center" x:Name="PopupAlert" Visibility="Collapsed" Height="200" Width="200" Margin="100,100,100,100" VerticalAlignment="Top">
             <Rectangle Fill="#FFF4F4F5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,0,0" Stroke="Black" />
             <TextBlock x:Name="PopupAlertText" HorizontalAlignment="Center" Margin="10,10,10,10" TextWrapping="Wrap" Text="Alert" VerticalAlignment="Top"/>
             <Button x:Name="PopupAlertButton" Content="OK" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="30,30,30,30" Click="PopupAlertButton_Click"/>
-        </Grid>
-        <Grid x:Name="MapDisplay" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,75,0,0">
-            <Canvas x:Name="MapCanvas" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                <Polygon Fill="LightBlue" Stroke="Black" Name="Continent" Points="0,0 1000,0 0,1000"></Polygon>
-            </Canvas>
         </Grid>
     </Grid>
 </Page>

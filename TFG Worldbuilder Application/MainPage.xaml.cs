@@ -50,6 +50,15 @@ namespace TFG_Worldbuilder_Application
         }
 
         /// <summary>
+        /// Opens the Popup Alert with the given message
+        /// </summary>
+        private void OpenPopupAlert(string text)
+        {
+            ((TextBlock)this.FindName("PopupAlertText")).Text = text;
+            ((Grid)this.FindName("PopupAlert")).Visibility = Visibility.Visible;
+        }
+
+        /// <summary>
         /// A button that opens an existing project file
         /// </summary>
         private async void OpenProjectButton_Click(object sender, RoutedEventArgs e)
@@ -67,8 +76,7 @@ namespace TFG_Worldbuilder_Application
                 if(Global.ActiveFile.Valid())
                 this.Frame.Navigate(typeof(MapPage));
                 else {
-                    ((TextBlock)this.FindName("PopupAlertText")).Text = "File not formatted for Worldbuilding - Invalid File";
-                    ((Grid)this.FindName("Popup Alert")).Visibility = Visibility.Visible;
+                    OpenPopupAlert("File not formatted for Worldbuilding - Invalid File");
                 }
             }
         }

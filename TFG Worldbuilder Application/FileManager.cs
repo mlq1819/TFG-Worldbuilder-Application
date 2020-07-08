@@ -188,16 +188,16 @@ namespace TFG_Worldbuilder_Application
     }
 
     /// <summary>
-    /// Polygon object of Point2D points
+    /// Polygon2D object of Point2D points
     /// </summary>
-    public class Polygon
+    public class Polygon2D
     {
         public List<Point2D> vertices;
 
         /// <summary>
         /// Basic constructor
         /// </summary>
-        public Polygon()
+        public Polygon2D()
         {
             vertices = new List<Point2D>();
         }
@@ -205,7 +205,7 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Copy Constructor
         /// </summary>
-        public Polygon(Polygon o)
+        public Polygon2D(Polygon2D o)
         {
             vertices = new List<Point2D>();
             for(int i=0; i<o.vertices.Count; i++)
@@ -283,7 +283,7 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Checks whether a given polygon is constrained by a polygon
         /// </summary>
-        public bool PolygonInPolygon(Polygon polygon)
+        public bool PolygonInPolygon(Polygon2D polygon)
         {
             for (int i=0; i<polygon.vertices.Count; i++)
             {
@@ -317,7 +317,7 @@ namespace TFG_Worldbuilder_Application
         private string leveltype;
         private List<SuperLevel> sublevels;
         public SuperLevel parent;
-        public List<String> leveldata;
+        public List<string> leveldata;
 
         /// <summary>
         /// empty constructor; do not use
@@ -327,6 +327,9 @@ namespace TFG_Worldbuilder_Application
             this.name = "null";
             this.level = -1;
             this.leveltype = "null";
+            this.sublevels = null;
+            this.parent = null;
+            this.leveldata = null;
         }
 
         /// <summary>
@@ -338,10 +341,11 @@ namespace TFG_Worldbuilder_Application
             this.level = level;
             this.leveltype = leveltype;
             this.sublevels = new List<SuperLevel>();
-            if (parent.GetLevel() < level)
+            if (parent!=null && parent.GetLevel() < level)
                 this.parent = parent;
             else
                 this.parent = null;
+            this.leveldata = new List<string>();
         }
 
         /// <summary>
@@ -383,7 +387,7 @@ namespace TFG_Worldbuilder_Application
             string Text = "Start Level" + inner_delimiter + level + outer_delimiter;
             Text += "Level Name" + inner_delimiter + name + outer_delimiter;
             Text += "Level Type" + inner_delimiter + leveltype + outer_delimiter;
-            Polygon border = null;
+            Polygon2D border = null;
             switch (level) //Appends the special properties of each level to Text
             {
                 case 1:
@@ -458,7 +462,7 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Returns the level type
         /// </summary>
-        public string GetLeveltype()
+        public string GetLevelType()
         {
             return this.leveltype;
         }
@@ -565,7 +569,7 @@ namespace TFG_Worldbuilder_Application
             {
                 if (string.Equals(name, this.sublevels[i].GetName()))
                 {
-                    if (level == this.sublevels[i].level && string.Equals(leveltype, this.sublevels[i].GetLeveltype()))
+                    if (level == this.sublevels[i].level && string.Equals(leveltype, this.sublevels[i].GetLevelType()))
                         return this.sublevels[i];
                     break;
                 }
@@ -629,7 +633,7 @@ namespace TFG_Worldbuilder_Application
             {
                 if (string.Equals(name, this.sublevels[i].GetName()))
                 {
-                    if (level == this.sublevels[i].GetLevel() && string.Equals(leveltype, this.sublevels[i].GetLeveltype()))
+                    if (level == this.sublevels[i].GetLevel() && string.Equals(leveltype, this.sublevels[i].GetLevelType()))
                         results.Add(this.sublevels[i]);
                     break;
                 }
@@ -667,23 +671,23 @@ namespace TFG_Worldbuilder_Application
     /// </summary>
     public class Level2 : SuperLevel
     {
-        private Polygon border;
+        private Polygon2D border;
 
         /// <summary>
         /// Basic constructor, creates a level 2 object given a name and level type
         /// </summary>
-        public Level2(string name, string leveltype, Level1 parent, Polygon border) : base(name, 2, leveltype, parent)
+        public Level2(string name, string leveltype, Level1 parent, Polygon2D border) : base(name, 2, leveltype, parent)
         {
-            this.border = new Polygon(border);
+            this.border = new Polygon2D(border);
         }
 
         /// <summary>
         /// Makes a copy of the border property to return
         /// </summary>
         /// <returns></returns>
-        public Polygon GetBorder()
+        public Polygon2D GetBorder()
         {
-            return new Polygon(border);
+            return new Polygon2D(border);
         }
 
         /// <summary>
@@ -729,7 +733,7 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Checks whether a given polygon is constrained by a polygon
         /// </summary>
-        public bool PolygonInPolygon(Polygon polygon)
+        public bool PolygonInPolygon(Polygon2D polygon)
         {
             return border.PolygonInPolygon(polygon);
         }
@@ -748,23 +752,23 @@ namespace TFG_Worldbuilder_Application
     /// </summary>
     public class Level3 : SuperLevel
     {
-        private Polygon border; //Not constrained by Greater Region Boundaries
+        private Polygon2D border; //Not constrained by Greater Region Boundaries
 
         /// <summary>
         /// Basic constructor, creates a level 3 object given a name and level type
         /// </summary>
-        public Level3(string name, string leveltype, SuperLevel parent, Polygon border) : base(name, 3, leveltype, parent)
+        public Level3(string name, string leveltype, SuperLevel parent, Polygon2D border) : base(name, 3, leveltype, parent)
         {
-            this.border = new Polygon(border);
+            this.border = new Polygon2D(border);
         }
 
         /// <summary>
         /// Makes a copy of the border property to return
         /// </summary>
         /// <returns></returns>
-        public Polygon GetBorder()
+        public Polygon2D GetBorder()
         {
-            return new Polygon(border);
+            return new Polygon2D(border);
         }
 
         /// <summary>
@@ -810,7 +814,7 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Checks whether a given polygon is constrained by a polygon
         /// </summary>
-        public bool PolygonInPolygon(Polygon polygon)
+        public bool PolygonInPolygon(Polygon2D polygon)
         {
             return border.PolygonInPolygon(polygon);
         }
@@ -829,23 +833,23 @@ namespace TFG_Worldbuilder_Application
     /// </summary>
     public class Level4 : SuperLevel
     {
-        private Polygon border; //Constrained by Greater Region Boundaries
+        private Polygon2D border; //Constrained by Greater Region Boundaries
 
         /// <summary>
         /// Basic constructor, creates a level 4 object given a name and level type
         /// </summary>
-        public Level4(string name, string leveltype, SuperLevel parent, Polygon border) : base(name, 4, leveltype, parent)
+        public Level4(string name, string leveltype, SuperLevel parent, Polygon2D border) : base(name, 4, leveltype, parent)
         {
-            this.border = new Polygon(border);
+            this.border = new Polygon2D(border);
         }
 
         /// <summary>
         /// Makes a copy of the border property to return
         /// </summary>
         /// <returns></returns>
-        public Polygon GetBorder()
+        public Polygon2D GetBorder()
         {
-            return new Polygon(border);
+            return new Polygon2D(border);
         }
 
         /// <summary>
@@ -905,7 +909,7 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Checks whether a given polygon is constrained by a polygon
         /// </summary>
-        public bool PolygonInPolygon(Polygon polygon)
+        public bool PolygonInPolygon(Polygon2D polygon)
         {
             return border.PolygonInPolygon(polygon);
         }
@@ -1048,21 +1052,25 @@ namespace TFG_Worldbuilder_Application
         private bool Writable;
         private bool ValidFile;
         private bool NewFile;
-        String Header;
-        String Version;
-        String Text;
-        String Original;
+        string Header;
+        string Version;
+        string Text;
+        string Original;
+        string Invalid;
         char inner_delimiter = ':';
         char outer_delimiter = '\n';
-        List<String> NationalDirectory;
-        List<String> GeographicalDirectory;
-        List<String> ClimateDirectory;
-        List<String> FactionalDirectory;
-        List<String> CulturalDirectory;
-        List<String> BiologicalDirectory;
-        List<String> Keywords;
-        List<Level1> Worlds;
-        
+        List<string> NationalDirectory;
+        List<string> GeographicalDirectory;
+        List<string> ClimateDirectory;
+        List<string> FactionalDirectory;
+        List<string> CulturalDirectory;
+        List<string> BiologicalDirectory;
+        List<string> Keywords;
+        public List<Level1> Worlds;
+        private List<string> original_lines;
+        private List<string> active_lines;
+        private List<string> invalid_lines;
+
 
         enum DirectoryMode : int
         {
@@ -1085,13 +1093,17 @@ namespace TFG_Worldbuilder_Application
             this.ValidFile = false;
             Original = "";
             Text = "";
-            NationalDirectory = new List<String>();
-            GeographicalDirectory = new List<String>();
-            ClimateDirectory = new List<String>();
-            FactionalDirectory = new List<String>();
-            CulturalDirectory = new List<String>();
-            BiologicalDirectory = new List<String>();
-            Keywords = new List<String>();
+            Invalid = "";
+            original_lines = new List<string>();
+            active_lines = new List<string>();
+            invalid_lines = new List<string>();
+            NationalDirectory = new List<string>();
+            GeographicalDirectory = new List<string>();
+            ClimateDirectory = new List<string>();
+            FactionalDirectory = new List<string>();
+            CulturalDirectory = new List<string>();
+            BiologicalDirectory = new List<string>();
+            Keywords = new List<string>();
             Keywords.Add("National");
             Keywords.Add("Geographical");
             Keywords.Add("Climate");
@@ -1109,14 +1121,51 @@ namespace TFG_Worldbuilder_Application
             Keywords.Add("Radius");
             Keywords.Add("End Level");
             Keywords.Add("Level Type");
-            Keywords.Add("World");
-            Keywords.Add("Greater Region");
-            Keywords.Add("Region");
-            Keywords.Add("Subregion");
-            Keywords.Add("Location");
-            Keywords.Add("Structure");
+            Keywords.Add("Invalid");
             Header = "Prime Worldbuilding File" + outer_delimiter + "Created by Michael Quinn" + outer_delimiter + "Version" + inner_delimiter + "1.0.0" + outer_delimiter;
             Worlds = new List<Level1>();
+        }
+
+        /// <summary>
+        /// returns true if the supplied text contains any illegal keyword
+        /// </summary>
+        public bool HasKeyword(string text)
+        {
+            for (int i=0; i<Keywords.Count; i++)
+            {
+                if (text.Contains(Keywords[i]))
+                    return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// returns the first illegal keyword in the supplied text
+        /// </summary>
+        public string GetKeyword(string text)
+        {
+            for (int i = 0; i < Keywords.Count; i++)
+            {
+                if (text.Contains(Keywords[i]))
+                    return Keywords[i];
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Returns true if there is a world that has the same name and type
+        /// </summary>
+        public bool HasWorld(string name, string type)
+        {
+            if (Readable) { 
+                for (int i=0; i<Worlds.Count; i++)
+                {
+                    if (string.Equals(name, Worlds[i].GetName()) && string.Equals(type, Worlds[i].GetLevelType()))
+                        return true;
+                }
+                return false;
+            }
+            return true;
         }
 
         public bool Valid()
@@ -1148,21 +1197,12 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Accesses and replaces the i-th line of the text with the provided string
         /// </summary>
-        private bool ReplaceLine(String text, int i)
+        private bool ReplaceLine(string line, int i)
         {
-            if (this.Readable) {
-                int index = 0;
-                while (i > 0 && index > -1 && index < this.Text.Length)
-                {
-                    index += this.Text.Substring(index).IndexOf(outer_delimiter) + 1;
-                    i--;
-                }
-                if (i == 0)
+            if (this.Readable && i >= 0 && i < this.active_lines.Count) {
+                if (line.Trim().Contains(outer_delimiter))
                     return false;
-                int length = text.Substring(index).IndexOf(outer_delimiter);
-                if (length == -1) //Last line of file
-                    this.Text = this.Text.Substring(0, index) + text;
-                this.Text = this.Text.Substring(0, index) + text + this.Text.Substring(index + length);
+                this.active_lines[i] = line.Trim();
                 return true;
             }
             return false;
@@ -1173,22 +1213,247 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         private String GetLine(int i)
         {
-            if (this.Readable)
+            if (this.Readable && i >= 0 && i < this.active_lines.Count)
             {
-                int index = 0;
-                while (i > 0 && index > -1 && index < this.Text.Length)
-                {
-                    index += Text.Substring(index).IndexOf(outer_delimiter) + 1;
-                    i--;
-                }
-                if (i > 0)
-                    return null;
-                int length = this.Text.Substring(index).IndexOf(outer_delimiter);
-                if (length == -1) //Last line of file
-                    return this.Text.Substring(index);
-                return this.Text.Substring(index, length - 1);
+                return this.active_lines[i];
             }
             return null;
+        }
+
+        /// <summary>
+        /// Adds a line of text to the end of the active lines
+        /// </summary>
+        private bool AddLine(string line)
+        {
+            if (Writable)
+            {
+                if (line.Trim().Contains(outer_delimiter))
+                    return false;
+                this.active_lines.Add(line.Trim());
+                return true;
+            }
+            return false;
+        }
+        
+        /// <summary>
+        /// Adds multiple lines of text to the end of the active lines
+        /// </summary>
+        private bool AddLines(string text)
+        {
+            if (Writable)
+            {
+                int index = 0;
+                int length = 0;
+                while(index < text.Length)
+                {
+                    length = text.Substring(index).IndexOf(outer_delimiter);
+                    if (length < 0)
+                        length = text.Substring(index).Length;
+                    AddLine(text.Substring(index, length).Trim());
+                }
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Checks if there is a line in the current version
+        /// </summary>
+        private bool HasLine(string line)
+        {
+            if (Readable)
+            {
+                if (line.Trim().Contains(outer_delimiter))
+                    return false;
+                for(int i=0; i<active_lines.Count; i++)
+                {
+                    if (string.Equals(active_lines[i], Equals(line.Trim())))
+                        return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Returns the index of the first occurance of the given line starting at start and before end
+        /// </summary>
+        private int IndexOf(string line, int start, int end)
+        {
+            if (Readable)
+            {
+                if (line.Trim().Contains(outer_delimiter))
+                    return -1;
+                for (int i = start; i < active_lines.Count && i < end; i++)
+                {
+                    if (string.Equals(active_lines[i], Equals(line.Trim())))
+                        return i;
+                }
+            }
+            return -1;
+        }
+
+        /// <summary>
+        /// Returns the index of the first occurance of the given line starting at start
+        /// </summary>
+        private int IndexOf(string line, int start)
+        {
+            return IndexOf(line, start, active_lines.Count);
+        }
+
+        /// <summary>
+        /// Returns the index of the first occurance of the given line
+        /// </summary>
+        private int IndexOf(string line)
+        {
+            return IndexOf(line, 0, active_lines.Count);
+        }
+
+        /// <summary>
+        /// Returns the index of the first line after the starting index but before the end index containing the given substring
+        /// </summary>
+        private int IndexOfSubstring(string substring, int start, int end)
+        {
+            if (Readable)
+            {
+                if (substring.Contains(outer_delimiter))
+                    return -1;
+                for (int i = start; i < active_lines.Count && i < end; i++)
+                {
+                    if (active_lines[i].Contains(substring))
+                        return i;
+                }
+            }
+            return -1;
+        }
+
+        /// <summary>
+        /// Returns the index of the first line after the starting index containing the given substring
+        /// </summary>
+        private int IndexOfSubstring(string substring, int start)
+        {
+            return IndexOfSubstring(substring, start, active_lines.Count);
+        }
+
+        /// <summary>
+        /// Returns the index of the first line containing the given substring
+        /// </summary>
+        private int IndexOfSubstring(string substring)
+        {
+            return IndexOfSubstring(substring, 0, active_lines.Count);
+        }
+
+        /// <summary>
+        /// Returns the first line containing the passed substring
+        /// </summary>
+        private string FindLineBySubstring(string substring)
+        {
+            if (Readable)
+            {
+                if (substring.Trim().Contains(outer_delimiter))
+                    return null;
+                for(int i=0; i<active_lines.Count; i++)
+                {
+                    if (active_lines[i].Contains(substring))
+                        return active_lines[i];
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Returns the first line containing the passed substring after the starting index
+        /// </summary>
+        private string FindLineBySubstring(string substring, int start)
+        {
+            if (Readable)
+            {
+                if (substring.Trim().Contains(outer_delimiter))
+                    return null;
+                for (int i = start; i < active_lines.Count; i++)
+                {
+                    if (active_lines[i].Contains(substring))
+                        return active_lines[i];
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Returns the first line containing the passed substring after the starting index and before the ending index
+        /// </summary>
+        private string FindLineBySubstring(string substring, int start, int end)
+        {
+            if (Readable)
+            {
+                if (substring.Trim().Contains(outer_delimiter))
+                    return null;
+                for (int i = start; i < active_lines.Count && i < end; i++)
+                {
+                    if (active_lines[i].Contains(substring))
+                        return active_lines[i];
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Retrieves the lines between the starting index to the ending index, inclusive
+        /// </summary>
+        private List<string> GetLines(int start, int end)
+        {
+            if (Readable)
+            {
+                if (start < 0 || end >= active_lines.Count || end > start)
+                    return null;
+                return active_lines.GetRange(start, end - start + 1);
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Inserts a line of text at the given position
+        /// </summary>
+        private bool InsertLine(string text, int i)
+        {
+            if (Writable && i >= 0 && i < active_lines.Count)
+            {
+                if (text.Trim().Contains(outer_delimiter))
+                    return false;
+                this.active_lines.Insert(i, text.Trim());
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// converts a string into a list of strings based on outer_delimiter
+        /// </summary>
+        private List<string> ConvertText(string text)
+        {
+            List<string> output = new List<string>();
+            int index = 0;
+            int length = 0;
+            while(index < text.Length)
+            {
+                length = text.Substring(index).IndexOf(outer_delimiter);
+                if (length < 0)
+                    length = text.Substring(index).Length;
+                output.Add(text.Substring(index, length));
+                index += length + 1;
+            }
+            return output;
+        }
+
+        /// <summary>
+        /// converts a list of strings into a string broken up by outer_delimiter
+        /// </summary>
+        private string ConvertText(List<string> text)
+        {
+            string output = "";
+            for(int i=0; i<text.Count; i++)
+            {
+                output += text[i] + outer_delimiter;
+            }
+            return output;
         }
 
         /// <summary>
@@ -1199,7 +1464,7 @@ namespace TFG_Worldbuilder_Application
             string level_name = "null";
             string level_type = "null";
             string line = "";
-            Polygon border = new Polygon();
+            Polygon2D border = new Polygon2D();
             Point2D center = null;
             long radius = 0;
             int index = 0;
@@ -1215,7 +1480,7 @@ namespace TFG_Worldbuilder_Application
             while(index < ActiveText.Length)
             {
                 length = ActiveText.Substring(index).IndexOf(outer_delimiter);
-                line = ActiveText.Substring(index, length - 1).Trim();
+                line = ActiveText.Substring(index, length).Trim();
                 if (!got_name && line.IndexOf("Level Name") == 0) //Beginning of level information processing; starting with Level Name
                 {
                     level_name = line.Substring("Level Name".Length + 1).Trim();
@@ -1364,80 +1629,120 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         private void GetDirectories()
         {
-            DirectoryMode mode = DirectoryMode.None;
-            int index = Header.Length;
-            int length = 0;
-            String line = "";
-
-            List<String> activeDirectory = null;
-            string ActiveText = this.Text.Substring(0, this.Text.IndexOf("Content"));
-            while (index < ActiveText.Length) //Iterates on the outer_delimiter so it only looks at the start of lines for the settings
+            if (Readable && ValidFile)
             {
-                length = ActiveText.Substring(index).IndexOf(outer_delimiter);
-                line = ActiveText.Substring(index, length - 1).Trim();
-                if (line.Equals("National"))
+                this.active_lines = ConvertText(this.Text);
+                this.invalid_lines = new List<string>();
+                string line = active_lines[0];
+                int index = 0;
+                //Heading section
+                if (!string.Equals(line, "Prime Worldbuilding File"))
                 {
-                    activeDirectory = NationalDirectory;
+                    ValidFile = false;
                 }
-                else if (line.Equals("Geographical"))
+                else
                 {
-                    activeDirectory = GeographicalDirectory;
-                }
-                else if (line.Equals("Climate"))
-                {
-                    activeDirectory = ClimateDirectory;
-                }
-                else if (line.Equals("Factional"))
-                {
-                    activeDirectory = FactionalDirectory;
-                }
-                else if (line.Equals("Political"))
-                {
-                    activeDirectory = CulturalDirectory;
-                }
-                else if (line.Equals("Biological"))
-                {
-                    activeDirectory = BiologicalDirectory;
-                }
-                if (mode != DirectoryMode.None) //Just entered a directory
-                {
-                    if (line.IndexOf("Directory" + inner_delimiter) == 0)
+                    for (index = 0; index < this.active_lines.Count; index++)
                     {
-                        length = ActiveText.Substring(index + length + 1).IndexOf("Directory" + inner_delimiter);
-                        if (activeDirectory != null)
-                            activeDirectory.Add(ActiveText.Substring(index));
-                        index = ActiveText.Length;
-                    } else
-                    {
-                        if (activeDirectory != null)
-                            activeDirectory.Add(ActiveText.Substring(index, length));
-                        index += length + 1;
-                    }
-                } else
-                {
-                    index += length + 1;
-                }
-            }
-            ActiveText = this.Text.Substring(this.Text.IndexOf("Content"));
-            index = 0;
-            while (index < ActiveText.Length) //Content processing loop
-            {
-                length = ActiveText.Substring(index).IndexOf(outer_delimiter);
-                line = ActiveText.Substring(index, length - 1).Trim();
-                if (line.Equals("Start Level" + inner_delimiter + "1")) //Look for a line with this to indicate where it starts
-                {
-                    line = ActiveText.Substring(index).Trim();
-                    if (line.IndexOf("End Level" + inner_delimiter + "1") >= 0) //Ensures that there is an end to the level
-                    {
-                        int partial_length = line.IndexOf("End Level" + inner_delimiter + "1") - 1;
-                        line = line.Substring(line.IndexOf(outer_delimiter) + 1, partial_length).Trim();
-                        Level1 ActiveWorld = (Level1)ParseLevels(line, 1, null);
-                        if (ActiveWorld != null) //Ensures that the generated world is valid
-                            this.Worlds.Add(ActiveWorld);
-                        length += partial_length;
+                        line = active_lines[index];
+                        if (string.Equals(line, "Settings"))
+                            break;
+                        if (!Header.Contains(line) && !line.Contains("Version" + inner_delimiter))
+                            invalid_lines.Add(line);
                     }
                 }
-                index += length + 1;
+                //Settings Section
+                if (!string.Equals(line, "Settings")){
+                    ValidFile = false;
+                }
+                else
+                {
+                    List<string> activeDirectory = null;
+                    for (index++; index < this.active_lines.Count; index++) //Loop to initiate settings
+                    {
+                        line = active_lines[index];
+                        if (string.Equals(line, "National"))
+                        {
+                            activeDirectory = NationalDirectory;
+                        }
+                        else if (string.Equals(line, "Geographical"))
+                        {
+                            activeDirectory = GeographicalDirectory;
+                        }
+                        else if (string.Equals(line, "Climate"))
+                        {
+                            activeDirectory = ClimateDirectory;
+                        }
+                        else if (string.Equals(line, "Factional"))
+                        {
+                            activeDirectory = FactionalDirectory;
+                        }
+                        else if (string.Equals(line, "Cultural"))
+                        {
+                            activeDirectory = CulturalDirectory;
+                        }
+                        else if (string.Equals(line, "Biological"))
+                        {
+                            activeDirectory = BiologicalDirectory;
+                        }
+                        else if (string.Equals(line, "Content"))
+                        {
+                            break;
+                        }
+                        else //Manages adding information to directories
+                        {
+                            if(activeDirectory == null)
+                            {
+                                invalid_lines.Add(line);
+                            }
+                            else
+                            {
+                                activeDirectory.Add(line);
+                            }
+                        }
+                    }
+                }
+                //Content Section
+                if(!string.Equals(line, "Content"))
+                {
+                    ValidFile = false;
+                }
+                else
+                {
+                    for(index++; index < this.active_lines.Count; index++)
+                    {
+                        line = active_lines[index];
+                        if(string.Equals(line.Substring(0, "Level 1".Length), "Level 1"))
+                        {
+                            int end = IndexOf("End Level 1", index);
+                            if(end >= index)
+                            {
+                                this.Worlds.Add((Level1) ParseLevels(ConvertText(GetLines(index + 1, end - 1)), 1, null));
+                                index = end;
+                            }
+                            else //If there is no end to the level
+                            {
+                                invalid_lines.Add(line);
+                            }
+                        }
+                        else if(string.Equals(line, "Invalid"))
+                        {
+                            break;
+                        }
+                        else
+                        {
+                            invalid_lines.Add(line);
+                        }
+                    }
+                }
+                //Invalid Section
+                for(index++; index < active_lines.Count; index++)
+                {
+                    line = active_lines[index];
+                    if (string.Equals(line, "Invalid"))
+                        continue;
+                    invalid_lines.Add(line);
+                }
             }
         }
 
@@ -1446,27 +1751,34 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         public async Task ReadyFile()
         {
-            this.Text = await Windows.Storage.FileIO.ReadTextAsync(ActiveFile);
-            this.Readable = true;
-            if (this.Text.IndexOf("Prime Worldbuilding File")==0)
+            if (!this.Readable)
             {
-                this.ValidFile = true;
+                this.Original = await Windows.Storage.FileIO.ReadTextAsync(ActiveFile);
+                this.Text = this.Original;
+                this.active_lines = ConvertText(this.Text);
+                this.original_lines = ConvertText(this.Original);
+                if (string.Equals(this.original_lines[0], "Prime Worldbuilding File"))
+                {
+                    this.ValidFile = true;
+                    this.Readable = true;
+                }
+                else if (this.NewFile)
+                {
+                    await FormatNewFile();
+                    this.Readable = true;
+                }
+                else
+                {
+                    this.ValidFile = false;
+                }
             }
-            else if(this.NewFile)
-            {
-                FormatNewFile();
-                this.ValidFile = true;
-                this.NewFile = false;
-            }
-            else
-            {
-                this.ValidFile = false;
-            }
-            if (this.ValidFile)
+            if (!this.Writable && this.ValidFile)
             {
                 this.Version = GetLine(2);
                 this.Version = this.Version.Substring(this.Version.IndexOf(inner_delimiter) + 1);
                 GetDirectories();
+                this.original_lines = ConvertText(this.Original);
+                this.active_lines = ConvertText(this.Text);
                 this.Writable = true;
             }
         }
@@ -1478,44 +1790,63 @@ namespace TFG_Worldbuilder_Application
         {
             if (this.ValidFile)
             {
-                this.Text = Header;
-                this.Text += "Settings" + outer_delimiter;
-                this.Text += "National" + outer_delimiter;
-                for (int i = 0; i < NationalDirectory.Count; i++)
+                this.active_lines = ConvertText(Header);
+                AddLine("Settings");
+                AddLine("National");
+                for(int i=0; i<NationalDirectory.Count; i++)
                 {
-                    this.Text += NationalDirectory[i] + outer_delimiter;
+                    AddLine(NationalDirectory[i]);
                 }
-                this.Text += "Geographical" + outer_delimiter;
+                AddLine("Geographical");
                 for (int i = 0; i < GeographicalDirectory.Count; i++)
                 {
-                    this.Text += GeographicalDirectory[i] + outer_delimiter;
+                    AddLine(GeographicalDirectory[i]);
                 }
-                this.Text += "Climate" + outer_delimiter;
+                AddLine("Climate");
                 for (int i = 0; i < ClimateDirectory.Count; i++)
                 {
-                    this.Text += ClimateDirectory[i] + outer_delimiter;
+                    AddLine(ClimateDirectory[i]);
                 }
-                this.Text += "Factional" + outer_delimiter;
+                AddLine("Factional");
                 for (int i = 0; i < FactionalDirectory.Count; i++)
                 {
-                    this.Text += FactionalDirectory[i] + outer_delimiter;
+                    AddLine(FactionalDirectory[i]);
                 }
-                this.Text += "Cultural" + outer_delimiter;
+                AddLine("Cultural");
                 for (int i = 0; i < CulturalDirectory.Count; i++)
                 {
-                    this.Text += CulturalDirectory[i] + outer_delimiter;
+                    AddLine(CulturalDirectory[i]);
                 }
-                this.Text += "Biological" + outer_delimiter;
+                AddLine("Biological");
                 for (int i = 0; i < BiologicalDirectory.Count; i++)
                 {
-                    this.Text += BiologicalDirectory[i] + outer_delimiter;
+                    AddLine(BiologicalDirectory[i]);
                 }
-                this.Text += "Content" + outer_delimiter;
+                AddLine("Content");
+
+                bool any_invalid = this.invalid_lines.Count > 0;
                 for (int i = 0; i < this.Worlds.Count; i++)
                 {
                     if (Worlds[i].Valid()) //Ensures the world is valid (every level and sublevel has a correct level number, functional name, and functional level type
                     {
-                        this.Text += Worlds[i].PrepareString(inner_delimiter, outer_delimiter);
+                        AddLines(Worlds[i].PrepareString(inner_delimiter, outer_delimiter));
+                    }
+                    else
+                    {
+                        any_invalid = true;
+                    }
+                }
+                if (any_invalid)
+                {
+                    AddLine("Invalid");
+                    for(int i=0; i<this.Worlds.Count; i++)
+                    {
+                        if (!Worlds[i].Valid())
+                            AddLines(Worlds[i].PrepareString(inner_delimiter, outer_delimiter));
+                    }
+                    for(int i=0; i<invalid_lines.Count; i++)
+                    {
+                        AddLine(invalid_lines[i]);
                     }
                 }
             }
@@ -1533,32 +1864,39 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Saves edits to the file by overwriting the Text with the Header followed by the information contained in all directories
         /// </summary>
-        public async void SaveFile()
+        public async Task SaveFile()
         {
             if (this.ValidFile && this.Writable)
             {
+                this.Text = ConvertText(this.active_lines);
                 if (!MatchesSave())
                     await Windows.Storage.FileIO.WriteTextAsync(ActiveFile, this.Text);
                 this.Original = this.Text;
+                this.original_lines = ConvertText(this.Original);
             }
         }
 
         /// <summary>
         /// Sets a new file to match the ideal format
         /// </summary>
-        public async void FormatNewFile()
+        public async Task FormatNewFile()
         {
-            this.Text = Header;
-            this.Text += "Settings" + outer_delimiter;
-            this.Text += "National" + outer_delimiter;
-            this.Text += "Geographical" + outer_delimiter;
-            this.Text += "Climate" + outer_delimiter;
-            this.Text += "Factional" + outer_delimiter;
-            this.Text += "Cultural" + outer_delimiter;
-            this.Text += "Biological" + outer_delimiter;
-            this.Text += "Content" + outer_delimiter;
-            await Windows.Storage.FileIO.WriteTextAsync(ActiveFile, this.Text);
-            this.ValidFile = true;
+            if (!this.ValidFile && NewFile)
+            {
+                this.active_lines = ConvertText(Header);
+                AddLine("Settings");
+                AddLine("National");
+                AddLine("Geographical");
+                AddLine("Climate");
+                AddLine("Factional");
+                AddLine("Cultural");
+                AddLine("Biological");
+                AddLine("Content");
+                this.ValidFile = true;
+                this.Writable = true;
+                this.NewFile = false;
+                await SaveFile();
+            }
         }
     }
 }

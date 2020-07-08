@@ -11,7 +11,7 @@
         <Button x:Name="NewProjectButton" Content="New Project" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="100,100,100,200" Click="NewProjectButton_Click"/>
         <Button x:Name="OpenProjectButton" Content="Open Project" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="100,100,100,100" Click="OpenProjectButton_Click"/>
         <Button x:Name="ExitButton" Content="Exit" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="100,200,100,100" Click="ExitButton_Click"/>
-        <Grid HorizontalAlignment="Center" Name="Popup Alert" Visibility="Collapsed" Height="200" Width="200" Margin="100,100,100,100" VerticalAlignment="Top">
+        <Grid HorizontalAlignment="Center" Name="PopupAlert" Visibility="Collapsed" Height="200" Width="200" Margin="100,100,100,100" VerticalAlignment="Top">
             <Rectangle Fill="#FFF4F4F5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,0,0" Stroke="Black" />
             <TextBlock x:Name="PopupAlertText" HorizontalAlignment="Center" Margin="10,10,10,10" TextWrapping="Wrap" Text="Alert" VerticalAlignment="Top"/>
             <Button x:Name="PopupAlertButton" Content="OK" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="30,30,30,30" Click="PopupAlertButton_Click"/>
