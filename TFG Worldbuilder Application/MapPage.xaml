@@ -69,45 +69,47 @@
                 <TextBlock x:Name="FileNameBlock" Text="" Height="25" Width="300" HorizontalAlignment="Left" Margin="100,0,0,0"/>
             </Grid>
             <Grid HorizontalAlignment="Stretch" Height="50" VerticalAlignment="Bottom">
-                <Rectangle Fill="#FFF4F4F5" HorizontalAlignment="Stretch" Height="50" Margin="0,0,0,0" Stroke="Black" VerticalAlignment="Top"/>
-                <Button x:Name="FileButton" Content="File" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="80" Flyout="{StaticResource FileMenu}"/>
-                <Button x:Name="ViewButton" Content="View" HorizontalAlignment="Left" Margin="110,10,0,0" VerticalAlignment="Top" Width="80" Flyout="{StaticResource ViewMenu}"/>
-                <GridView x:Name="gridview"
-            IsItemClickEnabled="True"
-            IsTapEnabled="True"
-            IsSwipeEnabled="False"
-            CanDragItems="False"
-            SelectionMode="Single"
-            HorizontalAlignment="Left" Margin="210,10,0,0" VerticalAlignment="Top" Width="80">
-                    <GridView.ItemTemplate>
-                        <DataTemplate >
-                            <Grid x:Name="MyGrid">
-                                <FlyoutBase.AttachedFlyout>
-                                    <Flyout local:BindableFlyout.ItemsSource="{Binding Worlds}">
-                                        <local:BindableFlyout.ItemTemplate>
-                                            <DataTemplate>
-                                                <MenuFlyoutItem Text="{Binding name}" />
-                                            </DataTemplate>
-                                        </local:BindableFlyout.ItemTemplate>
-                                    </Flyout>
-                                </FlyoutBase.AttachedFlyout>
-                                <TextBlock Text="{Binding name}"></TextBlock>
-                            </Grid>
-                        </DataTemplate>
-                    </GridView.ItemTemplate>
-                </GridView>
-                <!--Button x:Name="WorldButton" Content="Worlds" HorizontalAlignment="Left" Margin="210,10,0,0" VerticalAlignment="Top" Width="80">
-                    <Button.Flyout>
-                        <Flyout x:Name="WorldMenu" local:BindableFlyout.ItemsSource="{Binding Worlds}">
-                            <local:BindableFlyout.ItemTemplate>
-                                <DataTemplate x:DataType="local:Level1">
-                                    <MenuFlyoutItem x:Name="Select_World" Text="{Binding name}"/>
-                                </DataTemplate>
-                            </local:BindableFlyout.ItemTemplate>
-                        </Flyout>
-                    </Button.Flyout>
-                </Button!-->
-                <Button x:Name="CreateButton" Content="Create" HorizontalAlignment="Left" Margin="310,10,0,0" VerticalAlignment="Top" Width="80" Flyout="{StaticResource CreateMenu}"/>
+                <StackPanel x:Name="MenuBarPanel" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Orientation="Horizontal">
+                    <Rectangle Fill="#FFF4F4F5" HorizontalAlignment="Stretch" Height="50" Margin="10" Stroke="Black" VerticalAlignment="Top"/>
+                    <Button x:Name="FileButton" Content="File" HorizontalAlignment="Left" Margin="10" VerticalAlignment="Top" Width="80" Flyout="{StaticResource FileMenu}"/>
+                    <Button x:Name="ViewButton" Content="View" HorizontalAlignment="Left" Margin="10" VerticalAlignment="Top" Width="80" Flyout="{StaticResource ViewMenu}"/>
+                    <GridView x:Name="WorldsMenu"
+                IsItemClickEnabled="True"
+                IsTapEnabled="True"
+                IsSwipeEnabled="False"
+                CanDragItems="False"
+                SelectionMode="Single"
+                HorizontalAlignment="Left" Margin="10" VerticalAlignment="Top" Width="80">
+                        <GridView.ItemTemplate>
+                            <DataTemplate >
+                                <Grid x:Name="MyGrid">
+                                    <FlyoutBase.AttachedFlyout>
+                                        <Flyout local:BindableFlyout.ItemsSource="{Binding Worlds}">
+                                            <local:BindableFlyout.ItemTemplate>
+                                                <DataTemplate>
+                                                    <MenuFlyoutItem Text="{Binding name}" />
+                                                </DataTemplate>
+                                            </local:BindableFlyout.ItemTemplate>
+                                        </Flyout>
+                                    </FlyoutBase.AttachedFlyout>
+                                    <TextBlock Text="{Binding name}"></TextBlock>
+                                </Grid>
+                            </DataTemplate>
+                        </GridView.ItemTemplate>
+                    </GridView>
+                    <!--Button x:Name="WorldButton" Content="Worlds" HorizontalAlignment="Left" Margin="10" VerticalAlignment="Top" Width="80">
+                        <Button.Flyout>
+                            <Flyout x:Name="WorldMenu" local:BindableFlyout.ItemsSource="{Binding Worlds}">
+                                <local:BindableFlyout.ItemTemplate>
+                                    <DataTemplate x:DataType="local:Level1">
+                                        <MenuFlyoutItem x:Name="Select_World" Text="{Binding name}"/>
+                                    </DataTemplate>
+                                </local:BindableFlyout.ItemTemplate>
+                            </Flyout>
+                        </Button.Flyout>
+                    </Button!-->
+                    <Button x:Name="CreateButton" Content="Create" HorizontalAlignment="Left" Margin="10" VerticalAlignment="Top" Width="80" Flyout="{StaticResource CreateMenu}"/>
+                </StackPanel>
             </Grid>
         </Grid>
         <Grid x:Name="MapDisplay" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,75,0,0">
