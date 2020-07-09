@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -43,7 +44,9 @@ namespace TFG_Worldbuilder_Application
             this.InitializeComponent();
             this.FileNameBlock.Text = Global.ActiveFile.FileName();
             this.MapCanvas = (Canvas)this.FindName("WorldCanvas");
-            this.DataContext = Global.ActiveFile.Worlds;
+            this.Worlds = Global.ActiveFile.Worlds;
+            this.DataContext = this.Worlds;
+            gridview.ItemsSource = this.Worlds;
         }
 
         /// <summary>
@@ -154,7 +157,8 @@ namespace TFG_Worldbuilder_Application
                 await Windows.Storage.FileIO.WriteTextAsync(file, Global.ActiveFile.GetCopy());
                 // Application now has read/write access to the picked file
                 Global.ActiveFile = new FileManager(file, true);
-                await Global.ActiveFile.FormatNewFile();
+                Global.ActiveFile.FormatNewFile();
+                await Global.ActiveFile.SaveFile();
                 this.Frame.Navigate(typeof(MapPage));
             }
             UpdateSaveState();
@@ -324,6 +328,70 @@ namespace TFG_Worldbuilder_Application
                     break;
                 }
             }
+        }
+    }
+
+    public class BindableFlyout : DependencyObject
+    {
+        #region ItemsSource
+
+        public static IEnumerable GetItemsSource(DependencyObject obj)
+        {
+
+            return obj.GetValue(ItemsSourceProperty) as IEnumerable;
+
+
+        }
+        public static void SetItemsSource(DependencyObject obj, IEnumerable value)
+        {
+
+            obj.SetValue(ItemsSourceProperty, value);
+
+        }
+        public static readonly DependencyProperty ItemsSourceProperty =
+            DependencyProperty.RegisterAttached("ItemsSource", typeof(IEnumerable),
+            typeof(BindableFlyout), new PropertyMetadata(null, ItemsSourceChanged));
+        private static void ItemsSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        { Setup(d as Windows.UI.Xaml.Controls.Flyout); }
+
+        #endregion
+
+        #region ItemTemplate
+
+        public static DataTemplate GetItemTemplate(DependencyObject obj)
+        {
+            return (DataTemplate)obj.GetValue(ItemTemplateProperty);
+        }
+        public static void SetItemTemplate(DependencyObject obj, DataTemplate value)
+        {
+            obj.SetValue(ItemTemplateProperty, value);
+        }
+        public static readonly DependencyProperty ItemTemplateProperty =
+            DependencyProperty.RegisterAttached("ItemTemplate", typeof(DataTemplate),
+            typeof(BindableFlyout), new PropertyMetadata(null, ItemsTemplateChanged));
+        private static void ItemsTemplateChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        { Setup(d as Windows.UI.Xaml.Controls.Flyout); }
+
+        #endregion
+
+        private static async void Setup(Windows.UI.Xaml.Controls.Flyout m)
+        {
+            if (Windows.ApplicationModel.DesignMode.DesignModeEnabled)
+                return;
+            var s = GetItemsSource(m);
+            if (s == null)
+                return;
+            var t = GetItemTemplate(m);
+            if (t == null)
+                return;
+            var c = new Windows.UI.Xaml.Controls.ItemsControl
+            {
+                ItemsSource = s,
+                ItemTemplate = t,
+            };
+            var n = Windows.UI.Core.CoreDispatcherPriority.Normal;
+            Windows.UI.Core.DispatchedHandler h = () => m.Content = c;
+            await m.Dispatcher.RunAsync(n, h);
         }
     }
 }

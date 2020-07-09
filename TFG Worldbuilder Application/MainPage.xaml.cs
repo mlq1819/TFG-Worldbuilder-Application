@@ -44,7 +44,8 @@ namespace TFG_Worldbuilder_Application
             {
                 // Application now has read/write access to the picked file
                 Global.ActiveFile = new FileManager(file, true);
-                await Global.ActiveFile.FormatNewFile();
+                Global.ActiveFile.FormatNewFile();
+                await Global.ActiveFile.SaveFile();
                 this.Frame.Navigate(typeof(MapPage));
             }
         }

@@ -313,9 +313,21 @@ namespace TFG_Worldbuilder_Application
     /// </summary>
     public class SuperLevel
     {
-        private string name;
-        private int level;
-        private string leveltype;
+        public string name
+        {
+            get;
+            set;
+        }
+        public int level
+        {
+            get;
+            set;
+        }
+        public string leveltype
+        {
+            get;
+            set;
+        }
         private List<SuperLevel> sublevels;
         public SuperLevel parent;
         public List<string> leveldata;
@@ -1079,19 +1091,6 @@ namespace TFG_Worldbuilder_Application
             return WorldList;
         }
 
-
-        enum DirectoryMode : int
-        {
-            None = 0,
-            National = 1,
-            Geographical = 2,
-            Climate = 3,
-            Factional = 4,
-            Cultural = 5,
-            Biological = 6
-        }
-
-
         public FileManager(Windows.Storage.StorageFile file, bool newfile)
         {
             this.NewFile = newfile;
@@ -1780,7 +1779,7 @@ namespace TFG_Worldbuilder_Application
                 }
                 else if (this.NewFile)
                 {
-                    await FormatNewFile();
+                    FormatNewFile();
                     this.Readable = true;
                 }
                 else
@@ -1899,14 +1898,14 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Sets a new file to match the ideal format
         /// </summary>
-        public async Task FormatNewFile()
+        public void FormatNewFile()
         {
             if (!this.ValidFile && NewFile)
             {
                 UpdateText();
                 this.ValidFile = true;
                 this.Writable = true;
-                await SaveFile();
+                NewFile = false;
             }
         }
     }

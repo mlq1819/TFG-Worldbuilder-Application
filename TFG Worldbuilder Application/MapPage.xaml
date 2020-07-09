@@ -57,9 +57,6 @@
             </MenuFlyoutSubItem>
             <MenuFlyoutSubItem Text="Biological"/>
         </MenuFlyout>
-        <MenuFlyout x:Name="WorldMenu" x:Key="WorldMenu">
-            
-        </MenuFlyout>
         <MenuFlyout x:Name="CreateMenu" x:Key="CreateMenu">
             <MenuFlyoutItem x:Name="Create_World" Text="New World" Click="Create_World_Click"/>
             <MenuFlyoutItem x:Name="Create_Continent" Text="New Continent" Click="Create_Continent_Click"/>
@@ -75,7 +72,41 @@
                 <Rectangle Fill="#FFF4F4F5" HorizontalAlignment="Stretch" Height="50" Margin="0,0,0,0" Stroke="Black" VerticalAlignment="Top"/>
                 <Button x:Name="FileButton" Content="File" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="80" Flyout="{StaticResource FileMenu}"/>
                 <Button x:Name="ViewButton" Content="View" HorizontalAlignment="Left" Margin="110,10,0,0" VerticalAlignment="Top" Width="80" Flyout="{StaticResource ViewMenu}"/>
-                <Button x:Name="WorldButton" Content="Worlds" HorizontalAlignment="Left" Margin="210,10,0,0" VerticalAlignment="Top" Width="80" Flyout="{StaticResource WorldMenu}"/>
+                <GridView x:Name="gridview"
+            IsItemClickEnabled="True"
+            IsTapEnabled="True"
+            IsSwipeEnabled="False"
+            CanDragItems="False"
+            SelectionMode="Single"
+            HorizontalAlignment="Left" Margin="210,10,0,0" VerticalAlignment="Top" Width="80">
+                    <GridView.ItemTemplate>
+                        <DataTemplate >
+                            <Grid x:Name="MyGrid">
+                                <FlyoutBase.AttachedFlyout>
+                                    <Flyout local:BindableFlyout.ItemsSource="{Binding Worlds}">
+                                        <local:BindableFlyout.ItemTemplate>
+                                            <DataTemplate>
+                                                <MenuFlyoutItem Text="{Binding name}" />
+                                            </DataTemplate>
+                                        </local:BindableFlyout.ItemTemplate>
+                                    </Flyout>
+                                </FlyoutBase.AttachedFlyout>
+                                <TextBlock Text="{Binding name}"></TextBlock>
+                            </Grid>
+                        </DataTemplate>
+                    </GridView.ItemTemplate>
+                </GridView>
+                <!--Button x:Name="WorldButton" Content="Worlds" HorizontalAlignment="Left" Margin="210,10,0,0" VerticalAlignment="Top" Width="80">
+                    <Button.Flyout>
+                        <Flyout x:Name="WorldMenu" local:BindableFlyout.ItemsSource="{Binding Worlds}">
+                            <local:BindableFlyout.ItemTemplate>
+                                <DataTemplate x:DataType="local:Level1">
+                                    <MenuFlyoutItem x:Name="Select_World" Text="{Binding name}"/>
+                                </DataTemplate>
+                            </local:BindableFlyout.ItemTemplate>
+                        </Flyout>
+                    </Button.Flyout>
+                </Button!-->
                 <Button x:Name="CreateButton" Content="Create" HorizontalAlignment="Left" Margin="310,10,0,0" VerticalAlignment="Top" Width="80" Flyout="{StaticResource CreateMenu}"/>
             </Grid>
         </Grid>
