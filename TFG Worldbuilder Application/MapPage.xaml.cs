@@ -46,7 +46,7 @@ namespace TFG_Worldbuilder_Application
             this.MapCanvas = (Canvas)this.FindName("WorldCanvas");
             this.Worlds = Global.ActiveFile.Worlds;
             this.DataContext = this.Worlds;
-            WorldsMenu.ItemsSource = this.Worlds;
+            //WorldsMenu.ItemsSource = this.Worlds;
         }
 
         /// <summary>
