@@ -17,7 +17,6 @@
             <MenuFlyoutItem Text="Close" Click="File_Close_Click"/>
             <MenuFlyoutSeparator/>
             <MenuFlyoutItem Text="Exit" Click="File_Exit_Click"/>
-            <ToggleMenuFlyoutItem/>
         </MenuFlyout>
         <MenuFlyout x:Name= "ViewMenu" x:Key="ViewMenu">
             <MenuFlyoutSubItem Text="National">
@@ -57,16 +56,15 @@
             </MenuFlyoutSubItem>
             <MenuFlyoutSubItem Text="Biological"/>
         </MenuFlyout>
-        <MenuFlyout x:Name="CreateMenu" x:Key="CreateMenu">
+        <MenuFlyout x:Name="CreateMenu" x:Key="CreateMenu" Closed="CreateMenu_Closed">
             <MenuFlyoutItem x:Name="Create_World" Text="New World" Click="Create_World_Click"/>
             <MenuFlyoutItem x:Name="Create_Continent" Text="New Continent" Click="Create_Continent_Click"/>
         </MenuFlyout>
-        
         <Flyout x:Name="WorldsMenu" x:Key="WorldsMenu">
-            <ListView ItemsSource="{x:Bind Worlds}">
+            <ListView ItemsSource="{x:Bind Worlds, Mode=OneWay}">
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="local:Level1">
-                        <MenuFlyoutItem Text="{x:Bind name}"/>
+                        <MenuFlyoutItem Text="{x:Bind name, Mode=OneWay}" Background="{x:Bind color, Mode=OneWay}" Click="Open_World_Click" Width="80"/>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>

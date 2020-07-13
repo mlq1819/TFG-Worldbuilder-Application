@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -311,22 +312,69 @@ namespace TFG_Worldbuilder_Application
     /// <summary>
     /// Superclass that stores the information of a Level object
     /// </summary>
-    public class SuperLevel
+    public class SuperLevel : INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void RaisePropertyChanged(string str)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(str));
+                //PropertyChanged(this, new PropertyChangedEventArgs(str));
+            }
+        }
+
+        private string _name;
         public string name
         {
-            get;
-            set;
+            get
+            {
+                return _name;
+            }
+            set
+            {
+                _name = value;
+                RaisePropertyChanged("name");
+            }
         }
+        private int _level;
         public int level
         {
-            get;
-            set;
+            get
+            {
+                return _level;
+            }
+            set
+            {
+                _level = value;
+                RaisePropertyChanged("level");
+            }
         }
+        private string _leveltype;
         public string leveltype
         {
-            get;
-            set;
+            get
+            {
+                return _leveltype;
+            }
+            set
+            {
+                _leveltype = value;
+                RaisePropertyChanged("leveltype");
+            }
+        }
+        private string _color;
+        public string color
+        {
+            get
+            {
+                return _color;
+            }
+            set
+            {
+                _color = value;
+                RaisePropertyChanged("color");
+            }
         }
         private List<SuperLevel> sublevels;
         public SuperLevel parent;
@@ -359,6 +407,7 @@ namespace TFG_Worldbuilder_Application
             else
                 this.parent = null;
             this.leveldata = new List<string>();
+            color = "#F2F2F2";
         }
 
         /// <summary>
@@ -670,6 +719,7 @@ namespace TFG_Worldbuilder_Application
     /// </summary>
     public class Level1 : SuperLevel
     {
+
         /// <summary>
         /// Basic constructor, creates a level 1 object given a name and level type
         /// </summary>
@@ -1490,17 +1540,23 @@ namespace TFG_Worldbuilder_Application
                 length = ActiveText.Substring(index).IndexOf(outer_delimiter);
                 line = ActiveText.Substring(index, length).Trim();
                 bool do_it = true;
-                if (!got_name && line.IndexOf("Level Name") == 0) //Beginning of level information processing; starting with Level Name
+                if (line.IndexOf("Level Name") == 0) //Beginning of level information processing; starting with Level Name
                 {
                     do_it = false;
-                    level_name = line.Substring("Level Name".Length + 1).Trim();
-                    got_name = true;
+                    if (!got_name)
+                    {
+                        level_name = line.Substring("Level Name".Length + 1).Trim();
+                        got_name = true;
+                    }
                 }
-                else if (!got_type && line.IndexOf("Level Type") == 0) //Level information processing for Level Type
+                else if (line.IndexOf("Level Type") == 0) //Level information processing for Level Type
                 {
                     do_it = false;
-                    level_type = line.Substring("Level Type".Length + 1).Trim();
-                    got_type = true;
+                    if (!got_type)
+                    {
+                        level_type = line.Substring("Level Type".Length + 1).Trim();
+                        got_type = true;
+                    }
                 }
                 else if (line.IndexOf("Border Vertex") == 0)//Level information processing for Border Vertices
                 {
@@ -1516,28 +1572,34 @@ namespace TFG_Worldbuilder_Application
                         }
                     }
                 }
-                else if (!got_center && line.IndexOf("Center") == 0) //Level information processing for Center point
+                else if (line.IndexOf("Center") == 0) //Level information processing for Center point
                 {
                     do_it = false;
-                    line = line.Substring("Center".Length + 1).Trim();
-                    center = Point2D.FromString(line);
-                    if (center != null)
+                    if (!got_center)
                     {
-                        got_center = true;
+                        line = line.Substring("Center".Length + 1).Trim();
+                        center = Point2D.FromString(line);
+                        if (center != null)
+                        {
+                            got_center = true;
+                        }
                     }
                 }
-                else if (!got_radius && line.IndexOf("Radius") == 0) //Level information processing for Radius
+                else if (line.IndexOf("Radius") == 0) //Level information processing for Radius
                 {
                     do_it = false;
-                    line = line.Substring("Radius".Length + 1).Trim();
-                    try
+                    if (!got_radius)
                     {
-                        radius = Convert.ToInt64(line);
-                        got_radius = true;
-                    }
-                    catch (InvalidCastException)
-                    {
-                        ;
+                        line = line.Substring("Radius".Length + 1).Trim();
+                        try
+                        {
+                            radius = Convert.ToInt64(line);
+                            got_radius = true;
+                        }
+                        catch (InvalidCastException)
+                        {
+                            ;
+                        }
                     }
                 }
                 if(do_it || index + length + 1 >= ActiveText.Length) //If the current line does not correspond to level information processing, then it is supposed to be level content
@@ -1599,7 +1661,7 @@ namespace TFG_Worldbuilder_Application
                             made_level = true;
                         make_level = false;
                     }
-                    if (made_level) //Now for the actual content processing of the level
+                    if (do_it && made_level) //Now for the actual content processing of the level
                     {
                         if (line.IndexOf("Start Level") == 0) //If there appears to be a sublevel here
                         {

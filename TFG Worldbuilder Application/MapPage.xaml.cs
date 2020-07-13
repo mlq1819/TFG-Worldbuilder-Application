@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -34,11 +35,7 @@ namespace TFG_Worldbuilder_Application
         private string type = "";
         private string ActiveJob = "";
         public ObservableCollection<Level1> Worlds;
-
-        /// <ToDo>
-        /// Look into Data Bindings for Xaml; you'll need to master those to understand this
-        /// </ToDo>
-
+        
         public MapPage()
         {
             this.InitializeComponent();
@@ -46,7 +43,10 @@ namespace TFG_Worldbuilder_Application
             this.MapCanvas = (Canvas)this.FindName("WorldCanvas");
             this.Worlds = Global.ActiveFile.Worlds;
             this.DataContext = this.Worlds;
-            //WorldsMenu.ItemsSource = this.Worlds;
+            if (Worlds.Count > 0)
+            {
+                OpenWorld(Worlds[0].name, Worlds[0].leveltype);
+            }
         }
 
         /// <summary>
@@ -182,7 +182,7 @@ namespace TFG_Worldbuilder_Application
         {
             if (Global.ActiveFile.MatchesSave() || WarnClose())
             {
-                Application.Current.Exit();
+                CoreApplication.Exit();
             }
         }
         
@@ -202,6 +202,7 @@ namespace TFG_Worldbuilder_Application
             ((TextBox)this.FindName("TextPromptBox")).Text = "";
             ((TextBlock)this.FindName("TextPromptTab")).Text = Label;
             ((Grid)this.FindName("TextPrompt")).Visibility = Visibility.Visible;
+            ((TextBox)this.FindName("TextPromptBox")).Focus(FocusState.Programmatic);
         }
 
         private void Text_Prompt_Cancel_Click(object sender, RoutedEventArgs e)
@@ -294,7 +295,12 @@ namespace TFG_Worldbuilder_Application
             } else
             {
                 ActiveWorld = new Level1(name, type);
+                ActiveWorld.color = "LightSkyBlue";
                 Global.ActiveFile.Worlds.Add(ActiveWorld);
+                for(int i=0; i<Worlds.Count-1; i++)
+                {
+                    Worlds[i].color = "#F2F2F2";
+                }
             }
             UpdateSaveState();
         }
@@ -304,15 +310,22 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         private void OpenWorld(string name)
         {
+            bool found_world = false;
             for(int i=0; i<Global.ActiveFile.Worlds.Count; i++)
             {
-                if(string.Equals(name, Global.ActiveFile.Worlds[i].GetName()))
+                if (!found_world && string.Equals(name, Global.ActiveFile.Worlds[i].GetName()))
                 {
-                    ActiveWorld = Global.ActiveFile.Worlds[i];
-                    break;
+                    found_world = true;
+                    if (ActiveWorld == null || !string.Equals(ActiveWorld.name, Worlds[i].name))
+                    {
+                        ActiveWorld = Worlds[i];
+                        //Update the load state -- this does not affect the save state
+                    }
+                    Worlds[i].color = "LightSkyBlue";
                 }
+                else
+                    Worlds[i].color = "#F2F2F2";
             }
-            UpdateSaveState();
         }
 
         /// <summary>
@@ -320,78 +333,41 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         private void OpenWorld(string name, string type)
         {
+            bool found_world = false;
             for (int i = 0; i < Global.ActiveFile.Worlds.Count; i++)
             {
-                if (string.Equals(name, Global.ActiveFile.Worlds[i].GetName()) && string.Equals(type, Global.ActiveFile.Worlds[i].GetType()))
+                if (!found_world && string.Equals(name, Global.ActiveFile.Worlds[i].GetName()) && string.Equals(type, Global.ActiveFile.Worlds[i].GetType()))
                 {
-                    ActiveWorld = Global.ActiveFile.Worlds[i];
-                    break;
+                    found_world = true;
+                    if (ActiveWorld == null || !string.Equals(ActiveWorld.name, Worlds[i].name))
+                    {
+                        ActiveWorld = Worlds[i];
+                        //Update the load state -- this does not affect the save state
+                    }
+                    Worlds[i].color = "LightSkyBlue";
                 }
+                else
+                    Worlds[i].color = "#F2F2F2";
             }
         }
-    }
 
-    public class BindableFlyout : DependencyObject
-    {
-        #region ItemsSource
-
-        public static IEnumerable GetItemsSource(DependencyObject obj)
+        /// <summary>
+        /// Sets the ActiveWorld to the saved world defined by the sender event
+        /// </summary>
+        private void Open_World_Click(object sender, RoutedEventArgs e)
         {
-
-            return obj.GetValue(ItemsSourceProperty) as IEnumerable;
-
-
+            WorldsMenu.Hide();
+            string name = ((MenuFlyoutItem)sender).Text.Trim();
+            OpenWorld(name);
         }
-        public static void SetItemsSource(DependencyObject obj, IEnumerable value)
+
+        /// <summary>
+        /// Sets focus to the prompt text box if available when the create menu is closed
+        /// </summary>
+        private void CreateMenu_Closed(object sender, object e)
         {
-
-            obj.SetValue(ItemsSourceProperty, value);
-
-        }
-        public static readonly DependencyProperty ItemsSourceProperty =
-            DependencyProperty.RegisterAttached("ItemsSource", typeof(IEnumerable),
-            typeof(BindableFlyout), new PropertyMetadata(null, ItemsSourceChanged));
-        private static void ItemsSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        { Setup(d as Windows.UI.Xaml.Controls.Flyout); }
-
-        #endregion
-
-        #region ItemTemplate
-
-        public static DataTemplate GetItemTemplate(DependencyObject obj)
-        {
-            return (DataTemplate)obj.GetValue(ItemTemplateProperty);
-        }
-        public static void SetItemTemplate(DependencyObject obj, DataTemplate value)
-        {
-            obj.SetValue(ItemTemplateProperty, value);
-        }
-        public static readonly DependencyProperty ItemTemplateProperty =
-            DependencyProperty.RegisterAttached("ItemTemplate", typeof(DataTemplate),
-            typeof(BindableFlyout), new PropertyMetadata(null, ItemsTemplateChanged));
-        private static void ItemsTemplateChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        { Setup(d as Windows.UI.Xaml.Controls.Flyout); }
-
-        #endregion
-
-        private static async void Setup(Windows.UI.Xaml.Controls.Flyout m)
-        {
-            if (Windows.ApplicationModel.DesignMode.DesignModeEnabled)
-                return;
-            var s = GetItemsSource(m);
-            if (s == null)
-                return;
-            var t = GetItemTemplate(m);
-            if (t == null)
-                return;
-            var c = new Windows.UI.Xaml.Controls.ItemsControl
-            {
-                ItemsSource = s,
-                ItemTemplate = t,
-            };
-            var n = Windows.UI.Core.CoreDispatcherPriority.Normal;
-            Windows.UI.Core.DispatchedHandler h = () => m.Content = c;
-            await m.Dispatcher.RunAsync(n, h);
+            if(((Grid)this.FindName("TextPrompt")).Visibility == Visibility.Visible)
+                ((TextBox)this.FindName("TextPromptBox")).Focus(FocusState.Programmatic);
         }
     }
 }

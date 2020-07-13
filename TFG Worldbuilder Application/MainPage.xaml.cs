@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -87,7 +88,7 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         private void ExitButton_Click(object sender, RoutedEventArgs e)
         {
-            Application.Current.Exit();
+            CoreApplication.Exit();
         }
         /// <summary>
         /// Closes the popup
