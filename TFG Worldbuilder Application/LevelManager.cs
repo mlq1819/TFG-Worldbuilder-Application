@@ -388,7 +388,7 @@ namespace TFG_Worldbuilder_Application
             if (PropertyChanged != null)
             {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(str));
-                RaisePropertyChanged(this.name + '.' + str);
+                //RaisePropertyChanged(this.name + '.' + str);
                 if (parent != null)
                 {
                     parent.RaisePropertyChanged(this.name + '.' + str);
@@ -624,9 +624,9 @@ namespace TFG_Worldbuilder_Application
         {
             string Text = "Start Level" + inner_delimiter + level + outer_delimiter;
             Text += "Level Name" + inner_delimiter + name + outer_delimiter;
-            Text += "Level Type" + inner_delimiter + ((short) leveltype) + outer_delimiter;
+            Text += "Level Type" + inner_delimiter + Enum.GetName(typeof(LevelType), leveltype) + outer_delimiter;
             if(subtype.Length>0)
-                Text += "Level Subtype" + inner_delimiter + Enum.GetName(typeof(LevelType), subtype) + outer_delimiter;
+                Text += "Level Subtype" + inner_delimiter + subtype + outer_delimiter;
             if(level >= 2 && level <= 4) //Border Levels
             {
                 try
@@ -665,7 +665,7 @@ namespace TFG_Worldbuilder_Application
             }
             for (int i = 0; i < sublevels.Count; i++)
             {
-                sublevels[i].PrepareString(inner_delimiter, outer_delimiter);
+                Text += sublevels[i].PrepareString(inner_delimiter, outer_delimiter);
             }
             Text += "End Level" + inner_delimiter + level + outer_delimiter;
             return Text;
@@ -764,6 +764,7 @@ namespace TFG_Worldbuilder_Application
                 this.parent = parent;
                 if (parent.GetLevel() != 1)
                     this.leveltype = parent.GetLevelType();
+                return true;
             }
             return false;
         }
@@ -1123,15 +1124,7 @@ namespace TFG_Worldbuilder_Application
         {
             return region.PolygonInPolygon(this.border);
         }
-
-        /// <summary>
-        /// Attempts to add a passed sublevel based on the sublevel's relevant information
-        /// </summary>
-        public override bool AddSublevel(SuperLevel o)
-        {
-
-            return false;
-        }
+        
     }
 
     /// <summary>
@@ -1181,6 +1174,20 @@ namespace TFG_Worldbuilder_Application
             {
                 this.center = null;
             }
+        }
+
+        /// <summary>
+        /// Sets the parent of the level, taking into account its borders and the parent's
+        /// </summary>
+        public override bool SetParent(SuperLevel parent)
+        {
+            if (this.level <= 3)
+            {
+                return base.SetParent(parent);
+            }
+            if (!PointInParent(this.center))
+                return false;
+            return base.SetParent(parent);
         }
 
         /// <summary>

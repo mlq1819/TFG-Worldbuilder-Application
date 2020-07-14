@@ -107,13 +107,13 @@
             </Grid>
         </Grid>
         <Grid x:Name="MapDisplay" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,75,0,0">
-            <Canvas x:Name="WorldCanvas" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Tapped="WorldCanvas_Tapped">
-                <ListView ItemsSource="{x:Bind Context.Shapes, Mode=OneWay}">
+            <Canvas x:Name="WorldCanvas" Background="Azure" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" PointerPressed="WorldCanvas_PointerPressed">
+                <GridView ItemsSource="{x:Bind Context.Shapes, Mode=OneWay}">
                     <DataTemplate x:DataType="local:BorderLevel">
                         <Polygon Fill="{x:Bind color, Mode=OneWay}" Stroke="Black" Name="Continent" Points="{x:Bind points, Mode=OneWay}"></Polygon>
                     </DataTemplate>
-                </ListView>
-                <ListView ItemsSource="{x:Bind Context.Points, Mode=OneWay}">
+                </GridView>
+                <GridView ItemsSource="{x:Bind Context.Points, Mode=OneWay}">
                     <DataTemplate x:DataType="local:Point2D">
                         <Path Fill="LightCoral" StrokeThickness="0">
                             <Path.Data>
@@ -121,7 +121,7 @@
                             </Path.Data>
                         </Path>
                     </DataTemplate>
-                </ListView>
+                </GridView>
             </Canvas>
         </Grid>
         <Grid x:Name="TextPrompt" HorizontalAlignment="Center" VerticalAlignment="Center" Width="500" Height="200" Visibility="Collapsed">
@@ -136,7 +136,7 @@
                 <Button x:Name="Text_Prompt_Confirm" Content="Confirm" HorizontalAlignment="Right" VerticalAlignment="Bottom" Height="30" Width="200" Margin="10,5,10,5" Click="Text_Prompt_Confirm_Click"/>
             </Grid>
         </Grid>
-        <Grid x:Name="TapPrompt" HorizontalAlignment="Center" VerticalAlignment="Top" Width="500" Height="100" Visibility="Visible">
+        <Grid x:Name="TapPrompt" HorizontalAlignment="Center" VerticalAlignment="Top" Width="500" Height="100" Visibility="Collapsed">
             <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="50">
                 <Rectangle Fill="#FFF4F4F5" HorizontalAlignment="Stretch" Margin="0,0,0,0" Stroke="Black" VerticalAlignment="Stretch"/>
                 <TextBlock x:Name="TapPromptTab" Text="Name Me!" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" Margin="10,5,10,5"/>

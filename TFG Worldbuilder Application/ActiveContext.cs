@@ -32,7 +32,7 @@ namespace TFG_Worldbuilder_Application
             this.Worlds = new ObservableCollection<Level1>();
             this.ActiveLevel = null;
             this.Shapes = new ObservableCollection<BorderLevel>();
-            this.Points = new ObservableCollection<PointLevel>();
+            this.Points = new ObservableCollection<Point2D>();
         }
 
         public ActiveContext(ObservableCollection<Level1> Worlds)
@@ -40,7 +40,7 @@ namespace TFG_Worldbuilder_Application
             this.Worlds = Worlds;
             this.ActiveLevel = null;
             this.Shapes = new ObservableCollection<BorderLevel>();
-            this.Points = new ObservableCollection<PointLevel>();
+            this.Points = new ObservableCollection<Point2D>();
         }
 
         /// <summary>
@@ -72,7 +72,7 @@ namespace TFG_Worldbuilder_Application
             IList<SuperLevel> temp = SuperLevel.Filter(ActiveLevel.GetSublevels(), 2);
             temp.Concat<SuperLevel>(SuperLevel.Filter(ActiveLevel.GetSublevels(), 3));
             temp.Concat<SuperLevel>(SuperLevel.Filter(ActiveLevel.GetSublevels(), 4));
-            Shapes.Clear();
+            Shapes = new ObservableCollection<BorderLevel>();
             for (int i = 0; i < temp.Count; i++)
             {
                 try
@@ -86,7 +86,7 @@ namespace TFG_Worldbuilder_Application
             }
             temp = SuperLevel.Filter(ActiveLevel.GetSublevels(), 5);
             temp.Concat<SuperLevel>(SuperLevel.Filter(ActiveLevel.GetSublevels(), 6));
-            Points.Clear();
+            Points = new ObservableCollection<Point2D>();
             for (int i = 0; i < temp.Count; i++)
             {
                 try

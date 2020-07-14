@@ -285,7 +285,7 @@ public sealed partial class MapPage : Page
         private void Create_Greater_Region()
         {
             LevelNum = 2;
-            LevelStep = 2;
+            LevelStep = 1;
             ActiveJob = "Create";
             OpenTapPrompt("Enter at least 3 points for Greater Region");
         }
@@ -306,16 +306,11 @@ public sealed partial class MapPage : Page
         {
             if(Global.ActiveFile.HasWorld(name, subtype))
             {
-                OpenPopupAlert("Error: " + type + " with name \"" + name + "\" already exists");
+                OpenPopupAlert("Error: " + Enum.GetName(typeof(LevelType), type) + " with name \"" + name + "\" already exists");
             } else
             {
                 Context.SetActive(new Level1(name, subtype));
-                Context.ActiveLevel.color = "LightSkyBlue";
                 Global.ActiveFile.Worlds.Add((Level1) Context.ActiveLevel);
-                for(int i=0; i<Worlds.Count-1; i++)
-                {
-                    Worlds[i].color = "#F2F2F2";
-                }
             }
             ActiveJob = "None";
             UpdateSaveState();
@@ -325,7 +320,22 @@ public sealed partial class MapPage : Page
         /// Creates a new greater region object with the given name, type, subtype, and border
         /// </summary>
         private void NewGreaterRegion(string name, LevelType type, string subtype, Polygon2D border) {
-
+            if (Context.ActiveLevel.HasSublevelWithName(name))
+            {
+                OpenPopupAlert("Error: " + Enum.GetName(typeof(LevelType), type) + " sublevel with name \"" + name + "\" already exists");
+            } else
+            {
+                Level2 new_level = new Level2(name, type, subtype, (Level1)Context.ActiveLevel, new Polygon2D(vertices));
+                if (!Context.ActiveLevel.AddSublevel(new_level))
+                {
+                    OpenPopupAlert("Error: unknown error adding level");
+                } else
+                {
+                    Context.SetActive(new_level);
+                }
+            }
+            ActiveJob = "None";
+            UpdateSaveState();
         }
 
         /// <summary>
@@ -383,14 +393,16 @@ public sealed partial class MapPage : Page
             Create_Greater_Region();
         }
 
-        private void WorldCanvas_Tapped(object sender, TappedRoutedEventArgs e)
+        /// <summary>
+        /// Adds a point to the working list of vertices
+        /// </summary>
+        private void WorldCanvas_Add_Point(Point2D point)
         {
             if (string.Equals(ActiveJob, "Create") && LevelNum > 1 && LevelNum < 5)
             {
-                Point2D point = new Point2D(e.GetPosition((Windows.UI.Xaml.UIElement)sender));
                 if (Context.ActiveLevel != null)
                 {
-                    if(Context.ActiveLevel.GetLevel() > 1 && Context.ActiveLevel.GetLevel() < 5)
+                    if (Context.ActiveLevel.GetLevel() > 1 && Context.ActiveLevel.GetLevel() < 5)
                     {
                         try
                         {
@@ -399,7 +411,8 @@ public sealed partial class MapPage : Page
                                 vertices.AppendPoint(point);
                                 Context.RaisePropertyChanged("Points");
                             }
-                        } catch (InvalidCastException)
+                        }
+                        catch (InvalidCastException)
                         {
                             ;
                         }
@@ -413,14 +426,26 @@ public sealed partial class MapPage : Page
                                 vertices.AppendPoint(point);
                                 Context.RaisePropertyChanged("Points");
                             }
-                        } catch (InvalidCastException)
+                        }
+                        catch (InvalidCastException)
                         {
                             ;
                         }
                     }
+                    else
+                    {
+                        vertices.AppendPoint(point);
+                        Context.RaisePropertyChanged("Points");
+                    }
                 }
                 TapPromptTab.Text = label + ": " + vertices.Size() + " points";
             }
+        }
+        
+        private void WorldCanvas_PointerPressed(object sender, PointerRoutedEventArgs e)
+        {
+            Point2D point = new Point2D(e.GetCurrentPoint((Windows.UI.Xaml.UIElement)sender).Position);
+            WorldCanvas_Add_Point(point);
         }
 
         private void Tap_Prompt_Cancel_Click(object sender, RoutedEventArgs e)
@@ -439,8 +464,10 @@ public sealed partial class MapPage : Page
             {
                 LevelStep++;
                 Context.UpdateShapesAndPoints();
-                OpenTextPrompt("What type of" + Enum.GetName(typeof(LevelType), type) + "are you creating?\nEnter a subtype:");
+                TapPrompt.Visibility = Visibility.Collapsed;
+                OpenTextPrompt("What type of " + Enum.GetName(typeof(LevelType), type) + " region are you creating?\nEnter a subtype:");
             }
         }
+
     }
 }
