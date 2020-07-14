@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Foundation;
+using Windows.UI.Xaml.Media;
 
 namespace TFG_Worldbuilder_Application
 {
@@ -98,6 +99,27 @@ namespace TFG_Worldbuilder_Application
         public Point2D(Point o) : this((long) o.X, (long) o.Y)
         {
             ;
+        }
+
+        /// <summary>
+        /// Converts a Point2D into a Point
+        /// </summary>
+        public static Point ToWindowsPoint(Point2D point)
+        {
+            return new Point(point.X, point.Y);
+        }
+
+        /// <summary>
+        /// Converts a Point2D IList to a Point List
+        /// </summary>
+        public static PointCollection ToWindowsPoints(IList<Point2D> list)
+        {
+            PointCollection output = new PointCollection();
+            for(int i=0; i<list.Count; i++)
+            {
+                output.Add(Point2D.ToWindowsPoint(list[i]));
+            }
+            return output;
         }
 
         /// <summary>
@@ -1054,15 +1076,11 @@ namespace TFG_Worldbuilder_Application
     {
         private Polygon2D border;
         
-        public string points
+        public PointCollection points
         {
             get
             {
-                return GetPoints();
-            }
-            set
-            {
-                ;
+                return Point2D.ToWindowsPoints(border.vertices);
             }
         }
 

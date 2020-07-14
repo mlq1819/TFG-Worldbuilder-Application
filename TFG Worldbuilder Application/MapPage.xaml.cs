@@ -290,13 +290,17 @@ public sealed partial class MapPage : Page
             OpenTapPrompt("Enter at least 3 points for Greater Region");
         }
 
+        /// <summary>
+        /// Opens the tap prompt with the given label (label will be updated as points are added)
+        /// </summary>
+        /// <param name="label"></param>
         private void OpenTapPrompt(string label)
         {
             this.label = label;
             vertices.vertices.Clear();
             TapPromptTab.Text = label + ": " + vertices.Size() + " points";
             TapPrompt.Visibility = Visibility.Visible;
-            Context.Points = vertices.vertices;
+            Context.SetPoints(vertices.vertices);
         }
 
         /// <summary>
@@ -329,9 +333,6 @@ public sealed partial class MapPage : Page
                 if (!Context.ActiveLevel.AddSublevel(new_level))
                 {
                     OpenPopupAlert("Error: unknown error adding level");
-                } else
-                {
-                    Context.SetActive(new_level);
                 }
             }
             ActiveJob = "None";

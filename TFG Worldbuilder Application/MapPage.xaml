@@ -108,20 +108,21 @@
         </Grid>
         <Grid x:Name="MapDisplay" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,75,0,0">
             <Canvas x:Name="WorldCanvas" Background="Azure" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" PointerPressed="WorldCanvas_PointerPressed">
-                <ItemsControl ItemsSource="{x:Bind Context.Shapes, Mode=OneWay}">
-                    <DataTemplate x:DataType="local:BorderLevel">
-                        <Polygon Fill="{x:Bind color, Mode=OneWay}" Stroke="Black" Name="Continent" Points="{x:Bind points, Mode=OneWay}"></Polygon>
-                    </DataTemplate>
+                <ItemsControl ItemsSource="{x:Bind Path=Context.Shapes, Mode=OneWay}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="local:BorderLevel">
+                            <!--TextBlock Text="{x:Bind Path=name, Mode=OneWay}"/-->
+                            <Polygon Fill="{x:Bind Path=color, Mode=OneWay}" Stroke="Black" Name="{x:Bind Path=name, Mode=OneWay}" Points="{x:Bind Path=points, Mode=OneWay}"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
                 </ItemsControl>
-                <GridView ItemsSource="{x:Bind Context.Points, Mode=OneWay}">
-                    <DataTemplate x:DataType="local:Point2D">
-                        <Path Fill="LightCoral" StrokeThickness="0">
-                            <Path.Data>
-                                <EllipseGeometry Center="{x:Bind pointstr, Mode=OneWay}" RadiusX="3" RadiusY="3"/>
-                            </Path.Data>
-                        </Path>
-                    </DataTemplate>
-                </GridView>
+                <!--ItemsControl ItemsSource="{Binding Points}">
+                    <Path Fill="LightCoral" StrokeThickness="0">
+                        <Path.Data>
+                            <EllipseGeometry Center="{Binding Path=Points, Mode=OneWay}" RadiusX="3" RadiusY="3"/>
+                        </Path.Data>
+                    </Path>
+                <ItemsControl/-->
             </Canvas>
         </Grid>
         <Grid x:Name="TextPrompt" HorizontalAlignment="Center" VerticalAlignment="Center" Width="500" Height="200" Visibility="Collapsed">
