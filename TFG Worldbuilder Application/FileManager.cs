@@ -7,6 +7,42 @@ using System.Threading.Tasks;
 
 namespace TFG_Worldbuilder_Application
 {
+
+    /// <summary>
+    /// Container class for ease of access for ParseLevels
+    /// </summary>
+    public class ParseContainer<T>
+    {
+        public int length;
+        public int index;
+        public string ActiveText;
+        public T Data;
+
+        /// <summary>
+        /// Is true when Data is complete and when length, index, and ActiveText are properly set
+        /// </summary>
+        public bool Valid
+        {
+            get
+            {
+                return Data != null && length >= 0 && index >= 0 && ActiveText != null;
+            }
+        }
+
+        public ParseContainer(){
+
+        }
+
+        public ParseContainer(int length, int index, string ActiveText, T Data)
+        {
+            this.length = length;
+            this.index = index;
+            this.ActiveText = ActiveText;
+            this.Data = Data;
+        }
+    }
+
+
     /// <summary>
     /// A class that simplifies reading/writing of the active file
     /// </summary>
@@ -416,6 +452,213 @@ namespace TFG_Worldbuilder_Application
         }
 
         /// <summary>
+        /// Given text, gets the Level Name within the text and returns a ParseContainer holding it
+        /// </summary>
+        private ParseContainer<string> ParseName(ParseContainer<string> text)
+        {
+            string ActiveText = text.ActiveText;
+            int length = text.length;
+            int index = text.index;
+            string line = "";
+            while (index < ActiveText.Length)
+            {
+                length = ActiveText.Substring(index).IndexOf(outer_delimiter);
+                line = ActiveText.Substring(index, length).Trim();
+                if(line.IndexOf("Level Name") == 0)
+                {
+                    text = new ParseContainer<string>(length, index, ActiveText, line.Substring("Level Name".Length + 1).Trim());
+                    return text;
+                } else if(line.IndexOf("Start Level") == 0)
+                {
+                    return text;
+                }
+                index += length + 1;
+            }
+            return text;
+        }
+
+        /// <summary>
+        /// Given text, gets the Level Type within the text and returns a ParseContainer holding it
+        /// </summary>
+        private ParseContainer<LevelType> ParseType(ParseContainer<LevelType> text)
+        {
+            string ActiveText = text.ActiveText;
+            int length = text.length;
+            int index = text.index;
+            string line = "";
+            while (index < ActiveText.Length)
+            {
+                length = ActiveText.Substring(index).IndexOf(outer_delimiter);
+                line = ActiveText.Substring(index, length).Trim();
+                if (line.IndexOf("Level Type") == 0)
+                {
+                    line = line.Substring("Level Type".Length + 1).Trim();
+                    for (short i = -1; i <= 6; i++)
+                    {
+                        if (string.Equals(line, Enum.GetName(typeof(LevelType), ((LevelType)i))))
+                        {
+                            LevelType level_type = (LevelType)i;
+                            text = new ParseContainer<LevelType>(length, index, ActiveText, level_type);
+                            return text;
+                        }
+                    }
+                    try
+                    {
+                        LevelType level_type = (LevelType)Convert.ToInt16(line);
+                        text = new ParseContainer<LevelType>(length, index, ActiveText, level_type);
+                        return text;
+                    }
+                    catch (FormatException)
+                    {
+                        ;
+                    }
+                }
+                else if (line.IndexOf("Start Level") == 0)
+                {
+                    return text;
+                }
+                index += length + 1;
+            }
+            return text;
+        }
+
+        /// <summary>
+        /// Given text, gets the Subtype within the text and returns a ParseContainer holding it
+        /// </summary>
+        private ParseContainer<string> ParseSubtype(ParseContainer<string> text)
+        {
+            string ActiveText = text.ActiveText;
+            int length = text.length;
+            int index = text.index;
+            string line = "";
+            while (index < ActiveText.Length)
+            {
+                length = ActiveText.Substring(index).IndexOf(outer_delimiter);
+                line = ActiveText.Substring(index, length).Trim();
+                if (line.IndexOf("Level Subtype") == 0)
+                {
+                    text = new ParseContainer<string>(length, index, ActiveText, line.Substring("Level Subtype".Length + 1).Trim());
+                    return text;
+                }
+                else if (line.IndexOf("Start Level") == 0)
+                {
+                    return text;
+                }
+                index += length + 1;
+            }
+            return text;
+        }
+
+        /// <summary>
+        /// Given text, gets the Vertices within the text and returns a ParseContainer holding it
+        /// </summary>
+        private ParseContainer<Polygon2D> ParseVertices(ParseContainer<Polygon2D> text)
+        {
+            string ActiveText = text.ActiveText;
+            int length = text.length;
+            int index = text.index;
+            string line = "";
+            bool found_vertices = false;
+            Polygon2D vertices = new Polygon2D();
+            while (index < ActiveText.Length)
+            {
+                length = ActiveText.Substring(index).IndexOf(outer_delimiter);
+                line = ActiveText.Substring(index, length).Trim();
+                if (line.IndexOf("Border Vertex") == 0)
+                {
+                    line = line.Substring("Border Vertex".Length + 1).Trim();
+                    Point2D point = Point2D.FromString(line);
+                    if (point != null)
+                    {
+                        vertices.AppendPoint(point);
+                        if (!found_vertices && vertices.Size() >= 3)
+                        {
+                            found_vertices = true;
+                        }
+                    }
+                } else if (found_vertices)
+                {
+                    text = new ParseContainer<Polygon2D>(length, index, ActiveText, vertices);
+                    return text;
+                }
+                else if (line.IndexOf("Start Level") == 0)
+                {
+                    return text;
+                }
+                index += length + 1;
+            }
+            return text;
+        }
+
+        /// <summary>
+        /// Given text, gets the Center within the text and returns a ParseContainer holding it
+        /// </summary>
+        private ParseContainer<Point2D> ParseCenter(ParseContainer<Point2D> text)
+        {
+            string ActiveText = text.ActiveText;
+            int length = text.length;
+            int index = text.index;
+            string line = "";
+            while (index < ActiveText.Length)
+            {
+                length = ActiveText.Substring(index).IndexOf(outer_delimiter);
+                line = ActiveText.Substring(index, length).Trim();
+                if (line.IndexOf("Center") == 0)
+                {
+                    line = line.Substring("Center".Length + 1).Trim();
+                    Point2D point = Point2D.FromString(line);
+                    if (point != null)
+                    {
+                        text = new ParseContainer<Point2D>(length, index, ActiveText, point);
+                        return text;
+                    }
+                }
+                else if (line.IndexOf("Start Level") == 0)
+                {
+                    return text;
+                }
+                index += length + 1;
+            }
+            return text;
+        }
+
+        /// <summary>
+        /// Given text, gets the Radius within the text and returns a ParseContainer holding it
+        /// </summary>
+        private ParseContainer<long> ParseRadius(ParseContainer<long> text)
+        {
+            string ActiveText = text.ActiveText;
+            int length = text.length;
+            int index = text.index;
+            string line = "";
+            while (index < ActiveText.Length)
+            {
+                length = ActiveText.Substring(index).IndexOf(outer_delimiter);
+                line = ActiveText.Substring(index, length).Trim();
+                if (line.IndexOf("Radius") == 0)
+                {
+                    line = line.Substring("Radius".Length + 1).Trim();
+                    try
+                    {
+                        long radius = Convert.ToInt64(line);
+                        text = new ParseContainer<long>(length, index, ActiveText, radius);
+                        return text;
+                    }
+                    catch (FormatException)
+                    {
+                        ;
+                    }
+                }
+                else if (line.IndexOf("Start Level") == 0)
+                {
+                    return text;
+                }
+                index += length + 1;
+            }
+            return text;
+        }
+        
+        /// <summary>
         /// Parses the text passed from GetDirectories to produce level objects; should not include the start and end lines for the level, and the level number should be passed as well
         /// </summary>
         private SuperLevel ParseLevels(String ActiveText, int level_num, SuperLevel parent)
@@ -530,13 +773,42 @@ namespace TFG_Worldbuilder_Application
                             radius = Convert.ToInt64(line);
                             got_radius = true;
                         }
-                        catch (InvalidCastException)
+                        catch (FormatException)
                         {
                             ;
                         }
                     }
                 }
-                if(do_it || index + length + 1 >= ActiveText.Length) //If the current line does not correspond to level information processing, then it is supposed to be level content
+                else if (line.IndexOf("Start Level") == 0) //If there appears to be a sublevel here
+                {
+                    do_it = false;
+                    try
+                    {
+                        int new_level_num = Convert.ToInt32(line.Substring("Start Level".Length + 1).Trim());
+                        if (new_level_num <= 6 && new_level_num > level_num) //Ensures that the level is valid
+                        {
+                            line = ActiveText.Substring(index).Trim();
+                            if (line.IndexOf("End Level" + inner_delimiter + new_level_num.ToString()) >= 0) //Ensures that there is an end to the level
+                            {
+                                int partial_length = line.IndexOf("End Level" + inner_delimiter + new_level_num.ToString()) - 1;
+                                line = line.Substring(line.IndexOf(outer_delimiter) + 1, partial_length).Trim();
+                                SuperLevel sublevel = ParseLevels(line, new_level_num, null);
+                                if (sublevel != null) //Ensures that the generated world is valid
+                                    level.AddSublevel(sublevel);
+                                length += partial_length;
+                            } //End sublevel processing
+                        }
+                        else //If the number is invalid
+                        {
+                            length = Math.Max(length, line.IndexOf("End Level" + inner_delimiter + new_level_num.ToString()));
+                        }
+                    }
+                    catch (FormatException)
+                    {
+                        ;
+                    }
+                }//End potential sublevel processing
+                if (do_it || index + length + 1 >= ActiveText.Length) //If the current line does not correspond to level information processing, then it is supposed to be level content
                 {
                     if (!made_level && !make_level) //sees that the level has not been made and hasn't been proven to be makable
                     {
@@ -615,38 +887,8 @@ namespace TFG_Worldbuilder_Application
                     }
                     if (do_it && made_level) //Now for the actual content processing of the level
                     {
-                        if (line.IndexOf("Start Level") == 0) //If there appears to be a sublevel here
-                        {
-                            try
-                            {
-                                int new_level_num = Convert.ToInt32(line.Substring("Start Level".Length + 1).Trim());
-                                if (new_level_num <= 6 && new_level_num > level_num) //Ensures that the level is valid
-                                {
-                                    line = ActiveText.Substring(index).Trim();
-                                    if (line.IndexOf("End Level" + inner_delimiter + new_level_num.ToString()) >= 0) //Ensures that there is an end to the level
-                                    {
-                                        int partial_length = line.IndexOf("End Level" + inner_delimiter + new_level_num.ToString()) - 1;
-                                        line = line.Substring(line.IndexOf(outer_delimiter) + 1, partial_length).Trim();
-                                        SuperLevel sublevel = ParseLevels(line, new_level_num, level);
-                                        if (sublevel != null) //Ensures that the generated world is valid
-                                            level.AddSublevel(sublevel);
-                                        length += partial_length;
-                                    } //End sublevel processing
-                                }
-                                else //If the number is invalid
-                                {
-                                    length = Math.Max(length, line.IndexOf("End Level" + inner_delimiter + new_level_num.ToString()));
-                                }
-                            }
-                            catch (InvalidCastException)
-                            {
-                                ;
-                            }
-                        }//End potential sublevel processing
-                        else //If there is unknown level data
-                        {
-                            level.leveldata.Add(line);
-                        }
+                        //If there is unknown level data
+                        level.leveldata.Add(line);
                     } //End content processing
                 } //End of Else Block for content processing
                 index += length + 1;

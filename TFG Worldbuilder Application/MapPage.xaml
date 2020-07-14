@@ -108,11 +108,11 @@
         </Grid>
         <Grid x:Name="MapDisplay" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,75,0,0">
             <Canvas x:Name="WorldCanvas" Background="Azure" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" PointerPressed="WorldCanvas_PointerPressed">
-                <GridView ItemsSource="{x:Bind Context.Shapes, Mode=OneWay}">
+                <ItemsControl ItemsSource="{x:Bind Context.Shapes, Mode=OneWay}">
                     <DataTemplate x:DataType="local:BorderLevel">
                         <Polygon Fill="{x:Bind color, Mode=OneWay}" Stroke="Black" Name="Continent" Points="{x:Bind points, Mode=OneWay}"></Polygon>
                     </DataTemplate>
-                </GridView>
+                </ItemsControl>
                 <GridView ItemsSource="{x:Bind Context.Points, Mode=OneWay}">
                     <DataTemplate x:DataType="local:Point2D">
                         <Path Fill="LightCoral" StrokeThickness="0">
