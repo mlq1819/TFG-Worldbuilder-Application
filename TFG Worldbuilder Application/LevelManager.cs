@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Foundation;
 
 namespace TFG_Worldbuilder_Application
 {
@@ -23,10 +24,56 @@ namespace TFG_Worldbuilder_Application
     /// <summary>
     /// 2D Point object
     /// </summary>
-    public class Point2D
+    public class Point2D : INotifyPropertyChanged
     {
-        public long X;
-        public long Y;
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void RaisePropertyChanged(string str)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(str));
+            }
+        }
+
+        private long _X;
+        public long X
+        {
+            get
+            {
+                return _X;
+            }
+            set
+            {
+                _X = value;
+                RaisePropertyChanged("X");
+                RaisePropertyChanged("pointstr");
+            }
+        }
+        private long _Y;
+        public long Y
+        {
+            get
+            {
+                return _Y;
+            }
+            set
+            {
+                _Y = value;
+                RaisePropertyChanged("Y");
+                RaisePropertyChanged("pointstr");
+            }
+        }
+        public string pointstr
+        {
+            get
+            {
+                return X.ToString() + ',' + Y.ToString();
+            }
+            set
+            {
+                ;
+            }
+        }
 
         /// <summary>
         /// creates a Point2D object
@@ -36,7 +83,7 @@ namespace TFG_Worldbuilder_Application
             this.X = X;
             this.Y = Y;
         }
-
+        
         /// <summary>
         /// copy constructor
         /// </summary>
@@ -44,6 +91,14 @@ namespace TFG_Worldbuilder_Application
         {
             X = o.X;
             Y = o.Y;
+        }
+
+        /// <summary>
+        /// Converts a Windows Foundation Point into a Point2D
+        /// </summary>
+        public Point2D(Point o) : this((long) o.X, (long) o.Y)
+        {
+            ;
         }
 
         /// <summary>
@@ -207,14 +262,14 @@ namespace TFG_Worldbuilder_Application
     /// </summary>
     public class Polygon2D
     {
-        public List<Point2D> vertices;
+        public ObservableCollection<Point2D> vertices;
 
         /// <summary>
         /// Basic constructor
         /// </summary>
         public Polygon2D()
         {
-            vertices = new List<Point2D>();
+            vertices = new ObservableCollection<Point2D>();
         }
 
         /// <summary>
@@ -222,7 +277,7 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         public Polygon2D(Polygon2D o)
         {
-            vertices = new List<Point2D>();
+            vertices = new ObservableCollection<Point2D>();
             for (int i = 0; i < o.vertices.Count; i++)
             {
                 vertices.Add(new Point2D(o.vertices[i]));
@@ -856,7 +911,7 @@ namespace TFG_Worldbuilder_Application
             {
                 try
                 {
-                    return (point - ((Level5)this.parent).GetCenter()).Length() <= ((Level5)this.parent).radius;
+                    return ((Level5)this).PointInRadius(point);
                 }
                 catch (InvalidCastException)
                 {
@@ -895,6 +950,18 @@ namespace TFG_Worldbuilder_Application
     public class BorderLevel : SuperLevel
     {
         private Polygon2D border;
+        
+        public string points
+        {
+            get
+            {
+                return GetPoints();
+            }
+            set
+            {
+                ;
+            }
+        }
 
         /// <summary>
         /// Extended constructor, creates a level given a name, level number, level type, parent level, and border object
@@ -926,6 +993,21 @@ namespace TFG_Worldbuilder_Application
                         this.border.AppendPoint(border.vertices[i]);
                 }
             }
+        }
+
+        /// <summary>
+        /// Generates a XAML-Ready string of all vertices in the object
+        /// </summary>
+        private string GetPoints()
+        {
+            string output = "";
+            for(int i=0; i<border.vertices.Count; i++)
+            {
+                if (i > 0)
+                    output += ' ';
+                output += border.vertices[i].X + ',' + border.vertices[i].Y;
+            }
+            return output;
         }
 
         /// <summary>
@@ -964,7 +1046,7 @@ namespace TFG_Worldbuilder_Application
         public Point2D AppendPoint(Point2D point)
         {
             Point2D output = this.border.AppendPoint(point);
-            RaisePropertyChanged("border");
+            RaisePropertyChanged("points");
             return output;
         }
 
@@ -974,7 +1056,7 @@ namespace TFG_Worldbuilder_Application
         public Point2D NewPoint(Point2D a, Point2D b)
         {
             Point2D output = border.NewPoint(a, b);
-            RaisePropertyChanged("border");
+            RaisePropertyChanged("points");
             return output;
         }
 
@@ -987,7 +1069,7 @@ namespace TFG_Worldbuilder_Application
             {
                 Point2D output = border.MovePoint(old_position, new_position);
                 if (output != null)
-                    RaisePropertyChanged("border");
+                    RaisePropertyChanged("points");
                 return output;
             }
             return old_position;
@@ -1269,6 +1351,14 @@ namespace TFG_Worldbuilder_Application
             {
                 this.radius = 0;
             }
+        }
+
+        /// <summary>
+        /// Returns true if the point is within the radius of the center
+        /// </summary>
+        public bool PointInRadius(Point2D point)
+        {
+            return (point - center).Length() <= radius;
         }
     }
 

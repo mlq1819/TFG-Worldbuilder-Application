@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -22,125 +21,6 @@ using Windows.UI.Xaml.Shapes;
 
 namespace TFG_Worldbuilder_Application
 {
-    /// <summary>
-    /// DataContext bindable object for convenience sake
-    /// </summary>
-    public class ActiveContext : INotifyPropertyChanged
-    {
-        public ObservableCollection<Level1> Worlds;
-        public SuperLevel ActiveLevel;
-        public ObservableCollection<BorderLevel> Shapes;
-        public ObservableCollection<PointLevel> Points;
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void RaisePropertyChanged(string str)
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(str));
-            }
-        }
-
-        public ActiveContext()
-        {
-            this.Worlds = new ObservableCollection<Level1>();
-            this.ActiveLevel = null;
-            this.Shapes = new ObservableCollection<BorderLevel>();
-            this.Points = new ObservableCollection<PointLevel>();
-        }
-
-        public ActiveContext(ObservableCollection<Level1> Worlds)
-        {
-            this.Worlds = Worlds;
-            this.ActiveLevel = null;
-            this.Shapes = new ObservableCollection<BorderLevel>();
-            this.Points = new ObservableCollection<PointLevel>();
-        }
-
-        private void SetActive(SuperLevel level)
-        {
-            ActiveLevel = level;
-            SetWorld();
-            RaisePropertyChanged("ActiveLevel");
-        }
-
-        /// <summary>
-        /// Updates the Shapes and Points to match the ActiveWorld
-        /// </summary>
-        private void SetWorld()
-        {
-            
-            IList<SuperLevel> temp = SuperLevel.Filter(ActiveLevel.GetSublevels(), 2);
-            temp.Concat<SuperLevel>(SuperLevel.Filter(ActiveLevel.GetSublevels(), 3));
-            temp.Concat<SuperLevel>(SuperLevel.Filter(ActiveLevel.GetSublevels(), 4));
-            Shapes.Clear();
-            for (int i = 0; i < temp.Count; i++)
-            {
-                try
-                {
-                    Shapes.Add((BorderLevel)temp[i]);
-                }
-                catch (InvalidCastException)
-                {
-                    ;
-                }
-            }
-            temp = SuperLevel.Filter(ActiveLevel.GetSublevels(), 5);
-            temp.Concat<SuperLevel>(SuperLevel.Filter(ActiveLevel.GetSublevels(), 6));
-            Points.Clear();
-            for (int i = 0; i < temp.Count; i++)
-            {
-                try
-                {
-                    Points.Add((PointLevel)temp[i]);
-                }
-                catch (InvalidCastException)
-                {
-                    ;
-                }
-            }
-        }
-        
-        /// <summary>
-        /// Sets the ActiveWorld to the World of the given name and updates Shapes and Points
-        /// </summary>
-        public bool SetWorld(string name)
-        {
-            if (string.Equals(ActiveLevel.GetName(), name))
-                return true;
-            for(int i=0; i<Worlds.Count; i++)
-            {
-                if(string.Equals(Worlds[i].GetName(), name))
-                {
-                    ActiveLevel = Worlds[i];
-                    SetWorld();
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// Sets the ActiveWorld to the World of the given name and subtype and updates Shapes and Points
-        /// </summary>
-        public bool SetWorld(string name, string subtype)
-        {
-            if (string.Equals(ActiveLevel.GetName(), name) && string.Equals(ActiveLevel.subtype, subtype))
-                return true;
-            for (int i = 0; i < Worlds.Count; i++)
-            {
-                if (string.Equals(Worlds[i].GetName(), name) && string.Equals(Worlds[i].subtype, subtype))
-                {
-                    ActiveLevel = Worlds[i];
-                    SetWorld();
-                    return true;
-                }
-            }
-            return false;
-        }
-    }
-
-
 /// <summary>
 /// An empty page that can be used on its own or navigated to within a Frame.
 /// </summary>
@@ -148,10 +28,11 @@ public sealed partial class MapPage : Page
     {
 
         private Canvas MapCanvas;
-        private Level1 ActiveWorld = null;
         private int LevelNum = 0;
         private int LevelStep = 0;
         private string name = "";
+        private string label = "";
+        private Polygon2D vertices = new Polygon2D();
         private LevelType type = LevelType.Invalid;
         private string subtype = "";
         private string ActiveJob = "";
@@ -165,11 +46,10 @@ public sealed partial class MapPage : Page
             this.MapCanvas = (Canvas)this.FindName("WorldCanvas");
             this.Worlds = Global.ActiveFile.Worlds;
             this.Context = new ActiveContext(Global.ActiveFile.Worlds);
-            this.DataContext = this.Worlds;
+            this.DataContext = this.Context;
             if (Worlds.Count > 0)
             {
-                
-                OpenWorld(Worlds[0].name, Worlds[0].subtype);
+                Context.SetWorld(Worlds[0].name, Worlds[0].subtype);
             }
             UpdateSaveState();
         }
@@ -331,12 +211,13 @@ public sealed partial class MapPage : Page
 
         private void Text_Prompt_Cancel_Click(object sender, RoutedEventArgs e)
         {
-            ((Grid)this.FindName("TextPrompt")).Visibility = Visibility.Collapsed;
+            TextPrompt.Visibility = Visibility.Collapsed;
+            ActiveJob = "None";
         }
 
         private void Text_Prompt_Confirm_Click(object sender, RoutedEventArgs e)
         {
-            string prompt_text = ((TextBox)this.FindName("TextPromptBox")).Text.Trim();
+            string prompt_text = TextPromptBox.Text.Trim();
             if (prompt_text.Length > 255)
                 prompt_text = prompt_text.Substring(0, 255).Trim();
             if(prompt_text.Length == 0)
@@ -349,17 +230,17 @@ public sealed partial class MapPage : Page
             }
             else
             {
-                ((Grid)this.FindName("TextPrompt")).Visibility = Visibility.Collapsed;
+                TextPrompt.Visibility = Visibility.Collapsed;
                 if (string.Equals(ActiveJob, "Create"))
                 {
-                    switch (this.LevelStep)
+                    switch (this.LevelStep) // Control for level step
                     {
-                        case 1:
+                        case 2:
                             this.subtype = prompt_text;
                             this.LevelStep++;
                             OpenTextPrompt("Name your " + this.subtype + ":");
                             break;
-                        case 2:
+                        case 3:
                             this.name = prompt_text;
                             switch (this.LevelNum)
                             {
@@ -367,7 +248,7 @@ public sealed partial class MapPage : Page
                                     NewWorld(this.name, this.subtype);
                                     break;
                                 case 2:
-                                    //ToDo: add call to CreateGreaterRegion
+                                    NewGreaterRegion(this.name, this.type, this.subtype, this.vertices);
                                     break;
                                     //ToDo: add more cases for other levels
                             }
@@ -376,10 +257,10 @@ public sealed partial class MapPage : Page
                 }
                 else if (string.Equals(ActiveJob, "Open"))
                 {
-                    switch (this.LevelNum)
+                    switch (this.LevelNum) //Control for level type
                     {
                         case 1:
-                            OpenWorld(prompt_text);
+                            Context.SetWorld(prompt_text);
                             break;
                     }
                 }
@@ -392,21 +273,30 @@ public sealed partial class MapPage : Page
         private void Create_World_Click(object sender, RoutedEventArgs e)
         {
             LevelNum = 1;
-            LevelStep = 1;
+            LevelStep = 2;
             type = LevelType.World;
             ActiveJob = "Create";
             OpenTextPrompt("What type of world are you creating?\nEnter a subtype:");
         }
 
         /// <summary>
-        /// Opens the popup and prepares to create a new continent
+        /// Opens the popup and prepares to create a new greater region
         /// </summary>
-        private void Create_Continent_Click(object sender, RoutedEventArgs e)
+        private void Create_Greater_Region()
         {
             LevelNum = 2;
-            LevelStep = 1;
+            LevelStep = 2;
             ActiveJob = "Create";
-            OpenTextPrompt("What are you creating?\nEnter a type:");
+            OpenTapPrompt("Enter at least 3 points for Greater Region");
+        }
+
+        private void OpenTapPrompt(string label)
+        {
+            this.label = label;
+            vertices.vertices.Clear();
+            TapPromptTab.Text = label + ": " + vertices.Size() + " points";
+            TapPrompt.Visibility = Visibility.Visible;
+            Context.Points = vertices.vertices;
         }
 
         /// <summary>
@@ -419,61 +309,23 @@ public sealed partial class MapPage : Page
                 OpenPopupAlert("Error: " + type + " with name \"" + name + "\" already exists");
             } else
             {
-                ActiveWorld = new Level1(name, subtype);
-                ActiveWorld.color = "LightSkyBlue";
-                Global.ActiveFile.Worlds.Add(ActiveWorld);
+                Context.SetActive(new Level1(name, subtype));
+                Context.ActiveLevel.color = "LightSkyBlue";
+                Global.ActiveFile.Worlds.Add((Level1) Context.ActiveLevel);
                 for(int i=0; i<Worlds.Count-1; i++)
                 {
                     Worlds[i].color = "#F2F2F2";
                 }
             }
+            ActiveJob = "None";
             UpdateSaveState();
         }
 
         /// <summary>
-        /// Sets the ActiveWorld to the saved world with the specified name
+        /// Creates a new greater region object with the given name, type, subtype, and border
         /// </summary>
-        private void OpenWorld(string name)
-        {
-            bool found_world = false;
-            for(int i=0; i<Global.ActiveFile.Worlds.Count; i++)
-            {
-                if (!found_world && string.Equals(name, Global.ActiveFile.Worlds[i].GetName()))
-                {
-                    found_world = true;
-                    if (ActiveWorld == null || !string.Equals(ActiveWorld.name, Worlds[i].name))
-                    {
-                        ActiveWorld = Worlds[i];
-                        //Update the load state -- this does not affect the save state
-                    }
-                    Worlds[i].color = "LightSkyBlue";
-                }
-                else
-                    Worlds[i].color = "#F2F2F2";
-            }
-        }
+        private void NewGreaterRegion(string name, LevelType type, string subtype, Polygon2D border) {
 
-        /// <summary>
-        /// Sets the ActiveWorld to the saved world with the specified name and type
-        /// </summary>
-        private void OpenWorld(string name, string subtype)
-        {
-            bool found_world = false;
-            for (int i = 0; i < Global.ActiveFile.Worlds.Count; i++)
-            {
-                if (!found_world && string.Equals(name, Global.ActiveFile.Worlds[i].GetName()) && string.Equals(subtype, Global.ActiveFile.Worlds[i].subtype))
-                {
-                    found_world = true;
-                    if (ActiveWorld == null || !string.Equals(ActiveWorld.name, Worlds[i].name))
-                    {
-                        ActiveWorld = Worlds[i];
-                        //Update the load state -- this does not affect the save state
-                    }
-                    Worlds[i].color = "LightSkyBlue";
-                }
-                else
-                    Worlds[i].color = "#F2F2F2";
-            }
         }
 
         /// <summary>
@@ -483,7 +335,7 @@ public sealed partial class MapPage : Page
         {
             WorldsMenu.Hide();
             string name = ((MenuFlyoutItem)sender).Text.Trim();
-            OpenWorld(name);
+            Context.SetWorld(name);
         }
 
         /// <summary>
@@ -491,8 +343,104 @@ public sealed partial class MapPage : Page
         /// </summary>
         private void CreateMenu_Closed(object sender, object e)
         {
-            if(((Grid)this.FindName("TextPrompt")).Visibility == Visibility.Visible)
-                ((TextBox)this.FindName("TextPromptBox")).Focus(FocusState.Programmatic);
+            if(TextPrompt.Visibility == Visibility.Visible)
+                TextPromptBox.Focus(FocusState.Programmatic);
+        }
+
+        private void Create_Greater_Region_National_Click(object sender, RoutedEventArgs e)
+        {
+            type = LevelType.National;
+            Create_Greater_Region();
+        }
+
+        private void Create_Greater_Region_Geographical_Click(object sender, RoutedEventArgs e)
+        {
+            type = LevelType.Geographical;
+            Create_Greater_Region();
+        }
+
+        private void Create_Greater_Region_Climate_Click(object sender, RoutedEventArgs e)
+        {
+            type = LevelType.Climate;
+            Create_Greater_Region();
+        }
+
+        private void Create_Greater_Region_Factional_Click(object sender, RoutedEventArgs e)
+        {
+            type = LevelType.Factional;
+            Create_Greater_Region();
+        }
+
+        private void Create_Greater_Region_Cultural_Click(object sender, RoutedEventArgs e)
+        {
+            type = LevelType.Cultural;
+            Create_Greater_Region();
+        }
+
+        private void Create_Greater_Region_Biological_Click(object sender, RoutedEventArgs e)
+        {
+            type = LevelType.Biological;
+            Create_Greater_Region();
+        }
+
+        private void WorldCanvas_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            if (string.Equals(ActiveJob, "Create") && LevelNum > 1 && LevelNum < 5)
+            {
+                Point2D point = new Point2D(e.GetPosition((Windows.UI.Xaml.UIElement)sender));
+                if (Context.ActiveLevel != null)
+                {
+                    if(Context.ActiveLevel.GetLevel() > 1 && Context.ActiveLevel.GetLevel() < 5)
+                    {
+                        try
+                        {
+                            if (((BorderLevel)Context.ActiveLevel).PointInPolygon(point))
+                            {
+                                vertices.AppendPoint(point);
+                                Context.RaisePropertyChanged("Points");
+                            }
+                        } catch (InvalidCastException)
+                        {
+                            ;
+                        }
+                    }
+                    else if (Context.ActiveLevel.GetLevel() == 5)
+                    {
+                        try
+                        {
+                            if (((Level5)Context.ActiveLevel).PointInRadius(point))
+                            {
+                                vertices.AppendPoint(point);
+                                Context.RaisePropertyChanged("Points");
+                            }
+                        } catch (InvalidCastException)
+                        {
+                            ;
+                        }
+                    }
+                }
+                TapPromptTab.Text = label + ": " + vertices.Size() + " points";
+            }
+        }
+
+        private void Tap_Prompt_Cancel_Click(object sender, RoutedEventArgs e)
+        {
+            TapPrompt.Visibility = Visibility.Collapsed;
+            ActiveJob = "None";
+            Context.UpdateShapesAndPoints();
+        }
+
+        private void Tap_Prompt_Confirm_Click(object sender, RoutedEventArgs e)
+        {
+            if(vertices.Size() < 3)
+            {
+                OpenPopupAlert("Requires at least 3 points");
+            } else
+            {
+                LevelStep++;
+                Context.UpdateShapesAndPoints();
+                OpenTextPrompt("What type of" + Enum.GetName(typeof(LevelType), type) + "are you creating?\nEnter a subtype:");
+            }
         }
     }
 }

@@ -58,10 +58,17 @@
         </MenuFlyout>
         <MenuFlyout x:Name="CreateMenu" x:Key="CreateMenu" Closed="CreateMenu_Closed">
             <MenuFlyoutItem x:Name="Create_World" Text="New World" Click="Create_World_Click"/>
-            <MenuFlyoutItem x:Name="Create_Continent" Text="New Continent" Click="Create_Continent_Click"/>
+            <MenuFlyoutSubItem x:Name="Create_Region_Menu" Text="New Greater Region">
+                <MenuFlyoutItem x:Name="Create_Greater_Region_National" Text="National" Click="Create_Greater_Region_National_Click"/>
+                <MenuFlyoutItem x:Name="Create_Greater_Region_Geographical" Text="Geographical" Click="Create_Greater_Region_Geographical_Click"/>
+                <MenuFlyoutItem x:Name="Create_Greater_Region_Climate" Text="Climate" Click="Create_Greater_Region_Climate_Click"/>
+                <MenuFlyoutItem x:Name="Create_Greater_Region_Factional" Text="Factional" Click="Create_Greater_Region_Factional_Click"/>
+                <MenuFlyoutItem x:Name="Create_Greater_Region_Cultural" Text="Cultural" Click="Create_Greater_Region_Cultural_Click"/>
+                <MenuFlyoutItem x:Name="Create_Greater_Region_Biological" Text="Biological" Click="Create_Greater_Region_Biological_Click"/>
+            </MenuFlyoutSubItem>
         </MenuFlyout>
         <Flyout x:Name="WorldsMenu" x:Key="WorldsMenu">
-            <ListView ItemsSource="{x:Bind Worlds, Mode=OneWay}">
+            <ListView ItemsSource="{x:Bind Context.Worlds, Mode=OneWay}">
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="local:Level1">
                         <MenuFlyoutItem Text="{x:Bind name, Mode=OneWay}" Background="{x:Bind color, Mode=OneWay}" Click="Open_World_Click" Width="80"/>
@@ -69,6 +76,7 @@
                 </ListView.ItemTemplate>
             </ListView>
         </Flyout>
+        
     </Page.Resources>
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
@@ -99,8 +107,21 @@
             </Grid>
         </Grid>
         <Grid x:Name="MapDisplay" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,75,0,0">
-            <Canvas x:Name="WorldCanvas" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                <Polygon Fill="LightBlue" Stroke="Black" Name="Continent" Points="0,0 1000,0 0,1000"></Polygon>
+            <Canvas x:Name="WorldCanvas" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Tapped="WorldCanvas_Tapped">
+                <ListView ItemsSource="{x:Bind Context.Shapes, Mode=OneWay}">
+                    <DataTemplate x:DataType="local:BorderLevel">
+                        <Polygon Fill="{x:Bind color, Mode=OneWay}" Stroke="Black" Name="Continent" Points="{x:Bind points, Mode=OneWay}"></Polygon>
+                    </DataTemplate>
+                </ListView>
+                <ListView ItemsSource="{x:Bind Context.Points, Mode=OneWay}">
+                    <DataTemplate x:DataType="local:Point2D">
+                        <Path Fill="LightCoral" StrokeThickness="0">
+                            <Path.Data>
+                                <EllipseGeometry Center="{x:Bind pointstr, Mode=OneWay}" RadiusX="3" RadiusY="3"/>
+                            </Path.Data>
+                        </Path>
+                    </DataTemplate>
+                </ListView>
             </Canvas>
         </Grid>
         <Grid x:Name="TextPrompt" HorizontalAlignment="Center" VerticalAlignment="Center" Width="500" Height="200" Visibility="Collapsed">
@@ -111,8 +132,19 @@
             <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,50,0,0">
                 <Rectangle Fill="#FFFFFFFF" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Stroke="Black"/>
                 <TextBox x:Name="TextPromptBox" Margin="10,10,10,40" Text="Name"/>
-                <Button x:Name="Text_Prompt_Cancel" Content="Cancel" HorizontalAlignment="Left" VerticalAlignment="Bottom" Height="30" Width="100" Margin="10,5,10,5" Click="Text_Prompt_Cancel_Click"/>
-                <Button x:Name="Text_Prompt_Confirm" Content="Confirm" HorizontalAlignment="Right" VerticalAlignment="Bottom" Height="30" Width="100" Margin="10,5,10,5" Click="Text_Prompt_Confirm_Click"/>
+                <Button x:Name="Text_Prompt_Cancel" Content="Cancel" HorizontalAlignment="Left" VerticalAlignment="Bottom" Height="30" Width="200" Margin="10,5,10,5" Click="Text_Prompt_Cancel_Click"/>
+                <Button x:Name="Text_Prompt_Confirm" Content="Confirm" HorizontalAlignment="Right" VerticalAlignment="Bottom" Height="30" Width="200" Margin="10,5,10,5" Click="Text_Prompt_Confirm_Click"/>
+            </Grid>
+        </Grid>
+        <Grid x:Name="TapPrompt" HorizontalAlignment="Center" VerticalAlignment="Top" Width="500" Height="100" Visibility="Visible">
+            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="50">
+                <Rectangle Fill="#FFF4F4F5" HorizontalAlignment="Stretch" Margin="0,0,0,0" Stroke="Black" VerticalAlignment="Stretch"/>
+                <TextBlock x:Name="TapPromptTab" Text="Name Me!" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" Margin="10,5,10,5"/>
+            </Grid>
+            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,50,0,0">
+                <Rectangle Fill="#FFFFFFFF" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Stroke="Black"/>
+                <Button x:Name="Tap_Prompt_Cancel" Content="Cancel" HorizontalAlignment="Left" VerticalAlignment="Center" Height="30" Width="200" Margin="10" Click="Tap_Prompt_Cancel_Click"/>
+                <Button x:Name="Tap_Prompt_Confirm" Content="Confirm" HorizontalAlignment="Right" VerticalAlignment="Center" Height="30" Width="200" Margin="10" Click="Tap_Prompt_Confirm_Click"/>
             </Grid>
         </Grid>
         <Grid HorizontalAlignment="Center" x:Name="PopupAlert" Visibility="Collapsed" Height="200" Width="200" Margin="100,100,100,100" VerticalAlignment="Top">
