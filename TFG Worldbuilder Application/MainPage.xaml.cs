@@ -45,8 +45,7 @@ namespace TFG_Worldbuilder_Application
             {
                 // Application now has read/write access to the picked file
                 Global.ActiveFile = new FileManager(file, true);
-                Global.ActiveFile.FormatNewFile();
-                await Global.ActiveFile.SaveFile();
+                await Global.ActiveFile.ReadyFile();
                 this.Frame.Navigate(typeof(MapPage));
             }
         }
@@ -56,8 +55,8 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         private void OpenPopupAlert(string text)
         {
-            ((TextBlock)this.FindName("PopupAlertText")).Text = text;
-            ((Grid)this.FindName("PopupAlert")).Visibility = Visibility.Visible;
+            PopupAlertText.Text = text;
+            PopupAlert.Visibility = Visibility.Visible;
         }
 
         /// <summary>
@@ -76,7 +75,7 @@ namespace TFG_Worldbuilder_Application
                 Global.ActiveFile = new FileManager(file, false);
                 await Global.ActiveFile.ReadyFile();
                 if(Global.ActiveFile.Valid())
-                this.Frame.Navigate(typeof(MapPage));
+                    this.Frame.Navigate(typeof(MapPage));
                 else {
                     OpenPopupAlert("File not formatted for Worldbuilding - Invalid File");
                 }
@@ -95,7 +94,7 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         private void PopupAlertButton_Click(object sender, RoutedEventArgs e)
         {
-            ((Grid)this.FindName("Popup Alert")).Visibility = Visibility.Collapsed;
+            PopupAlert.Visibility = Visibility.Collapsed;
         }
     }
 }

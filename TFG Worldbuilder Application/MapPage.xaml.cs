@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -22,9 +23,128 @@ using Windows.UI.Xaml.Shapes;
 namespace TFG_Worldbuilder_Application
 {
     /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
+    /// DataContext bindable object for convenience sake
     /// </summary>
-    public sealed partial class MapPage : Page
+    public class ActiveContext : INotifyPropertyChanged
+    {
+        public ObservableCollection<Level1> Worlds;
+        public SuperLevel ActiveLevel;
+        public ObservableCollection<BorderLevel> Shapes;
+        public ObservableCollection<PointLevel> Points;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void RaisePropertyChanged(string str)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(str));
+            }
+        }
+
+        public ActiveContext()
+        {
+            this.Worlds = new ObservableCollection<Level1>();
+            this.ActiveLevel = null;
+            this.Shapes = new ObservableCollection<BorderLevel>();
+            this.Points = new ObservableCollection<PointLevel>();
+        }
+
+        public ActiveContext(ObservableCollection<Level1> Worlds)
+        {
+            this.Worlds = Worlds;
+            this.ActiveLevel = null;
+            this.Shapes = new ObservableCollection<BorderLevel>();
+            this.Points = new ObservableCollection<PointLevel>();
+        }
+
+        private void SetActive(SuperLevel level)
+        {
+            ActiveLevel = level;
+            SetWorld();
+            RaisePropertyChanged("ActiveLevel");
+        }
+
+        /// <summary>
+        /// Updates the Shapes and Points to match the ActiveWorld
+        /// </summary>
+        private void SetWorld()
+        {
+            
+            IList<SuperLevel> temp = SuperLevel.Filter(ActiveLevel.GetSublevels(), 2);
+            temp.Concat<SuperLevel>(SuperLevel.Filter(ActiveLevel.GetSublevels(), 3));
+            temp.Concat<SuperLevel>(SuperLevel.Filter(ActiveLevel.GetSublevels(), 4));
+            Shapes.Clear();
+            for (int i = 0; i < temp.Count; i++)
+            {
+                try
+                {
+                    Shapes.Add((BorderLevel)temp[i]);
+                }
+                catch (InvalidCastException)
+                {
+                    ;
+                }
+            }
+            temp = SuperLevel.Filter(ActiveLevel.GetSublevels(), 5);
+            temp.Concat<SuperLevel>(SuperLevel.Filter(ActiveLevel.GetSublevels(), 6));
+            Points.Clear();
+            for (int i = 0; i < temp.Count; i++)
+            {
+                try
+                {
+                    Points.Add((PointLevel)temp[i]);
+                }
+                catch (InvalidCastException)
+                {
+                    ;
+                }
+            }
+        }
+        
+        /// <summary>
+        /// Sets the ActiveWorld to the World of the given name and updates Shapes and Points
+        /// </summary>
+        public bool SetWorld(string name)
+        {
+            if (string.Equals(ActiveLevel.GetName(), name))
+                return true;
+            for(int i=0; i<Worlds.Count; i++)
+            {
+                if(string.Equals(Worlds[i].GetName(), name))
+                {
+                    ActiveLevel = Worlds[i];
+                    SetWorld();
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Sets the ActiveWorld to the World of the given name and subtype and updates Shapes and Points
+        /// </summary>
+        public bool SetWorld(string name, string subtype)
+        {
+            if (string.Equals(ActiveLevel.GetName(), name) && string.Equals(ActiveLevel.subtype, subtype))
+                return true;
+            for (int i = 0; i < Worlds.Count; i++)
+            {
+                if (string.Equals(Worlds[i].GetName(), name) && string.Equals(Worlds[i].subtype, subtype))
+                {
+                    ActiveLevel = Worlds[i];
+                    SetWorld();
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
+
+/// <summary>
+/// An empty page that can be used on its own or navigated to within a Frame.
+/// </summary>
+public sealed partial class MapPage : Page
     {
 
         private Canvas MapCanvas;
@@ -32,8 +152,10 @@ namespace TFG_Worldbuilder_Application
         private int LevelNum = 0;
         private int LevelStep = 0;
         private string name = "";
-        private string type = "";
+        private LevelType type = LevelType.Invalid;
+        private string subtype = "";
         private string ActiveJob = "";
+        public ActiveContext Context;
         public ObservableCollection<Level1> Worlds;
         
         public MapPage()
@@ -42,11 +164,14 @@ namespace TFG_Worldbuilder_Application
             this.FileNameBlock.Text = Global.ActiveFile.FileName();
             this.MapCanvas = (Canvas)this.FindName("WorldCanvas");
             this.Worlds = Global.ActiveFile.Worlds;
+            this.Context = new ActiveContext(Global.ActiveFile.Worlds);
             this.DataContext = this.Worlds;
             if (Worlds.Count > 0)
             {
-                OpenWorld(Worlds[0].name, Worlds[0].leveltype);
+                
+                OpenWorld(Worlds[0].name, Worlds[0].subtype);
             }
+            UpdateSaveState();
         }
 
         /// <summary>
@@ -89,7 +214,7 @@ namespace TFG_Worldbuilder_Application
                 {
                     // Application now has read/write access to the picked file
                     Global.ActiveFile = new FileManager(file, true);
-                    Global.ActiveFile.FormatNewFile();
+                    await Global.ActiveFile.ReadyFile();
                     this.Frame.Navigate(typeof(MapPage));
                 }
             }
@@ -100,8 +225,8 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         private void OpenPopupAlert(string text)
         {
-            ((TextBlock)this.FindName("PopupAlertText")).Text = text;
-            ((Grid)this.FindName("PopupAlert")).Visibility = Visibility.Visible;
+            PopupAlertText.Text = text;
+            PopupAlert.Visibility = Visibility.Visible;
         }
 
         /// <summary>
@@ -157,8 +282,7 @@ namespace TFG_Worldbuilder_Application
                 await Windows.Storage.FileIO.WriteTextAsync(file, Global.ActiveFile.GetCopy());
                 // Application now has read/write access to the picked file
                 Global.ActiveFile = new FileManager(file, true);
-                Global.ActiveFile.FormatNewFile();
-                await Global.ActiveFile.SaveFile();
+                await Global.ActiveFile.ReadyFile();
                 this.Frame.Navigate(typeof(MapPage));
             }
             UpdateSaveState();
@@ -191,7 +315,7 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         private void PopupAlertButton_Click(object sender, RoutedEventArgs e)
         {
-            ((Grid)this.FindName("PopupAlert")).Visibility = Visibility.Collapsed;
+            PopupAlert.Visibility = Visibility.Collapsed;
         }
 
         /// <summary>
@@ -199,10 +323,10 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         private void OpenTextPrompt(string Label)
         {
-            ((TextBox)this.FindName("TextPromptBox")).Text = "";
-            ((TextBlock)this.FindName("TextPromptTab")).Text = Label;
-            ((Grid)this.FindName("TextPrompt")).Visibility = Visibility.Visible;
-            ((TextBox)this.FindName("TextPromptBox")).Focus(FocusState.Programmatic);
+            TextPromptBox.Text = "";
+            TextPromptTab.Text = Label;
+            TextPrompt.Visibility = Visibility.Visible;
+            TextPromptBox.Focus(FocusState.Programmatic);
         }
 
         private void Text_Prompt_Cancel_Click(object sender, RoutedEventArgs e)
@@ -231,16 +355,16 @@ namespace TFG_Worldbuilder_Application
                     switch (this.LevelStep)
                     {
                         case 1:
-                            this.type = prompt_text;
+                            this.subtype = prompt_text;
                             this.LevelStep++;
-                            OpenTextPrompt("Name your " + this.type + ":");
+                            OpenTextPrompt("Name your " + this.subtype + ":");
                             break;
                         case 2:
                             this.name = prompt_text;
                             switch (this.LevelNum)
                             {
                                 case 1:
-                                    NewWorld(this.name, this.type);
+                                    NewWorld(this.name, this.subtype);
                                     break;
                                 case 2:
                                     //ToDo: add call to CreateGreaterRegion
@@ -269,8 +393,9 @@ namespace TFG_Worldbuilder_Application
         {
             LevelNum = 1;
             LevelStep = 1;
+            type = LevelType.World;
             ActiveJob = "Create";
-            OpenTextPrompt("What are you creating?\nEnter a type:");
+            OpenTextPrompt("What type of world are you creating?\nEnter a subtype:");
         }
 
         /// <summary>
@@ -285,16 +410,16 @@ namespace TFG_Worldbuilder_Application
         }
 
         /// <summary>
-        /// Creates a new world object with the given name and type
+        /// Creates a new world object with the given name and subtype
         /// </summary>
-        private void NewWorld(string name, string type)
+        private void NewWorld(string name, string subtype)
         {
-            if(Global.ActiveFile.HasWorld(name, type))
+            if(Global.ActiveFile.HasWorld(name, subtype))
             {
                 OpenPopupAlert("Error: " + type + " with name \"" + name + "\" already exists");
             } else
             {
-                ActiveWorld = new Level1(name, type);
+                ActiveWorld = new Level1(name, subtype);
                 ActiveWorld.color = "LightSkyBlue";
                 Global.ActiveFile.Worlds.Add(ActiveWorld);
                 for(int i=0; i<Worlds.Count-1; i++)
@@ -331,12 +456,12 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Sets the ActiveWorld to the saved world with the specified name and type
         /// </summary>
-        private void OpenWorld(string name, string type)
+        private void OpenWorld(string name, string subtype)
         {
             bool found_world = false;
             for (int i = 0; i < Global.ActiveFile.Worlds.Count; i++)
             {
-                if (!found_world && string.Equals(name, Global.ActiveFile.Worlds[i].GetName()) && string.Equals(type, Global.ActiveFile.Worlds[i].GetType()))
+                if (!found_world && string.Equals(name, Global.ActiveFile.Worlds[i].GetName()) && string.Equals(subtype, Global.ActiveFile.Worlds[i].subtype))
                 {
                     found_world = true;
                     if (ActiveWorld == null || !string.Equals(ActiveWorld.name, Worlds[i].name))

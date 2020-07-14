@@ -1,1110 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace TFG_Worldbuilder_Application
 {
-    /// <summary>
-    /// 2D Point object
-    /// </summary>
-    public class Point2D
-    {
-        public long X;
-        public long Y;
-
-        /// <summary>
-        /// creates a Point2D object
-        /// </summary>
-        public Point2D(long X, long Y)
-        {
-            this.X = X;
-            this.Y = Y;
-        }
-
-        /// <summary>
-        /// copy constructor
-        /// </summary>
-        public Point2D(Point2D o)
-        {
-            X = o.X;
-            Y = o.Y;
-        }
-
-        /// <summary>
-        /// Attempts to convert a string in the format "(X,Y)" to a Point2D object
-        /// </summary>
-        public static Point2D FromString(string str)
-        {
-            if (str.Trim().IndexOf('(') == 0 && str.Trim().IndexOf(')') == str.Trim().Length-1 && str.IndexOf(',') > 0)
-            {
-                str = str.Trim().Substring(1, str.Trim().Length - 2).Trim();
-                long X, Y;
-                try
-                {
-                    X = Convert.ToInt64(str.Substring(0, str.IndexOf(',')));
-                    Y = Convert.ToInt64(str.Substring(str.IndexOf(',') + 1));
-                    return new Point2D(X, Y);
-                } catch (InvalidCastException)
-                {
-                    return null;
-                }
-            }
-            return null;
-        }
-
-        /// <summary>
-        /// adds two Point2D objects together
-        /// </summary>
-        public static Point2D operator+(Point2D a, Point2D b)
-        {
-            return new Point2D(a.X + b.X, a.Y + b.Y);
-        }
-
-        /// <summary>
-        /// takes the difference of two Point2D objects
-        /// </summary>
-        public static Point2D operator -(Point2D a, Point2D b)
-        {
-            return new Point2D(a.X - b.X, a.Y - b.Y);
-        }
-        
-        /// <summary>
-        /// multiplies a Point2D object by a scalar
-        /// </summary>
-        public static Point2D operator *(Point2D a, long s)
-        {
-            return new Point2D(a.X * s, a.Y * s);
-        }
-
-        /// <summary>
-        /// multiplies a Point2D object by a scalar
-        /// </summary>
-        public static Point2D operator *(long s, Point2D a)
-        {
-            return new Point2D(a.X * s, a.Y * s);
-        }
-
-        /// <summary>
-        /// divides a Point2D object by a scalar
-        /// </summary>
-        public static Point2D operator /(Point2D a, long s)
-        {
-            return new Point2D(a.X / s, a.Y / s);
-        }
-
-        /// <summary>
-        /// divides a scalar by a Point2D object
-        /// </summary>
-        public static Point2D operator /(long s, Point2D a)
-        {
-            return new Point2D(s / a.X, s / a.Y);
-        }
-
-        /// <summary>
-        /// checks equality between two Point2D objects
-        /// </summary>
-        public static bool operator ==(Point2D a, Point2D b)
-        {
-            return a.X == b.X && a.Y == b.Y;
-        }
-
-        /// <summary>
-        /// checks equality between two Point2D objects
-        /// </summary>
-        public override bool Equals(object that)
-        {
-            return this.GetType()==that.GetType() && this == (Point2D) that;
-        }
-
-        /// <summary>
-        /// Generates a possible hash value for any Point2D object
-        /// </summary>
-        public override int GetHashCode()
-        {
-            int sign = 1;
-            long hashl = this.X ^ this.Y;
-            if (hashl < 0)
-                sign = -1;
-            return (int)Math.Sqrt(Math.Abs(hashl)) * sign;
-        }
-
-        /// <summary>
-        /// checks inequality between two Point2D objects
-        /// </summary>
-        public static bool operator !=(Point2D a, Point2D b)
-        {
-            return a.X != b.X || a.Y != b.Y;
-        }
-
-        /// <summary>
-        /// puts the Point2D object in a readable format
-        /// </summary>
-        public override string ToString()
-        {
-            return "(" + X.ToString() + "," + Y.ToString() + ")";
-        }
-
-        /// <summary>
-        /// Returns the "length" of a point
-        /// </summary>
-        public long Length()
-        {
-            return (long)Math.Sqrt(Math.Pow(X, 2) + Math.Pow(Y, 2));
-        }
-
-        /// <summary>
-        /// Compares to another Point2D object and returns true if this one is above the other
-        /// </summary>
-        public bool Above(Point2D o)
-        {
-            return this.Y > o.Y;
-        }
-
-        /// <summary>
-        /// Compares to another Point2D object and returns true if this one is below the other
-        /// </summary>
-        public bool Below(Point2D o)
-        {
-            return this.Y < o.Y;
-        }
-
-        /// <summary>
-        /// Compares to another Point2D object and returns true if this one is left of the other
-        /// </summary>
-        public bool Left(Point2D o)
-        {
-            return this.X < o.X;
-        }
-
-        /// <summary>
-        /// Compares to another Point2D object and returns true if this one is right of the other
-        /// </summary>
-        public bool Right(Point2D o)
-        {
-            return this.X > o.X;
-        }
-    }
-
-    /// <summary>
-    /// Polygon2D object of Point2D points
-    /// </summary>
-    public class Polygon2D
-    {
-        public List<Point2D> vertices;
-
-        /// <summary>
-        /// Basic constructor
-        /// </summary>
-        public Polygon2D()
-        {
-            vertices = new List<Point2D>();
-        }
-
-        /// <summary>
-        /// Copy Constructor
-        /// </summary>
-        public Polygon2D(Polygon2D o)
-        {
-            vertices = new List<Point2D>();
-            for(int i=0; i<o.vertices.Count; i++)
-            {
-                vertices.Add(new Point2D(o.vertices[i]));
-            }
-        }
-
-        /// <summary>
-        /// Returns the number of vertices in the polygon
-        /// </summary>
-        public long Size()
-        {
-            return this.vertices.Count;
-        }
-
-        /// <summary>
-        /// Appends a new point to the end of the polygon's vertices
-        /// </summary>
-        public Point2D AppendPoint(Point2D point)
-        {
-            vertices.Add(new Point2D(point));
-            return point;
-        }
-
-        /// <summary>
-        /// Creates a new point between two existing points
-        /// </summary>
-        public Point2D NewPoint(Point2D a, Point2D b)
-        {
-            for(int i = 0; i < vertices.Count - 1; i++)
-            {
-                if ((vertices[i] == a && vertices[i+1] == b) || (vertices[i] == b && vertices[i + 1] == a))
-                {
-                    vertices.Insert(i + 1, (a + b) / 2);
-                    return (a + b) / 2;
-                }
-            }
-            return null;
-        }
-
-        /// <summary>
-        /// Moves a point to another
-        /// </summary>
-        public Point2D MovePoint(Point2D old_position, Point2D new_position)
-        {
-            for (int i = 0; i < vertices.Count; i++)
-            {
-                if (vertices[i] == old_position)
-                {
-                    vertices[i] = new Point2D(new_position);
-                    return vertices[i];
-                }
-            }
-            return null;
-        }
-
-        /// <summary>
-        /// Checks whether a given point is constrained by a polygon
-        /// </summary>
-        public bool PointInPolygon(Point2D point)
-        {
-            int i, j;
-            bool c = false;
-            for (i = 0, j = vertices.Count-1; i < vertices.Count; j = i++)
-            {
-                //The point is checked against each edge. The first line of the test succeeds if the y-coord is within scope, and the second line succeeds if it is left
-                if (((vertices[i].Y >= point.Y) != (vertices[j].Y >= point.Y)) &&
-                 (point.X <= (vertices[j].X - vertices[i].X) * (point.Y - vertices[i].Y) / (vertices[j].Y - vertices[i].Y) + vertices[i].X))
-                    c = !c;
-            }
-            return c;
-        }
-
-        /// <summary>
-        /// Checks whether a given polygon is constrained by a polygon
-        /// </summary>
-        public bool PolygonInPolygon(Polygon2D polygon)
-        {
-            for (int i=0; i<polygon.vertices.Count; i++)
-            {
-                if (!PointInPolygon(polygon.vertices[i]))
-                    return false;
-            }
-            return true;
-        }
-
-        /// <summary>
-        /// Checks whether the polygon has a given point
-        /// </summary>
-        public bool HasPoint(Point2D point)
-        {
-            for(int i = 0; i < vertices.Count; i++)
-            {
-                if (point == vertices[i])
-                    return true;
-            }
-            return false;
-        }
-    }
-
-    /// <summary>
-    /// Superclass that stores the information of a Level object
-    /// </summary>
-    public class SuperLevel : INotifyPropertyChanged
-    {
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void RaisePropertyChanged(string str)
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(str));
-                //PropertyChanged(this, new PropertyChangedEventArgs(str));
-            }
-        }
-
-        private string _name;
-        public string name
-        {
-            get
-            {
-                return _name;
-            }
-            set
-            {
-                _name = value;
-                RaisePropertyChanged("name");
-            }
-        }
-        private int _level;
-        public int level
-        {
-            get
-            {
-                return _level;
-            }
-            set
-            {
-                _level = value;
-                RaisePropertyChanged("level");
-            }
-        }
-        private string _leveltype;
-        public string leveltype
-        {
-            get
-            {
-                return _leveltype;
-            }
-            set
-            {
-                _leveltype = value;
-                RaisePropertyChanged("leveltype");
-            }
-        }
-        private string _color;
-        public string color
-        {
-            get
-            {
-                return _color;
-            }
-            set
-            {
-                _color = value;
-                RaisePropertyChanged("color");
-            }
-        }
-        private List<SuperLevel> sublevels;
-        public SuperLevel parent;
-        public List<string> leveldata;
-
-        /// <summary>
-        /// empty constructor; do not use
-        /// </summary>
-        public SuperLevel()
-        {
-            this.name = "null";
-            this.level = -1;
-            this.leveltype = "null";
-            this.sublevels = null;
-            this.parent = null;
-            this.leveldata = null;
-        }
-
-        /// <summary>
-        /// Basic constructor, creates a level given a name, level number, and level type
-        /// </summary>
-        protected SuperLevel(string name, int level, string leveltype, SuperLevel parent)
-        {
-            this.name = name;
-            this.level = level;
-            this.leveltype = leveltype;
-            this.sublevels = new List<SuperLevel>();
-            if (parent!=null && parent.GetLevel() < level)
-                this.parent = parent;
-            else
-                this.parent = null;
-            this.leveldata = new List<string>();
-            color = "#F2F2F2";
-        }
-
-        /// <summary>
-        /// basic destructor
-        /// </summary>
-        ~SuperLevel()
-        {
-            this.sublevels.Clear();
-        }
-
-        /// <summary>
-        /// Returns true if the current level is a valid level
-        /// </summary>
-        public bool Valid()
-        {
-            bool toReturn = level > 0 && level <= 6 && !string.Equals(name, "null") && !string.Equals(leveltype, "null");
-            if (parent != null)
-                toReturn = toReturn && level > parent.GetLevel();
-            for(int i=0; i<sublevels.Count && toReturn; i++)
-            {
-                toReturn = toReturn && sublevels[i].Valid();
-            }
-            return toReturn;
-        }
-
-        /// <summary>
-        /// Returns the level name
-        /// </summary>
-        public string GetName()
-        {
-            return this.name;
-        }
-
-        /// <summary>
-        /// Prepares the level for printings with the given delimiters
-        /// </summary>
-        public string PrepareString(char inner_delimiter, char outer_delimiter)
-        {
-            string Text = "Start Level" + inner_delimiter + level + outer_delimiter;
-            Text += "Level Name" + inner_delimiter + name + outer_delimiter;
-            Text += "Level Type" + inner_delimiter + leveltype + outer_delimiter;
-            Polygon2D border = null;
-            switch (level) //Appends the special properties of each level to Text
-            {
-                case 1:
-                    break;
-                case 2:
-                    border = ((Level2)this).GetBorder();
-                    for (int i = 0; i < border.Size(); i++)
-                    {
-                        Text += "Border Vertex" + inner_delimiter + border.vertices[i].ToString() + outer_delimiter;
-                    }
-                    break;
-                case 3:
-                    border = ((Level3)this).GetBorder();
-                    for (int i = 0; i < border.Size(); i++)
-                    {
-                        Text += "Border Vertex" + inner_delimiter + border.vertices[i].ToString() + outer_delimiter;
-                    }
-                    break;
-                case 4:
-                    border = ((Level4)this).GetBorder();
-                    for (int i = 0; i < border.Size(); i++)
-                    {
-                        Text += "Border Vertex" + inner_delimiter + border.vertices[i].ToString() + outer_delimiter;
-                    }
-                    break;
-                case 5:
-                    Text += "Center" + inner_delimiter + ((Level5)this).GetCenter().ToString() + outer_delimiter;
-                    Text += "Radius" + inner_delimiter + ((Level5)this).radius.ToString() + outer_delimiter;
-                    break;
-                case 6:
-                    Text += "Center" + inner_delimiter + ((Level6)this).GetCenter().ToString() + outer_delimiter;
-                    break;
-                default:
-                    break;
-            } //Now done with the special properties of each level
-            for (int i = 0; i < leveldata.Count; i++) //Add the leveldata
-            {
-                Text += leveldata[i].Trim() + outer_delimiter;
-            }
-            for (int i = 0; i < sublevels.Count; i++)
-            {
-                sublevels[i].PrepareString(inner_delimiter, outer_delimiter);
-            }
-            Text += "End Level" + inner_delimiter + level + outer_delimiter;
-            return Text;
-        }
-
-        /// <summary>
-        /// Prepares the level for printings with the default delimiters
-        /// </summary>
-        public override string ToString()
-        {
-            return PrepareString(' ', '\n');
-        }
-
-        /// <summary>
-        /// Returns the list of sublevels
-        /// </summary>
-        public List<SuperLevel> GetSublevels()
-        {
-            return this.sublevels;
-        }
-
-        /// <summary>
-        /// Returns the level number
-        /// </summary>
-        public int GetLevel()
-        {
-            return this.level;
-        }
-
-        /// <summary>
-        /// Returns the level type
-        /// </summary>
-        public string GetLevelType()
-        {
-            return this.leveltype;
-        }
-        
-        /// <summary>
-        /// Compares the level numbers
-        /// </summary>
-        public static bool operator<(SuperLevel s1, SuperLevel s2)
-        {
-            return s1.GetLevel() < s2.GetLevel();
-        }
-
-        /// <summary>
-        /// Compares the level numbers
-        /// </summary>
-        public static bool operator >(SuperLevel s1, SuperLevel s2)
-        {
-            return s1.GetLevel() > s2.GetLevel();
-        }
-        
-        /// <summary>
-        /// Checks if the current level has a sublevel with a given name
-        /// </summary>
-        public bool HasSublevelWithName(string name)
-        {
-            if (string.Equals(name, "null"))
-                return true;
-            for (int i = 0; i < this.sublevels.Count; i++)
-            {
-                if (string.Equals(name, this.sublevels[i].GetName()))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// Adds a passed sublevel if it is of a lower level than the current level; returns true on success
-        /// </summary>
-        public bool AddSublevel(SuperLevel o)
-        {
-            if (o.GetLevel() > this.GetLevel())
-            {
-                if (HasSublevelWithName(o.GetName()))
-                    return false;
-                if (!o.SetParent(this))
-                    return false;
-                this.sublevels.Add(o);
-                return true;
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// Sets the parent of the level
-        /// </summary>
-        public bool SetParent(SuperLevel parent)
-        {
-            if (parent != null && !string.Equals(parent.GetName(), "null") && !string.Equals(parent.GetType(), "null"))
-            {
-                this.parent = parent;
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// Finds and returns a level with the name
-        /// </summary>
-        public SuperLevel GetLevel(string name)
-        {
-            for(int i=0; i<this.sublevels.Count; i++)
-            {
-                if(string.Equals(name, this.sublevels[i].GetName())){
-                    return this.sublevels[i];
-                }
-            }
-            return null;
-        }
-
-        /// <summary>
-        /// Finds and returns a level with the name and level
-        /// </summary>
-        public SuperLevel GetLevel(string name, int level)
-        {
-            for (int i = 0; i < this.sublevels.Count; i++)
-            {
-                if (string.Equals(name, this.sublevels[i].GetName()))
-                {
-                    if(level == this.sublevels[i].level)
-                        return this.sublevels[i];
-                    break;
-                }
-            }
-            return null;
-        }
-
-        /// <summary>
-        /// Finds and returns a level with the name, level, and leveltype
-        /// </summary>
-        public SuperLevel GetLevel(string name, int level, string leveltype)
-        {
-            for (int i = 0; i < this.sublevels.Count; i++)
-            {
-                if (string.Equals(name, this.sublevels[i].GetName()))
-                {
-                    if (level == this.sublevels[i].level && string.Equals(leveltype, this.sublevels[i].GetLevelType()))
-                        return this.sublevels[i];
-                    break;
-                }
-            }
-            return null;
-        }
-
-        /// <summary>
-        /// Retrieves a list of all levels with the given name
-        /// </summary>
-        public List<SuperLevel> FindLevels(string name)
-        {
-            List<SuperLevel> results = new List<SuperLevel>();
-            for(int i = 0; i < this.sublevels.Count; i++)
-            {
-                if(string.Equals(name, this.sublevels[i].GetName())){
-                    results.Add(this.sublevels[i]);
-                    break;
-                }
-            }
-            for(int i = 0; i < this.sublevels.Count; i++)
-            {
-                results.Concat<SuperLevel>(this.sublevels[i].FindLevels(name));
-            }
-            return results;
-        }
-
-        /// <summary>
-        /// Retrieves a list of all levels with the given name and level number
-        /// </summary>
-        public List<SuperLevel> FindLevels(string name, int level)
-        {
-            List<SuperLevel> results = new List<SuperLevel>();
-            for (int i = 0; i < this.sublevels.Count; i++)
-            {
-                if (string.Equals(name, this.sublevels[i].GetName())){
-                    if(level == this.sublevels[i].GetLevel())
-                        results.Add(this.sublevels[i]);
-                    break;
-                }
-            }
-            if (level > this.level + 1)
-            {
-                for (int i = 0; i < this.sublevels.Count; i++)
-                {
-                    if(level > this.sublevels[i].GetLevel()) {
-                        results.Concat<SuperLevel>(this.sublevels[i].FindLevels(name, level));
-                    }
-                }
-            }
-            return results;
-        }
-
-        /// <summary>
-        /// Retrieves a list of all levels with the given name, level number, and level type
-        /// </summary>
-        public List<SuperLevel> FindLevels(string name, int level, string leveltype)
-        {
-            List<SuperLevel> results = new List<SuperLevel>();
-            for (int i = 0; i < this.sublevels.Count; i++)
-            {
-                if (string.Equals(name, this.sublevels[i].GetName()))
-                {
-                    if (level == this.sublevels[i].GetLevel() && string.Equals(leveltype, this.sublevels[i].GetLevelType()))
-                        results.Add(this.sublevels[i]);
-                    break;
-                }
-            }
-            if (level > this.level + 1)
-            {
-                for (int i = 0; i < this.sublevels.Count; i++)
-                {
-                    if (level > this.sublevels[i].GetLevel())
-                    {
-                        results.Concat<SuperLevel>(this.sublevels[i].FindLevels(name, level, leveltype));
-                    }
-                }
-            }
-            return results;
-        }
-    };
-
-    /// <summary>
-    /// Level 1 object class - Worlds
-    /// </summary>
-    public class Level1 : SuperLevel
-    {
-
-        /// <summary>
-        /// Basic constructor, creates a level 1 object given a name and level type
-        /// </summary>
-        public Level1(string name, string leveltype) : base(name, 1, leveltype, null)
-        {
-            
-        }
-    }
-
-    /// <summary>
-    /// Level 2 object class - Greater Regions
-    /// </summary>
-    public class Level2 : SuperLevel
-    {
-        private Polygon2D border;
-
-        /// <summary>
-        /// Basic constructor, creates a level 2 object given a name and level type
-        /// </summary>
-        public Level2(string name, string leveltype, Level1 parent, Polygon2D border) : base(name, 2, leveltype, parent)
-        {
-            this.border = new Polygon2D(border);
-        }
-
-        /// <summary>
-        /// Makes a copy of the border property to return
-        /// </summary>
-        /// <returns></returns>
-        public Polygon2D GetBorder()
-        {
-            return new Polygon2D(border);
-        }
-
-        /// <summary>
-        /// Returns the number of vertices in the border
-        /// </summary>
-        public long Size()
-        {
-            return this.border.Size();
-        }
-
-        /// <summary>
-        /// Appends a new point to the end of the borders's vertices
-        /// </summary>
-        public Point2D AppendPoint(Point2D point)
-        {
-            return border.AppendPoint(point);
-        }
-
-        /// <summary>
-        /// Creates a new point between two existing points
-        /// </summary>
-        public Point2D NewPoint(Point2D a, Point2D b)
-        {
-            return border.NewPoint(a, b);
-        }
-
-        /// <summary>
-        /// Moves a point to another
-        /// </summary>
-        public Point2D MovePoint(Point2D old_position, Point2D new_position)
-        {
-            return border.MovePoint(old_position, new_position);
-        }
-
-        /// <summary>
-        /// Checks whether a given point is constrained by a polygon
-        /// </summary>
-        public bool PointInPolygon(Point2D point)
-        {
-            return border.PointInPolygon(point);
-        }
-
-        /// <summary>
-        /// Checks whether a given polygon is constrained by a polygon
-        /// </summary>
-        public bool PolygonInPolygon(Polygon2D polygon)
-        {
-            return border.PolygonInPolygon(polygon);
-        }
-
-        /// <summary>
-        /// Checks whether the polygon has a given point
-        /// </summary>
-        public bool HasPoint(Point2D point)
-        {
-            return border.HasPoint(point);
-        }
-    }
-
-    /// <summary>
-    /// Level 3 object class - Regions
-    /// </summary>
-    public class Level3 : SuperLevel
-    {
-        private Polygon2D border; //Not constrained by Greater Region Boundaries
-
-        /// <summary>
-        /// Basic constructor, creates a level 3 object given a name and level type
-        /// </summary>
-        public Level3(string name, string leveltype, SuperLevel parent, Polygon2D border) : base(name, 3, leveltype, parent)
-        {
-            this.border = new Polygon2D(border);
-        }
-
-        /// <summary>
-        /// Makes a copy of the border property to return
-        /// </summary>
-        /// <returns></returns>
-        public Polygon2D GetBorder()
-        {
-            return new Polygon2D(border);
-        }
-
-        /// <summary>
-        /// Returns the number of vertices in the border
-        /// </summary>
-        public long Size()
-        {
-            return this.border.Size();
-        }
-
-        /// <summary>
-        /// Appends a new point to the end of the borders's vertices
-        /// </summary>
-        public Point2D AppendPoint(Point2D point)
-        {
-            return border.AppendPoint(point);
-        }
-
-        /// <summary>
-        /// Creates a new point between two existing points
-        /// </summary>
-        public Point2D NewPoint(Point2D a, Point2D b)
-        {
-            return border.NewPoint(a, b);
-        }
-
-        /// <summary>
-        /// Moves a point to another
-        /// </summary>
-        public Point2D MovePoint(Point2D old_position, Point2D new_position)
-        {
-            return border.MovePoint(old_position, new_position);
-        }
-
-        /// <summary>
-        /// Checks whether a given point is constrained by a polygon
-        /// </summary>
-        public bool PointInPolygon(Point2D point)
-        {
-            return border.PointInPolygon(point);
-        }
-
-        /// <summary>
-        /// Checks whether a given polygon is constrained by a polygon
-        /// </summary>
-        public bool PolygonInPolygon(Polygon2D polygon)
-        {
-            return border.PolygonInPolygon(polygon);
-        }
-
-        /// <summary>
-        /// Checks whether the polygon has a given point
-        /// </summary>
-        public bool HasPoint(Point2D point)
-        {
-            return border.HasPoint(point);
-        }
-    }
-
-    /// <summary>
-    /// Level 4 object class - Subregions
-    /// </summary>
-    public class Level4 : SuperLevel
-    {
-        private Polygon2D border; //Constrained by Greater Region Boundaries
-
-        /// <summary>
-        /// Basic constructor, creates a level 4 object given a name and level type
-        /// </summary>
-        public Level4(string name, string leveltype, SuperLevel parent, Polygon2D border) : base(name, 4, leveltype, parent)
-        {
-            this.border = new Polygon2D(border);
-        }
-
-        /// <summary>
-        /// Makes a copy of the border property to return
-        /// </summary>
-        /// <returns></returns>
-        public Polygon2D GetBorder()
-        {
-            return new Polygon2D(border);
-        }
-
-        /// <summary>
-        /// Returns the number of vertices in the border
-        /// </summary>
-        public long Size()
-        {
-            return this.border.Size();
-        }
-
-        /// <summary>
-        /// Returns true if the parent is of the correct type and the given point fits within the constraints of the parent, or if the parent is not of the correct type
-        /// </summary>
-        public bool PointInParent(Point2D point)
-        {
-            if (this.parent.GetLevel() == 3)
-                return ((Level3)this.parent).GetBorder().PointInPolygon(point);
-            return true;
-        }
-
-        /// <summary>
-        /// Appends a new point to the end of the borders's vertices, but only if that point fits within the constraints of the parent's borders
-        /// </summary>
-        public Point2D AppendPoint(Point2D point)
-        {
-            if(PointInParent(point))
-                return border.AppendPoint(point);
-            return null;
-        }
-
-        /// <summary>
-        /// Creates a new point between two existing points
-        /// </summary>
-        public Point2D NewPoint(Point2D a, Point2D b)
-        {
-            return border.NewPoint(a, b);
-        }
-
-        /// <summary>
-        /// Moves a point to another, but only if that point fits within the constraints of the parent's borders
-        /// </summary>
-        public Point2D MovePoint(Point2D old_position, Point2D new_position)
-        {
-            if (PointInParent(new_position))
-                return border.MovePoint(old_position, new_position);
-            return null;
-        }
-
-        /// <summary>
-        /// Checks whether a given point is constrained by a polygon
-        /// </summary>
-        public bool PointInPolygon(Point2D point)
-        {
-            return border.PointInPolygon(point);
-        }
-
-        /// <summary>
-        /// Checks whether a given polygon is constrained by a polygon
-        /// </summary>
-        public bool PolygonInPolygon(Polygon2D polygon)
-        {
-            return border.PolygonInPolygon(polygon);
-        }
-
-        /// <summary>
-        /// Checks whether the polygon has a given point
-        /// </summary>
-        public bool HasPoint(Point2D point)
-        {
-            return border.HasPoint(point);
-        }
-    }
-
-    /// <summary>
-    /// Level 5 object class - Locations
-    /// </summary>
-    public class Level5 : SuperLevel
-    {
-        private Point2D center;
-        public long radius;
-
-        /// <summary>
-        /// Basic constructor, creates a level 5 object given a name and level type
-        /// </summary>
-        public Level5(string name, string leveltype, SuperLevel parent, Point2D center, long radius) : base(name, 5, leveltype, parent)
-        {
-            if (PointInParent(center))
-            {
-                this.center = new Point2D(center);
-                this.radius = radius;
-            }
-            else
-            {
-                this.center = null;
-                this.radius = 0;
-            }
-        }
-
-        /// <summary>
-        /// Returns true if the parent is of the correct type and the given point fits within the constraints of the parent, or if the parent is not of the correct type
-        /// </summary>
-        public bool PointInParent(Point2D point)
-        {
-            if (this.parent.GetLevel() == 3)
-                return ((Level3)this.parent).GetBorder().PointInPolygon(point);
-            else if (this.parent.GetLevel() == 4)
-                return ((Level4)this.parent).GetBorder().PointInPolygon(point);
-            return true;
-        }
-
-        /// <summary>
-        /// Returns the center
-        /// </summary>
-        public Point2D GetCenter()
-        {
-            return new Point2D(this.center);
-        }
-
-        /// <summary>
-        /// Moves the center somewhere else
-        /// </summary>
-        public bool MoveCenter(Point2D point)
-        {
-            if (PointInParent(point))
-            {
-                this.center = new Point2D(point);
-                return true;
-            }
-            return false;
-        }
-
-    }
-
-    /// <summary>
-    /// Level 6 object class - Structures
-    /// </summary>
-    public class Level6 : SuperLevel
-    {
-        private Point2D center;
-
-        /// <summary>
-        /// Basic constructor, creates a level 6 object given a name and level type
-        /// </summary>
-        public Level6(string name, string leveltype, SuperLevel parent, Point2D center) : base(name, 6, leveltype, parent)
-        {
-            if (PointInParent(center))
-            {
-                this.center = new Point2D(center);
-            }
-            else
-            {
-                this.center = null;
-            }
-        }
-
-        /// <summary>
-        /// Returns true if the parent is of the correct type and the given point fits within the constraints of the parent, or if the parent is not of the correct type
-        /// </summary>
-        public bool PointInParent(Point2D point)
-        {
-            if (this.parent.GetLevel() == 3)
-                return ((Level3)this.parent).GetBorder().PointInPolygon(point);
-            else if (this.parent.GetLevel() == 4)
-                return ((Level4)this.parent).GetBorder().PointInPolygon(point);
-            else if (this.parent.GetLevel() == 5)
-                return (this.center - ((Level5)this.parent).GetCenter()).Length() <= ((Level5)this.parent).radius;
-            return true;
-        }
-
-        /// <summary>
-        /// Returns the center
-        /// </summary>
-        public Point2D GetCenter()
-        {
-            return new Point2D(this.center);
-        }
-
-        /// <summary>
-        /// Moves the center somewhere else
-        /// </summary>
-        public bool MoveCenter(Point2D point)
-        {
-            if (PointInParent(point))
-            {
-                this.center = new Point2D(point);
-                return true;
-            }
-            return false;
-        }
-
-    }
-
     /// <summary>
     /// A class that simplifies reading/writing of the active file
     /// </summary>
@@ -1176,6 +78,7 @@ namespace TFG_Worldbuilder_Application
             Keywords.Add("Radius");
             Keywords.Add("End Level");
             Keywords.Add("Level Type");
+            Keywords.Add("Level Subtype");
             Keywords.Add("Invalid");
             Header = "Prime Worldbuilding File" + outer_delimiter + "Created by Michael Quinn" + outer_delimiter + "Version" + inner_delimiter + "1.0.0" + outer_delimiter;
             Worlds = FileManager.WorldList();
@@ -1208,14 +111,14 @@ namespace TFG_Worldbuilder_Application
         }
 
         /// <summary>
-        /// Returns true if there is a world that has the same name and type
+        /// Returns true if there is a world that has the same name and subtype
         /// </summary>
-        public bool HasWorld(string name, string type)
+        public bool HasWorld(string name, string subtype)
         {
             if (Readable) { 
                 for (int i=0; i<Worlds.Count; i++)
                 {
-                    if (string.Equals(name, Worlds[i].GetName()) && string.Equals(type, Worlds[i].GetLevelType()))
+                    if (string.Equals(name, Worlds[i].GetName()) && string.Equals(subtype, Worlds[i].subtype))
                         return true;
                 }
                 return false;
@@ -1518,7 +421,8 @@ namespace TFG_Worldbuilder_Application
         private SuperLevel ParseLevels(String ActiveText, int level_num, SuperLevel parent)
         {
             string level_name = "null";
-            string level_type = "null";
+            LevelType level_type = LevelType.Invalid;
+            string level_subtype = "null";
             string line = "";
             Polygon2D border = new Polygon2D();
             Point2D center = null;
@@ -1528,6 +432,7 @@ namespace TFG_Worldbuilder_Application
             SuperLevel level = null;
             bool got_name = false;
             bool got_type = false;
+            bool got_subtype = false;
             bool got_border = false;
             bool got_center = false;
             bool got_radius = false;
@@ -1554,8 +459,37 @@ namespace TFG_Worldbuilder_Application
                     do_it = false;
                     if (!got_type)
                     {
-                        level_type = line.Substring("Level Type".Length + 1).Trim();
-                        got_type = true;
+                        line = line.Substring("Level Type".Length + 1).Trim();
+                        for(short i = -1; i <= 6; i++)
+                            {
+                            if (string.Equals(line, Enum.GetName(typeof(LevelType), ((LevelType)i))))
+                            {
+                                level_type = (LevelType)i;
+                                got_type = true;
+                                break;
+                            }
+                        }
+                        if (!got_type)
+                        {
+                            try
+                            {
+                                level_type = (LevelType)Convert.ToInt16(line);
+                                got_type = true;
+                            }
+                            catch (FormatException)
+                            {
+                                ;
+                            }
+                        }
+                    }
+                }
+                else if (line.IndexOf("Level Subtype") == 0) //Level information processing for Level Subtype
+                {
+                    do_it = false;
+                    if (!got_subtype)
+                    {
+                        level_subtype = line.Substring("Level Subtype".Length + 1).Trim();
+                        got_subtype = true;
                     }
                 }
                 else if (line.IndexOf("Border Vertex") == 0)//Level information processing for Border Vertices
@@ -1636,22 +570,40 @@ namespace TFG_Worldbuilder_Application
                         switch (level_num)
                         {
                             case 1:
-                                level = new Level1(level_name, level_type);
+                                if(got_subtype)
+                                    level = new Level1(level_name, level_subtype);
+                                else
+                                    level = new Level1(level_name);
                                 break;
                             case 2:
-                                level = new Level2(level_name, level_type, (Level1)parent, border);
+                                if (got_subtype)
+                                    level = new Level2(level_name, level_type, level_subtype, (Level1)parent, border);
+                                else
+                                    level = new Level2(level_name, level_type, (Level1)parent, border);
                                 break;
                             case 3:
-                                level = new Level3(level_name, level_type, parent, border);
+                                if (got_subtype)
+                                    level = new Level3(level_name, level_type, level_subtype, parent, border);
+                                else
+                                    level = new Level3(level_name, level_type, parent, border);
                                 break;
                             case 4:
-                                level = new Level4(level_name, level_type, parent, border);
+                                if (got_subtype)
+                                    level = new Level4(level_name, level_type, level_subtype, parent, border);
+                                else
+                                    level = new Level4(level_name, level_type, parent, border);
                                 break;
                             case 5:
-                                level = new Level5(level_name, level_type, parent, center, radius);
+                                if(got_subtype)
+                                    level = new Level5(level_name, level_type, level_subtype, parent, center, radius);
+                                else
+                                    level = new Level5(level_name, level_type, parent, center, radius);
                                 break;
                             case 6:
-                                level = new Level6(level_name, level_type, parent, center);
+                                if(got_subtype)
+                                    level = new Level6(level_name, level_type, level_subtype, parent, center);
+                                else
+                                    level = new Level6(level_name, level_type, parent, center);
                                 break;
                             default:
                                 make_level = false;
@@ -1793,7 +745,7 @@ namespace TFG_Worldbuilder_Application
                         if(string.Equals(line, "Start Level" + inner_delimiter + "1"))
                         {
                             int end = IndexOf("End Level" + inner_delimiter + "1", index);
-                            if(end >= index)
+                            if(end >= index) //Index is not length; this *should* be >=
                             {
                                 this.Worlds.Add((Level1) ParseLevels(ConvertText(GetLines(index + 1, end - 1)), 1, null));
                                 index = end;
@@ -1834,14 +786,14 @@ namespace TFG_Worldbuilder_Application
                 this.Original = await Windows.Storage.FileIO.ReadTextAsync(ActiveFile);
                 this.Text = this.Original;
                 this.active_lines = ConvertText(this.Text);
-                if (string.Equals(this.active_lines[0], "Prime Worldbuilding File"))
+                if (this.active_lines.Count > 0 && string.Equals(this.active_lines[0], "Prime Worldbuilding File"))
                 {
                     this.ValidFile = true;
                     this.Readable = true;
                 }
                 else if (this.NewFile)
                 {
-                    FormatNewFile();
+                    await FormatNewFile();
                     this.Readable = true;
                 }
                 else
@@ -1960,11 +912,12 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Sets a new file to match the ideal format
         /// </summary>
-        public void FormatNewFile()
+        private async Task FormatNewFile()
         {
             if (!this.ValidFile && NewFile)
             {
                 UpdateText();
+                await SaveFile();
                 this.ValidFile = true;
                 this.Writable = true;
                 NewFile = false;
