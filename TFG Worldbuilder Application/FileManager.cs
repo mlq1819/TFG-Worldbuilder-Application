@@ -25,7 +25,12 @@ namespace TFG_Worldbuilder_Application
         {
             get
             {
-                return Data != null && length >= 0 && index >= 0 && ActiveText != null;
+                bool _valid = Data != null && length >= 0 && index >= 0 && ActiveText != null;
+                if (_valid && typeof(T) == typeof(long))
+                    _valid = ((long)((object)Data)) >= 0;
+                if (_valid && typeof(T) == typeof(string))
+                    _valid = ((string)((object)Data)).Length > 0;
+                return _valid;
             }
         }
 
@@ -552,7 +557,7 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Given text, gets the Vertices within the text and returns a ParseContainer holding it
         /// </summary>
-        private ParseContainer<Polygon2D> ParseVertices(ParseContainer<Polygon2D> text)
+        private ParseContainer<Polygon2D> ParseBorder(ParseContainer<Polygon2D> text)
         {
             string ActiveText = text.ActiveText;
             int length = text.length;
@@ -663,9 +668,9 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         private SuperLevel ParseLevels(String ActiveText, int level_num, SuperLevel parent)
         {
-            string level_name = "null";
+            string level_name = "";
             LevelType level_type = LevelType.Invalid;
-            string level_subtype = "null";
+            string level_subtype = "";
             string line = "";
             Polygon2D border = new Polygon2D();
             Point2D center = null;
@@ -673,117 +678,148 @@ namespace TFG_Worldbuilder_Application
             int index = 0;
             int length = 0;
             SuperLevel level = null;
-            bool got_name = false;
-            bool got_type = false;
-            bool got_subtype = false;
-            bool got_border = false;
-            bool got_center = false;
-            bool got_radius = false;
-            bool make_level = false;
-            bool made_level = false;
 
-            //Main loop; begins by checking whether the level information is available, and provides it; then looks for content processing
-            while (index < ActiveText.Length)
+            bool continue_parse = true; //By breaking the parsing of required data out of the main loop, it ensures the information is found or the level is discarded
+            if (continue_parse) //Parse Name
+            {
+                ParseContainer<string> container = new ParseContainer<string>(length, index, ActiveText, null);
+                container = ParseName(container);
+                if (container.Valid && container.Data.Length > 0)
+                {
+                    level_name = container.Data;
+                    length = container.length;
+                    index = container.index;
+                } else
+                {
+                    continue_parse = false;
+                }
+            }
+            if (continue_parse) //Parse Type
+            {
+                ParseContainer<LevelType> container = new ParseContainer<LevelType>(length, index, ActiveText, LevelType.Invalid);
+                container = ParseType(container);
+                if (container.Valid && container.Data != LevelType.Invalid)
+                {
+                    level_type = container.Data;
+                    length = container.length;
+                    index = container.index;
+                }
+                else
+                {
+                    continue_parse = false;
+                }
+            }
+            if (continue_parse) //Parse Subtype
+            {
+                ParseContainer<string> container = new ParseContainer<string>(length, index, ActiveText, null);
+                container = ParseSubtype(container);
+                if (container.Valid && container.Data.Length > 0)
+                {
+                    level_subtype = container.Data;
+                    length = container.length;
+                    index = container.index;
+                }
+            }
+            if (continue_parse && SuperLevel.HasBorderProperty(level_num)) //Parse Border
+            {
+                ParseContainer<Polygon2D> container = new ParseContainer<Polygon2D>(length, index, ActiveText, null);
+                container = ParseBorder(container);
+                if (container.Valid && container.Data.Count >= 3)
+                {
+                    border = container.Data;
+                    length = container.length;
+                    index = container.index;
+                }
+                else
+                {
+                    continue_parse = false;
+                }
+            }
+            if (continue_parse && SuperLevel.HasCenterProperty(level_num)) //Parse Center
+            {
+                ParseContainer<Point2D> container = new ParseContainer<Point2D>(length, index, ActiveText, null);
+                container = ParseCenter(container);
+                if (container.Valid)
+                {
+                    center = container.Data;
+                    length = container.length;
+                    index = container.index;
+                }
+                else
+                {
+                    continue_parse = false;
+                }
+            }
+            if (continue_parse && SuperLevel.HasRadiusProperty(level_num)) //Parse Radius
+            {
+                ParseContainer<long> container = new ParseContainer<long>(length, index, ActiveText, -1);
+                container = ParseRadius(container);
+                if (container.Valid && container.Data >= 0)
+                {
+                    radius = container.Data;
+                    length = container.length;
+                    index = container.index;
+                }
+                else
+                {
+                    radius = 0;
+                }
+            }
+            if (!continue_parse)
+                return null;
+            switch (level_num) //Level constructor
+            {
+                case 1:
+                    if (level_subtype.Length > 0)
+                        level = (SuperLevel)new Level1(level_name, level_subtype);
+                    else
+                        level = (SuperLevel)new Level1(level_name);
+                    break;
+                case 2:
+                    if (level_subtype.Length > 0)
+                        level = (SuperLevel)new Level2(level_name, level_type, level_subtype, (Level1) parent, border);
+                    else
+                        level = (SuperLevel)new Level2(level_name, level_type, (Level1)parent, border);
+                    break;
+                case 3:
+                    if (level_subtype.Length > 0)
+                        level = (SuperLevel)new Level3(level_name, level_type, level_subtype, parent, border);
+                    else
+                        level = (SuperLevel)new Level3(level_name, level_type, parent, border);
+                    break;
+                case 4:
+                    if (level_subtype.Length > 0)
+                        level = (SuperLevel)new Level4(level_name, level_type, level_subtype, parent, border);
+                    else
+                        level = (SuperLevel)new Level4(level_name, level_type, parent, border);
+                    break;
+                case 5:
+                    if (level_subtype.Length > 0)
+                        level = (SuperLevel)new Level5(level_name, level_type, level_subtype, parent, center, radius);
+                    else
+                        level = (SuperLevel)new Level5(level_name, level_type, parent, center, radius);
+                    break;
+                case 6:
+                    if (level_subtype.Length > 0)
+                        level = (SuperLevel)new Level6(level_name, level_type, level_subtype, parent, center);
+                    else
+                        level = (SuperLevel)new Level6(level_name, level_type, parent, center);
+                    break;
+                default:
+                    return null;
+            }
+            
+            //Main loop; processes sublevels and other level data
+            while (continue_parse && index < ActiveText.Length)
             {
                 length = ActiveText.Substring(index).IndexOf(outer_delimiter);
                 line = ActiveText.Substring(index, length).Trim();
                 bool do_it = true;
-                if (line.IndexOf("Level Name") == 0) //Beginning of level information processing; starting with Level Name
-                {
-                    do_it = false;
-                    if (!got_name)
-                    {
-                        level_name = line.Substring("Level Name".Length + 1).Trim();
-                        got_name = true;
-                    }
-                }
-                else if (line.IndexOf("Level Type") == 0) //Level information processing for Level Type
-                {
-                    do_it = false;
-                    if (!got_type)
-                    {
-                        line = line.Substring("Level Type".Length + 1).Trim();
-                        for(short i = -1; i <= 6; i++)
-                            {
-                            if (string.Equals(line, Enum.GetName(typeof(LevelType), ((LevelType)i))))
-                            {
-                                level_type = (LevelType)i;
-                                got_type = true;
-                                break;
-                            }
-                        }
-                        if (!got_type)
-                        {
-                            try
-                            {
-                                level_type = (LevelType)Convert.ToInt16(line);
-                                got_type = true;
-                            }
-                            catch (FormatException)
-                            {
-                                ;
-                            }
-                        }
-                    }
-                }
-                else if (line.IndexOf("Level Subtype") == 0) //Level information processing for Level Subtype
-                {
-                    do_it = false;
-                    if (!got_subtype)
-                    {
-                        level_subtype = line.Substring("Level Subtype".Length + 1).Trim();
-                        got_subtype = true;
-                    }
-                }
-                else if (line.IndexOf("Border Vertex") == 0)//Level information processing for Border Vertices
-                {
-                    do_it = false;
-                    line = line.Substring("Border Vertex".Length + 1).Trim();
-                    Point2D point = Point2D.FromString(line);
-                    if (point != null)
-                    {
-                        border.AppendPoint(point);
-                        if (!got_border && border.Size() >= 3)
-                        {
-                            got_border = true;
-                        }
-                    }
-                }
-                else if (line.IndexOf("Center") == 0) //Level information processing for Center point
-                {
-                    do_it = false;
-                    if (!got_center)
-                    {
-                        line = line.Substring("Center".Length + 1).Trim();
-                        center = Point2D.FromString(line);
-                        if (center != null)
-                        {
-                            got_center = true;
-                        }
-                    }
-                }
-                else if (line.IndexOf("Radius") == 0) //Level information processing for Radius
-                {
-                    do_it = false;
-                    if (!got_radius)
-                    {
-                        line = line.Substring("Radius".Length + 1).Trim();
-                        try
-                        {
-                            radius = Convert.ToInt64(line);
-                            got_radius = true;
-                        }
-                        catch (FormatException)
-                        {
-                            ;
-                        }
-                    }
-                }
-                else if (line.IndexOf("Start Level") == 0) //If there appears to be a sublevel here
+                if (line.IndexOf("Start Level") == 0) //If there appears to be a sublevel here
                 {
                     do_it = false;
                     try
-                    {
+                    { //Try block for attempting to parse a new sublevel
                         int new_level_num = Convert.ToInt32(line.Substring("Start Level".Length + 1).Trim());
                         if (new_level_num <= 6 && new_level_num > level_num) //Ensures that the level is valid
                         {
@@ -798,7 +834,7 @@ namespace TFG_Worldbuilder_Application
                                 length += partial_length;
                             } //End sublevel processing
                         }
-                        else //If the number is invalid
+                        else //If the number is invalid (that the level is of a lower level than its parent
                         {
                             length = Math.Max(length, line.IndexOf("End Level" + inner_delimiter + new_level_num.ToString()));
                         }
@@ -808,92 +844,13 @@ namespace TFG_Worldbuilder_Application
                         ;
                     }
                 }//End potential sublevel processing
-                if (do_it || index + length + 1 >= ActiveText.Length) //If the current line does not correspond to level information processing, then it is supposed to be level content
-                {
-                    if (!made_level && !make_level) //sees that the level has not been made and hasn't been proven to be makable
-                    {
-                        make_level = got_name && got_type;
-                        switch (level_num) //Does the necessary checks depending on the level number
-                        {
-                            case 1:
-                                break;
-                            case 2:
-                                make_level = make_level && got_border;
-                                break;
-                            case 3:
-                                make_level = make_level && got_border;
-                                break;
-                            case 4:
-                                make_level = make_level && got_border;
-                                break;
-                            case 5:
-                                make_level = make_level && got_center && got_radius;
-                                break;
-                            case 6:
-                                make_level = make_level && got_center;
-                                break;
-                            default:
-                                make_level = false;
-                                break;
-                        }
-                    }
-                    if (!made_level && make_level) //Now checks if the level is makable and hasn't been made yet
-                    {
-                        switch (level_num)
-                        {
-                            case 1:
-                                if(got_subtype)
-                                    level = new Level1(level_name, level_subtype);
-                                else
-                                    level = new Level1(level_name);
-                                break;
-                            case 2:
-                                if (got_subtype)
-                                    level = new Level2(level_name, level_type, level_subtype, (Level1)parent, border);
-                                else
-                                    level = new Level2(level_name, level_type, (Level1)parent, border);
-                                break;
-                            case 3:
-                                if (got_subtype)
-                                    level = new Level3(level_name, level_type, level_subtype, parent, border);
-                                else
-                                    level = new Level3(level_name, level_type, parent, border);
-                                break;
-                            case 4:
-                                if (got_subtype)
-                                    level = new Level4(level_name, level_type, level_subtype, parent, border);
-                                else
-                                    level = new Level4(level_name, level_type, parent, border);
-                                break;
-                            case 5:
-                                if(got_subtype)
-                                    level = new Level5(level_name, level_type, level_subtype, parent, center, radius);
-                                else
-                                    level = new Level5(level_name, level_type, parent, center, radius);
-                                break;
-                            case 6:
-                                if(got_subtype)
-                                    level = new Level6(level_name, level_type, level_subtype, parent, center);
-                                else
-                                    level = new Level6(level_name, level_type, parent, center);
-                                break;
-                            default:
-                                make_level = false;
-                                break;
-                        }
-                        if (make_level)
-                            made_level = true;
-                        make_level = false;
-                    }
-                    if (do_it && made_level) //Now for the actual content processing of the level
-                    {
-                        //If there is unknown level data
-                        level.leveldata.Add(line);
-                    } //End content processing
-                } //End of Else Block for content processing
+                else //If there is level data that is not a sublevel
+                { 
+                    level.leveldata.Add(line);
+                }
                 index += length + 1;
-            }
-            return level;
+            } // End of Main loop
+            return level; //At this point, guarenteed to be a valid level
         }
 
         /// <summary>

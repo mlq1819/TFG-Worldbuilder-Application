@@ -517,6 +517,10 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Basic constructor, creates a level given a name, level number, level type, and parent level
         /// </summary>
+        /// <param name="name">Level name, must be a unique identifier among its siblings</param>
+        /// <param name="level">Level number, between 1 and 6; generally determined by the constructor used</param>
+        /// <param name="leveltype">Level type, provides specific context that indicates what type of level it is of the 6 basic types or World</param>
+        /// <param name="parent">Level parent, must be of same type as child or World</param>
         protected SuperLevel(string name, int level, LevelType leveltype, SuperLevel parent)
         {
             this.name = name;
@@ -980,6 +984,59 @@ namespace TFG_Worldbuilder_Application
             }
             return output;
         }
+
+        /// <summary>
+        /// Returns true if the target has the border property
+        /// </summary>
+        public virtual bool HasBorderProperty()
+        {
+            return false;
+        }
+
+        /// <summary>
+        /// Returns true if a SuperLevel of the given level should have the border property
+        /// </summary>
+        public static bool HasBorderProperty(int level)
+        {
+            if (level >= 2 && level <= 4)
+                return true;
+            return false;
+        }
+
+        /// <summary>
+        /// Returns true if the target has the center property
+        /// </summary>
+        public virtual bool HasCenterProperty()
+        {
+            return false;
+        }
+        
+        /// <summary>
+        /// Returns true if a SuperLevel of the given level should have the center property
+        /// </summary>
+        public static bool HasCenterProperty(int level)
+        {
+            if (level >= 5 && level <= 6)
+                return true;
+            return false;
+        }
+        
+        /// <summary>
+        /// Returns true if the target has the radius property
+        /// </summary>
+        public virtual bool HasRadiusProperty()
+        {
+            return false;
+        }
+        
+        /// <summary>
+        /// Returns true if a SuperLevel of the given level should have the radius property
+        /// </summary>
+        public static bool HasRadiusProperty(int level)
+        {
+            return level == 5;
+        }
+
     };
 
     /// <summary>
@@ -1004,6 +1061,11 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Extended constructor, creates a level given a name, level number, level type, parent level, and border object
         /// </summary>
+        /// <param name="name">Level name, must be a unique identifier among its siblings</param>
+        /// <param name="level">Level number, between 1 and 6; generally determined by the constructor used</param>
+        /// <param name="leveltype">Level type, provides specific context that indicates what type of level it is of the 6 basic types or World</param>
+        /// <param name="parent">Level parent, must be of same type as child or World</param>
+        /// <param name="border">Level border, must have at least 3 points</param>
         protected BorderLevel(string name, int level, LevelType type, SuperLevel parent, Polygon2D border) : base(name, level, type, parent)
         {
             this.border = new Polygon2D();
@@ -1012,11 +1074,19 @@ namespace TFG_Worldbuilder_Application
                 if (PointInParent(border.vertices[i]))
                     this.border.AppendPoint(border.vertices[i]);
             }
+            if (this.border.Count > 0 && this.border.Count < 3)
+                this.border = new Polygon2D();
         }
 
         /// <summary>
         /// Extended constructor, creates a level given a name, level number, level type, sublevel, parent level, and border object
         /// </summary>
+        /// <param name="name">Level name, must be a unique identifier among its siblings</param>
+        /// <param name="level">Level number, between 1 and 6; generally determined by the constructor used</param>
+        /// <param name="leveltype">Level type, provides specific context that indicates what type of level it is of the 6 basic types or World</param>
+        /// <param name="subtype">Level subtype, can be more customized by the user</param>
+        /// <param name="parent">Level parent, must be of same type as child or World</param>
+        /// <param name="border">Level border, must have at least 3 points</param>
         protected BorderLevel(string name, int level, LevelType type, string sublevel, SuperLevel parent, Polygon2D border) : base(name, level, type, sublevel, parent)
         {
             this.border = new Polygon2D();
@@ -1025,6 +1095,8 @@ namespace TFG_Worldbuilder_Application
                 if (PointInParent(border.vertices[i]))
                     this.border.AppendPoint(border.vertices[i]);
             }
+            if (this.border.Count > 0 && this.border.Count < 3)
+                this.border = new Polygon2D();
         }
         
         /// <summary>
@@ -1171,7 +1243,14 @@ namespace TFG_Worldbuilder_Application
         {
             return region.PolygonInPolygon(this.border);
         }
-        
+
+        /// <summary>
+        /// Returns true if the target has the border property
+        /// </summary>
+        public override bool HasBorderProperty()
+        {
+            return true;
+        }
     }
 
     /// <summary>
@@ -1196,6 +1275,11 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Extended constructor, creates a level given a name, level number, level type, parent level, and point object
         /// </summary>
+        /// <param name="name">Level name, must be a unique identifier among its siblings</param>
+        /// <param name="level">Level number, between 1 and 6; generally determined by the constructor used</param>
+        /// <param name="leveltype">Level type, provides specific context that indicates what type of level it is of the 6 basic types or World</param>
+        /// <param name="parent">Level parent, must be of same type as child or World</param>
+        /// <param name="center">Level center</param>
         protected PointLevel(string name, int level, LevelType leveltype, SuperLevel parent, Point2D center) : base(name, level, leveltype, parent)
         {
             if (PointInParent(center))
@@ -1211,6 +1295,12 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Extended constructor, creates a level given a name, level number, level type, sublevel, parent level, and point object
         /// </summary>
+        /// <param name="name">Level name, must be a unique identifier among its siblings</param>
+        /// <param name="level">Level number, between 1 and 6; generally determined by the constructor used</param>
+        /// <param name="leveltype">Level type, provides specific context that indicates what type of level it is of the 6 basic types or World</param>
+        /// <param name="subtype">Level subtype, can be more customized by the user</param>
+        /// <param name="parent">Level parent, must be of same type as child or World</param>
+        /// <param name="center">Level center</param>
         protected PointLevel(string name, int level, LevelType leveltype, string sublevel, SuperLevel parent, Point2D center) : base(name, level, leveltype, sublevel, parent)
         {
             if (PointInParent(center))
@@ -1265,6 +1355,14 @@ namespace TFG_Worldbuilder_Application
         {
             return region.PointInPolygon(this.center);
         }
+        
+        /// <summary>
+        /// Returns true if the target has the center property
+        /// </summary>
+        public override bool HasCenterProperty()
+        {
+            return true;
+        }
     }
 
     /// <summary>
@@ -1276,6 +1374,7 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Basic constructor, creates a level 1 object given a name
         /// </summary>
+        /// <param name="name">Level name, must be a unique identifier among its siblings</param>
         public Level1(string name) : base(name, 1, LevelType.World, null)
         {
 
@@ -1284,6 +1383,8 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Advanced constructor; takes a name and a subtype for the world
         /// </summary>
+        /// <param name="name">Level name, must be a unique identifier among its siblings</param>
+        /// <param name="subtype">Level subtype, can be more customized by the user</param>
         public Level1(string name, string subtype) : base (name, 1, LevelType.World, subtype, null)
         {
 
@@ -1298,6 +1399,10 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Basic constructor, creates a level 2 object given a name, level type, parent, and border
         /// </summary>
+        /// <param name="name">Level name, must be a unique identifier among its siblings</param>
+        /// <param name="leveltype">Level type, provides specific context that indicates what type of level it is of the 6 basic types or World</param>
+        /// <param name="parent">Level parent, must be of same type as child or World</param>
+        /// <param name="border">Level border, must have at least 3 points</param>
         public Level2(string name, LevelType leveltype, Level1 parent, Polygon2D border) : base(name, 2, leveltype, parent, border)
         {
             
@@ -1306,6 +1411,11 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Basic constructor, creates a level 2 object given a name, level type, sublevel, parent, and border
         /// </summary>
+        /// <param name="name">Level name, must be a unique identifier among its siblings</param>
+        /// <param name="leveltype">Level type, provides specific context that indicates what type of level it is of the 6 basic types or World</param>
+        /// <param name="subtype">Level subtype, can be more customized by the user</param>
+        /// <param name="parent">Level parent, must be of same type as child or World</param>
+        /// <param name="border">Level border, must have at least 3 points</param>
         public Level2(string name, LevelType leveltype, string sublevel, Level1 parent, Polygon2D border) : base(name, 2, leveltype, sublevel, parent, border)
         {
 
@@ -1328,6 +1438,10 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Basic constructor, creates a level 3 object given a name, level type, parent, and border
         /// </summary>
+        /// <param name="name">Level name, must be a unique identifier among its siblings</param>
+        /// <param name="leveltype">Level type, provides specific context that indicates what type of level it is of the 6 basic types or World</param>
+        /// <param name="parent">Level parent, must be of same type as child or World</param>
+        /// <param name="border">Level border, must have at least 3 points</param>
         public Level3(string name, LevelType leveltype, SuperLevel parent, Polygon2D border) : base(name, 3, leveltype, parent, border)
         {
             
@@ -1336,6 +1450,11 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Basic constructor, creates a level 3 object given a name, level type, sublevel, parent, and border
         /// </summary>
+        /// <param name="name">Level name, must be a unique identifier among its siblings</param>
+        /// <param name="leveltype">Level type, provides specific context that indicates what type of level it is of the 6 basic types or World</param>
+        /// <param name="subtype">Level subtype, can be more customized by the user</param>
+        /// <param name="parent">Level parent, must be of same type as child or World</param>
+        /// <param name="border">Level border, must have at least 3 points</param>
         public Level3(string name, LevelType leveltype, string sublevel, SuperLevel parent, Polygon2D border) : base(name, 3, leveltype, sublevel, parent, border)
         {
 
@@ -1347,11 +1466,14 @@ namespace TFG_Worldbuilder_Application
     /// </summary>
     public class Level4 : BorderLevel
     {
-        private Polygon2D border; //Constrained by Greater Region Boundaries
 
         /// <summary>
         /// Basic constructor, creates a level 4 object given a name, level type, parent, and border
         /// </summary>
+        /// <param name="name">Level name, must be a unique identifier among its siblings</param>
+        /// <param name="leveltype">Level type, provides specific context that indicates what type of level it is of the 6 basic types or World</param>
+        /// <param name="parent">Level parent, must be of same type as child or World</param>
+        /// <param name="border">Level border, must have at least 3 points</param>
         public Level4(string name, LevelType leveltype, SuperLevel parent, Polygon2D border) : base(name, 4, leveltype, parent, border)
         {
 
@@ -1360,6 +1482,11 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Advanced constructor, creates a level 4 object given a name, level type, sublevel, parent, and border
         /// </summary>
+        /// <param name="name">Level name, must be a unique identifier among its siblings</param>
+        /// <param name="leveltype">Level type, provides specific context that indicates what type of level it is of the 6 basic types or World</param>
+        /// <param name="subtype">Level subtype, can be more customized by the user</param>
+        /// <param name="parent">Level parent, must be of same type as child or World</param>
+        /// <param name="border">Level border, must have at least 3 points</param>
         public Level4(string name, LevelType leveltype, string sublevel, SuperLevel parent, Polygon2D border) : base(name, 4, leveltype, sublevel, parent, border)
         {
 
@@ -1388,6 +1515,11 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Basic constructor, creates a level 5 object given a name, level type, parent, center, and radius
         /// </summary>
+        /// <param name="name">Level name, must be a unique identifier among its siblings</param>
+        /// <param name="leveltype">Level type, provides specific context that indicates what type of level it is of the 6 basic types or World</param>
+        /// <param name="parent">Level parent, must be of same type as child or World</param>
+        /// <param name="center">Level center</param>
+        /// <param name="radius">Level radius, indicates region in which sublevels can be placed surrounding center</param>
         public Level5(string name, LevelType leveltype, SuperLevel parent, Point2D center, long radius) : base(name, 5, leveltype, parent, center)
         {
             if (PointInParent(center))
@@ -1403,6 +1535,12 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Advanced constructor, creates a level 5 object given a name, level type, sublevel, parent, center, and radius
         /// </summary>
+        /// <param name="name">Level name, must be a unique identifier among its siblings</param>
+        /// <param name="leveltype">Level type, provides specific context that indicates what type of level it is of the 6 basic types or World</param>
+        /// <param name="subtype">Level subtype, can be more customized by the user</param>
+        /// <param name="parent">Level parent, must be of same type as child or World</param>
+        /// <param name="center">Level center</param>
+        /// <param name="radius">Level radius, indicates region in which sublevels can be placed surrounding center</param>
         public Level5(string name, LevelType leveltype, string sublevel, SuperLevel parent, Point2D center, long radius) : base(name, 5, leveltype, sublevel, parent, center)
         {
             if (PointInParent(center))
@@ -1438,7 +1576,14 @@ namespace TFG_Worldbuilder_Application
         {
             return PointInRadius(point);
         }
-
+        
+        /// <summary>
+        /// Returns true if the target has the radius property
+        /// </summary>
+        public override bool HasRadiusProperty()
+        {
+            return true;
+        }
     }
 
     /// <summary>
@@ -1449,6 +1594,10 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Basic constructor, creates a level 6 object given a name, level type, parent, and center
         /// </summary>
+        /// <param name="name">Level name, must be a unique identifier among its siblings</param>
+        /// <param name="leveltype">Level type, provides specific context that indicates what type of level it is of the 6 basic types or World</param>
+        /// <param name="parent">Level parent, must be of same type as child or World</param>
+        /// <param name="center">Level center</param>
         public Level6(string name, LevelType leveltype, SuperLevel parent, Point2D center) : base(name, 6, leveltype, parent, center)
         {
 
@@ -1457,6 +1606,11 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Advanced constructor, creates a level 6 object given a name, level type, sublevel, parent, and center
         /// </summary>
+        /// <param name="name">Level name, must be a unique identifier among its siblings</param>
+        /// <param name="leveltype">Level type, provides specific context that indicates what type of level it is of the 6 basic types or World</param>
+        /// <param name="subtype">Level subtype, can be more customized by the user</param>
+        /// <param name="parent">Level parent, must be of same type as child or World</param>
+        /// <param name="center">Level center</param>
         public Level6(string name, LevelType leveltype, string sublevel, SuperLevel parent, Point2D center) : base(name, 6, leveltype, sublevel, parent, center)
         {
 
