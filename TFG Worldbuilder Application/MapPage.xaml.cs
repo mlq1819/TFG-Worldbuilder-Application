@@ -325,7 +325,7 @@ public sealed partial class MapPage : Page
                 OpenPopupAlert("Error: " + Enum.GetName(typeof(LevelType), type) + " sublevel with name \"" + name + "\" already exists");
             } else
             {
-                Level2 new_level = new Level2(name, type, subtype, (Level1)Context.ActiveLevel, new Polygon2D(vertices));
+                Level2 new_level = new Level2(name, type, subtype, (Level1)Context.ActiveLevel, border);
                 if (!Context.ActiveLevel.AddSublevel(new_level))
                 {
                     OpenPopupAlert("Error: unknown error adding level");
@@ -402,40 +402,13 @@ public sealed partial class MapPage : Page
             {
                 if (Context.ActiveLevel != null)
                 {
-                    if (Context.ActiveLevel.GetLevel() > 1 && Context.ActiveLevel.GetLevel() < 5)
-                    {
-                        try
-                        {
-                            if (((BorderLevel)Context.ActiveLevel).PointInPolygon(point))
-                            {
-                                vertices.AppendPoint(point);
-                                Context.RaisePropertyChanged("Points");
-                            }
-                        }
-                        catch (InvalidCastException)
-                        {
-                            ;
-                        }
-                    }
-                    else if (Context.ActiveLevel.GetLevel() == 5)
-                    {
-                        try
-                        {
-                            if (((Level5)Context.ActiveLevel).PointInRadius(point))
-                            {
-                                vertices.AppendPoint(point);
-                                Context.RaisePropertyChanged("Points");
-                            }
-                        }
-                        catch (InvalidCastException)
-                        {
-                            ;
-                        }
-                    }
-                    else
+                    if (Context.ActiveLevel.CanFitPoint(point))
                     {
                         vertices.AppendPoint(point);
                         Context.RaisePropertyChanged("Points");
+                    } else
+                    {
+                        OpenPopupAlert("Point (" + point.X + ',' + point.Y + ") not in range");
                     }
                 }
                 TapPromptTab.Text = label + ": " + vertices.Size() + " points";

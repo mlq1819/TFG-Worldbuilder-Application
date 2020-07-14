@@ -87,10 +87,9 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// copy constructor
         /// </summary>
-        public Point2D(Point2D o)
+        public Point2D(Point2D o) : this(o.X, o.Y)
         {
-            X = o.X;
-            Y = o.Y;
+            ;
         }
 
         /// <summary>
@@ -260,9 +259,37 @@ namespace TFG_Worldbuilder_Application
     /// <summary>
     /// Polygon2D object of Point2D points
     /// </summary>
-    public class Polygon2D
+    public class Polygon2D : INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void RaisePropertyChanged(string str)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(str));
+            }
+        }
+
         public ObservableCollection<Point2D> vertices;
+        public int Count
+        {
+            get
+            {
+                return this.Size();
+            }
+        }
+        public Point2D this[int i]
+        {
+            get
+            {
+                return new Point2D(this.vertices[i]);
+            }
+            set
+            {
+                this.vertices[i] = value;
+                RaisePropertyChanged("vertices");
+            }
+        }
 
         /// <summary>
         /// Basic constructor
@@ -273,21 +300,28 @@ namespace TFG_Worldbuilder_Application
         }
 
         /// <summary>
+        /// Constructs a Polygon2D from a list of Point2D objects
+        /// </summary>
+        public Polygon2D(IList<Point2D> list) : this()
+        {
+            for(int i=0; i<list.Count; i++)
+            {
+                this.vertices.Add(new Point2D(list[i]));
+            }
+        }
+
+        /// <summary>
         /// Copy Constructor
         /// </summary>
-        public Polygon2D(Polygon2D o)
+        public Polygon2D(Polygon2D o) : this(o.vertices)
         {
-            vertices = new ObservableCollection<Point2D>();
-            for (int i = 0; i < o.vertices.Count; i++)
-            {
-                vertices.Add(new Point2D(o.vertices[i]));
-            }
+            ;
         }
 
         /// <summary>
         /// Returns the number of vertices in the polygon
         /// </summary>
-        public long Size()
+        public int Size()
         {
             return this.vertices.Count;
         }
@@ -298,6 +332,7 @@ namespace TFG_Worldbuilder_Application
         public Point2D AppendPoint(Point2D point)
         {
             vertices.Add(new Point2D(point));
+            RaisePropertyChanged("vertices");
             return point;
         }
 
@@ -311,6 +346,7 @@ namespace TFG_Worldbuilder_Application
                 if ((vertices[i] == a && vertices[i + 1] == b) || (vertices[i] == b && vertices[i + 1] == a))
                 {
                     vertices.Insert(i + 1, (a + b) / 2);
+                    RaisePropertyChanged("vertices");
                     return (a + b) / 2;
                 }
             }
@@ -327,12 +363,13 @@ namespace TFG_Worldbuilder_Application
                 if (vertices[i] == old_position)
                 {
                     vertices[i] = new Point2D(new_position);
+                    RaisePropertyChanged("vertices");
                     return vertices[i];
                 }
             }
             return null;
         }
-
+        
         /// <summary>
         /// Checks whether a given point is constrained by a polygon
         /// </summary>
@@ -388,12 +425,10 @@ namespace TFG_Worldbuilder_Application
             if (PropertyChanged != null)
             {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(str));
-                //RaisePropertyChanged(this.name + '.' + str);
                 if (parent != null)
                 {
                     parent.RaisePropertyChanged(this.name + '.' + str);
                 }
-                //PropertyChanged(this, new PropertyChangedEventArgs(str));
             }
         }
 
@@ -972,13 +1007,10 @@ namespace TFG_Worldbuilder_Application
         protected BorderLevel(string name, int level, LevelType type, SuperLevel parent, Polygon2D border) : base(name, level, type, parent)
         {
             this.border = new Polygon2D();
-            if (this.level > 3)
+            for (int i = 0; i < border.Count; i++)
             {
-                for (int i = 0; i < this.Size(); i++)
-                {
-                    if (PointInParent(border.vertices[i]))
-                        this.border.AppendPoint(border.vertices[i]);
-                }
+                if (PointInParent(border.vertices[i]))
+                    this.border.AppendPoint(border.vertices[i]);
             }
         }
 
@@ -988,13 +1020,10 @@ namespace TFG_Worldbuilder_Application
         protected BorderLevel(string name, int level, LevelType type, string sublevel, SuperLevel parent, Polygon2D border) : base(name, level, type, sublevel, parent)
         {
             this.border = new Polygon2D();
-            if (this.level > 3)
+            for (int i = 0; i < border.Count; i++)
             {
-                for (int i = 0; i < this.Size(); i++)
-                {
-                    if (PointInParent(border.vertices[i]))
-                        this.border.AppendPoint(border.vertices[i]);
-                }
+                if (PointInParent(border.vertices[i]))
+                    this.border.AppendPoint(border.vertices[i]);
             }
         }
         
