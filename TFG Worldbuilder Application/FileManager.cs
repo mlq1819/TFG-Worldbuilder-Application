@@ -462,16 +462,16 @@ namespace TFG_Worldbuilder_Application
         private ParseContainer<string> ParseName(ParseContainer<string> text)
         {
             string ActiveText = text.ActiveText;
-            int length = text.length;
-            int index = text.index;
+            int length = Math.Max(text.length, 0);
+            int index = Math.Max(text.index, 0);
             string line = "";
-            while (index < ActiveText.Length)
+            while (index < ActiveText.Length - 1)
             {
-                length = ActiveText.Substring(index).IndexOf(outer_delimiter);
+                length = Math.Max(ActiveText.Substring(index).IndexOf(outer_delimiter), 0);
                 line = ActiveText.Substring(index, length).Trim();
                 if(line.IndexOf("Level Name") == 0)
                 {
-                    text = new ParseContainer<string>(length, index, ActiveText, line.Substring("Level Name".Length + 1).Trim());
+                    text = new ParseContainer<string>(length, index+length+1, ActiveText, line.Substring("Level Name".Length + 1).Trim());
                     return text;
                 } else if(line.IndexOf("Start Level") == 0)
                 {
@@ -488,12 +488,12 @@ namespace TFG_Worldbuilder_Application
         private ParseContainer<LevelType> ParseType(ParseContainer<LevelType> text)
         {
             string ActiveText = text.ActiveText;
-            int length = text.length;
-            int index = text.index;
+            int length = Math.Max(text.length, 0);
+            int index = Math.Max(text.index, 0);
             string line = "";
-            while (index < ActiveText.Length)
+            while (index < ActiveText.Length - 1)
             {
-                length = ActiveText.Substring(index).IndexOf(outer_delimiter);
+                length = Math.Max(ActiveText.Substring(index).IndexOf(outer_delimiter), 0);
                 line = ActiveText.Substring(index, length).Trim();
                 if (line.IndexOf("Level Type") == 0)
                 {
@@ -503,14 +503,14 @@ namespace TFG_Worldbuilder_Application
                         if (string.Equals(line, Enum.GetName(typeof(LevelType), ((LevelType)i))))
                         {
                             LevelType level_type = (LevelType)i;
-                            text = new ParseContainer<LevelType>(length, index, ActiveText, level_type);
+                            text = new ParseContainer<LevelType>(length, index + length + 1, ActiveText, level_type);
                             return text;
                         }
                     }
                     try
                     {
                         LevelType level_type = (LevelType)Convert.ToInt16(line);
-                        text = new ParseContainer<LevelType>(length, index, ActiveText, level_type);
+                        text = new ParseContainer<LevelType>(length, index + length + 1, ActiveText, level_type);
                         return text;
                     }
                     catch (FormatException)
@@ -533,16 +533,16 @@ namespace TFG_Worldbuilder_Application
         private ParseContainer<string> ParseSubtype(ParseContainer<string> text)
         {
             string ActiveText = text.ActiveText;
-            int length = text.length;
-            int index = text.index;
+            int length = Math.Max(text.length, 0);
+            int index = Math.Max(text.index, 0);
             string line = "";
-            while (index < ActiveText.Length)
+            while (index < ActiveText.Length - 1)
             {
-                length = ActiveText.Substring(index).IndexOf(outer_delimiter);
+                length = Math.Max(ActiveText.Substring(index).IndexOf(outer_delimiter), 0);
                 line = ActiveText.Substring(index, length).Trim();
                 if (line.IndexOf("Level Subtype") == 0)
                 {
-                    text = new ParseContainer<string>(length, index, ActiveText, line.Substring("Level Subtype".Length + 1).Trim());
+                    text = new ParseContainer<string>(length, index + length + 1, ActiveText, line.Substring("Level Subtype".Length + 1).Trim());
                     return text;
                 }
                 else if (line.IndexOf("Start Level") == 0)
@@ -560,14 +560,14 @@ namespace TFG_Worldbuilder_Application
         private ParseContainer<Polygon2D> ParseBorder(ParseContainer<Polygon2D> text)
         {
             string ActiveText = text.ActiveText;
-            int length = text.length;
-            int index = text.index;
+            int length = Math.Max(text.length, 0);
+            int index = Math.Max(text.index, 0);
             string line = "";
             bool found_vertices = false;
             Polygon2D vertices = new Polygon2D();
-            while (index < ActiveText.Length)
+            while (index < ActiveText.Length - 1)
             {
-                length = ActiveText.Substring(index).IndexOf(outer_delimiter);
+                length = Math.Max(ActiveText.Substring(index).IndexOf(outer_delimiter), 0);
                 line = ActiveText.Substring(index, length).Trim();
                 if (line.IndexOf("Border Vertex") == 0)
                 {
@@ -579,14 +579,18 @@ namespace TFG_Worldbuilder_Application
                         if (!found_vertices && vertices.Size() >= 3)
                         {
                             found_vertices = true;
+                            text = new ParseContainer<Polygon2D>(length, index, ActiveText, vertices);
+                        }
+                        else if (found_vertices)
+                        {
+                            text.length = length;
+                            text.index = index;
+                            text.ActiveText = ActiveText;
+                            text.Data = vertices;
                         }
                     }
-                } else if (found_vertices)
-                {
-                    text = new ParseContainer<Polygon2D>(length, index, ActiveText, vertices);
-                    return text;
                 }
-                else if (line.IndexOf("Start Level") == 0)
+                else if (found_vertices || line.IndexOf("Start Level") == 0)
                 {
                     return text;
                 }
@@ -601,12 +605,12 @@ namespace TFG_Worldbuilder_Application
         private ParseContainer<Point2D> ParseCenter(ParseContainer<Point2D> text)
         {
             string ActiveText = text.ActiveText;
-            int length = text.length;
-            int index = text.index;
+            int length = Math.Max(text.length, 0);
+            int index = Math.Max(text.index, 0);
             string line = "";
-            while (index < ActiveText.Length)
+            while (index < ActiveText.Length - 1)
             {
-                length = ActiveText.Substring(index).IndexOf(outer_delimiter);
+                length = Math.Max(ActiveText.Substring(index).IndexOf(outer_delimiter), 0);
                 line = ActiveText.Substring(index, length).Trim();
                 if (line.IndexOf("Center") == 0)
                 {
@@ -614,7 +618,7 @@ namespace TFG_Worldbuilder_Application
                     Point2D point = Point2D.FromString(line);
                     if (point != null)
                     {
-                        text = new ParseContainer<Point2D>(length, index, ActiveText, point);
+                        text = new ParseContainer<Point2D>(length, index + length + 1, ActiveText, point);
                         return text;
                     }
                 }
@@ -633,12 +637,12 @@ namespace TFG_Worldbuilder_Application
         private ParseContainer<long> ParseRadius(ParseContainer<long> text)
         {
             string ActiveText = text.ActiveText;
-            int length = text.length;
-            int index = text.index;
+            int length = Math.Max(text.length, 0);
+            int index = Math.Max(text.index, 0);
             string line = "";
-            while (index < ActiveText.Length)
+            while (index < ActiveText.Length - 1)
             {
-                length = ActiveText.Substring(index).IndexOf(outer_delimiter);
+                length = Math.Max(ActiveText.Substring(index).IndexOf(outer_delimiter), 0);
                 line = ActiveText.Substring(index, length).Trim();
                 if (line.IndexOf("Radius") == 0)
                 {
@@ -646,7 +650,7 @@ namespace TFG_Worldbuilder_Application
                     try
                     {
                         long radius = Convert.ToInt64(line);
-                        text = new ParseContainer<long>(length, index, ActiveText, radius);
+                        text = new ParseContainer<long>(length, index + length + 1, ActiveText, radius);
                         return text;
                     }
                     catch (FormatException)
@@ -672,7 +676,7 @@ namespace TFG_Worldbuilder_Application
             LevelType level_type = LevelType.Invalid;
             string level_subtype = "";
             string line = "";
-            Polygon2D border = new Polygon2D();
+            Polygon2D border = null;
             Point2D center = null;
             long radius = 0;
             int index = 0;
@@ -810,28 +814,27 @@ namespace TFG_Worldbuilder_Application
             }
             
             //Main loop; processes sublevels and other level data
-            while (continue_parse && index < ActiveText.Length)
+            while (continue_parse && index < ActiveText.Length - 1)
             {
-                length = ActiveText.Substring(index).IndexOf(outer_delimiter);
+                length = Math.Max(ActiveText.Substring(index).IndexOf(outer_delimiter), 0);
                 line = ActiveText.Substring(index, length).Trim();
-                bool do_it = true;
                 if (line.IndexOf("Start Level") == 0) //If there appears to be a sublevel here
                 {
-                    do_it = false;
                     try
                     { //Try block for attempting to parse a new sublevel
                         int new_level_num = Convert.ToInt32(line.Substring("Start Level".Length + 1).Trim());
                         if (new_level_num <= 6 && new_level_num > level_num) //Ensures that the level is valid
                         {
                             line = ActiveText.Substring(index).Trim();
-                            if (line.IndexOf("End Level" + inner_delimiter + new_level_num.ToString()) >= 0) //Ensures that there is an end to the level
+                            string end_level_line = "End Level" + inner_delimiter + new_level_num.ToString();
+                            if (line.IndexOf(end_level_line) >= 0) //Ensures that there is an end to the level
                             {
-                                int partial_length = line.IndexOf("End Level" + inner_delimiter + new_level_num.ToString()) - 1;
+                                int partial_length = line.Substring(line.IndexOf(outer_delimiter) + 1).IndexOf(end_level_line) - 1;
                                 line = line.Substring(line.IndexOf(outer_delimiter) + 1, partial_length).Trim();
-                                SuperLevel sublevel = ParseLevels(line, new_level_num, null);
+                                SuperLevel sublevel = ParseLevels(line, new_level_num, level);
                                 if (sublevel != null) //Ensures that the generated world is valid
                                     level.AddSublevel(sublevel);
-                                length += partial_length;
+                                length = ActiveText.Substring(index).IndexOf(end_level_line) + end_level_line.Length;
                             } //End sublevel processing
                         }
                         else //If the number is invalid (that the level is of a lower level than its parent
@@ -845,8 +848,9 @@ namespace TFG_Worldbuilder_Application
                     }
                 }//End potential sublevel processing
                 else //If there is level data that is not a sublevel
-                { 
-                    level.leveldata.Add(line);
+                {
+                    if(line.Length>0)
+                        level.leveldata.Add(line);
                 }
                 index += length + 1;
             } // End of Main loop

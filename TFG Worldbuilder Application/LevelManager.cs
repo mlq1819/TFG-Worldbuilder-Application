@@ -176,6 +176,10 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         public static bool operator ==(Point2D a, Point2D b)
         {
+            if (((object) a) == null && ((object)b) == null)
+                return true;
+            if (((object)a) == null ^ ((object)b) == null)
+                return false;
             return a.X == b.X && a.Y == b.Y;
         }
 
@@ -204,6 +208,10 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         public static bool operator !=(Point2D a, Point2D b)
         {
+            if (((object)a) == null && ((object)b) == null)
+                return false;
+            if (((object)a) == null ^ ((object)b) == null)
+                return true;
             return a.X != b.X || a.Y != b.Y;
         }
 
