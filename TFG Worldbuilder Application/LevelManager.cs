@@ -896,29 +896,31 @@ namespace TFG_Worldbuilder_Application
         }
 
         /// <summary>
+        /// Returns true if the passed point fits within the boundaries and level
+        /// </summary>
+        public virtual bool CanFitPoint(Point2D point)
+        {
+            return true;
+        }
+
+        /// <summary>
+        /// Returns true if the passed point fits within the boundaries
+        /// </summary>
+        public virtual bool FitsPoint(Point2D point)
+        {
+            return false;
+        }
+
+        /// <summary>
         /// Returns true if the parent is of the correct type and the given point fits within the constraints of the parent, or if the parent is not of the correct type
         /// </summary>
         public bool PointInParent(Point2D point)
         {
-            if (this.level <= 3)
+            if (this.level == 1)
                 return true;
             if (this.parent == null)
                 return true;
-            try
-            {
-                return ((BorderLevel)this.parent).PointInPolygon(point);
-            }
-            catch (InvalidCastException)
-            {
-                try
-                {
-                    return ((Level5)this).PointInRadius(point);
-                }
-                catch (InvalidCastException)
-                {
-                    return true;
-                }
-            }
+            return this.parent.CanFitPoint(point);
         }
 
         /// <summary>
@@ -995,7 +997,23 @@ namespace TFG_Worldbuilder_Application
                 }
             }
         }
+        
+        /// <summary>
+        /// Returns true if the passed point fits within the boundaries and level
+        /// </summary>
+        public override bool CanFitPoint(Point2D point)
+        {
+            return PointInPolygon(point);
+        }
 
+        /// <summary>
+        /// Returns true if the passed point fits within the boundaries
+        /// </summary>
+        public override bool FitsPoint(Point2D point)
+        {
+            return PointInPolygon(point);
+        }
+        
         /// <summary>
         /// Generates a XAML-Ready string of all vertices in the object
         /// </summary>
@@ -1175,7 +1193,7 @@ namespace TFG_Worldbuilder_Application
                 this.center = null;
             }
         }
-
+        
         /// <summary>
         /// Sets the parent of the level, taking into account its borders and the parent's
         /// </summary>
@@ -1262,6 +1280,14 @@ namespace TFG_Worldbuilder_Application
         public Level2(string name, LevelType leveltype, string sublevel, Level1 parent, Polygon2D border) : base(name, 2, leveltype, sublevel, parent, border)
         {
 
+        }
+        
+        /// <summary>
+        /// Returns true if the passed point fits within the boundaries and level
+        /// </summary>
+        public override bool CanFitPoint(Point2D point)
+        {
+            return true;
         }
     }
 
@@ -1367,6 +1393,23 @@ namespace TFG_Worldbuilder_Application
         {
             return (point - center).Length() <= radius;
         }
+        
+        /// <summary>
+        /// Returns true if the passed point fits within the boundaries and level
+        /// </summary>
+        public override bool CanFitPoint(Point2D point)
+        {
+            return PointInRadius(point);
+        }
+
+        /// <summary>
+        /// Returns true if the passed point fits within the boundaries
+        /// </summary>
+        public override bool FitsPoint(Point2D point)
+        {
+            return PointInRadius(point);
+        }
+
     }
 
     /// <summary>
