@@ -19,8 +19,8 @@ namespace TFG_Worldbuilder_Application
         public ObservableCollection<Level1> Worlds;
         public SuperLevel ActiveLevel;
         public ObservableCollection<BorderLevel> Shapes;
-        //public ObservableCollection<Point2D> Points;
-        public PointCollection Points;
+        public ObservableCollection<Point2D> Points;
+        //public PointCollection Points;
 
         public event PropertyChangedEventHandler PropertyChanged;
         public void RaisePropertyChanged(string str)
@@ -36,8 +36,7 @@ namespace TFG_Worldbuilder_Application
             this.Worlds = new ObservableCollection<Level1>();
             this.ActiveLevel = null;
             this.Shapes = new ObservableCollection<BorderLevel>();
-            this.Points = new PointCollection();
-            //this.Points = new ObservableCollection<Point2D>();
+            this.Points = new ObservableCollection<Point2D>();
         }
 
         public ActiveContext(ObservableCollection<Level1> Worlds)
@@ -45,8 +44,7 @@ namespace TFG_Worldbuilder_Application
             this.Worlds = Worlds;
             this.ActiveLevel = null;
             this.Shapes = new ObservableCollection<BorderLevel>();
-            this.Points = new PointCollection();
-            //this.Points = new ObservableCollection<Point2D>();
+            this.Points = new ObservableCollection<Point2D>();
         }
 
         /// <summary>
@@ -93,13 +91,13 @@ namespace TFG_Worldbuilder_Application
             temp = SuperLevel.Filter(ActiveLevel.GetSublevels(), 5);
             temp.Concat<SuperLevel>(SuperLevel.Filter(ActiveLevel.GetSublevels(), 6));
             //Points = new ObservableCollection<Point2D>();
-            Points = new PointCollection();
+            Points = new ObservableCollection<Point2D>();
             for (int i = 0; i < temp.Count; i++)
             {
                 try
                 {
                     Point2D temp2 = ((PointLevel)temp[i]).GetCenter();
-                    Points.Add(new Point(temp2.X, temp2.Y));
+                    Points.Add(new Point2D(temp2.X, temp2.Y));
                 }
                 catch (InvalidCastException)
                 {
@@ -113,10 +111,10 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         public void SetPoints(IList<Point2D> list)
         {
-            this.Points = new PointCollection();
+            this.Points = new ObservableCollection<Point2D>();
             for(int i=0; i<list.Count; i++)
             {
-                this.Points.Add(new Point(list[i].X, list[i].Y));
+                this.Points.Add(new Point2D(list[i].X, list[i].Y));
             }
         }
 

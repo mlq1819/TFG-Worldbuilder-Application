@@ -111,18 +111,30 @@
                 <ItemsControl ItemsSource="{x:Bind Path=Context.Shapes, Mode=OneWay}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="local:BorderLevel">
-                            <!--TextBlock Text="{x:Bind Path=name, Mode=OneWay}"/-->
                             <Polygon Fill="{x:Bind Path=color, Mode=OneWay}" Stroke="Black" Name="{x:Bind Path=name, Mode=OneWay}" Points="{x:Bind Path=points, Mode=OneWay}"/>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
-                <!--ItemsControl ItemsSource="{Binding Points}">
-                    <Path Fill="LightCoral" StrokeThickness="0">
-                        <Path.Data>
-                            <EllipseGeometry Center="{Binding Path=Points, Mode=OneWay}" RadiusX="3" RadiusY="3"/>
-                        </Path.Data>
-                    </Path>
-                <ItemsControl/-->
+                <ItemsControl ItemsSource="{x:Bind Path=Context.Shapes, Mode=OneWay}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="local:BorderLevel">
+                            <Grid VerticalAlignment="Center" HorizontalAlignment="Center" Margin="{x:Bind Path=margin, Mode=OneWay}">
+                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" TextAlignment="Center" Text="{x:Bind Path=name, Mode=OneWay}"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <ItemsControl ItemsSource="{x:Bind Path=Context.Points, Mode=OneWay}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="local:Point2D">
+                            <Path Fill="LightCoral" StrokeThickness="0">
+                                <Path.Data>
+                                    <EllipseGeometry Center="{x:Bind Path=pointstr, Mode=OneWay}" RadiusX="3" RadiusY="3"/>
+                                </Path.Data>
+                            </Path>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
             </Canvas>
         </Grid>
         <Grid x:Name="TextPrompt" HorizontalAlignment="Center" VerticalAlignment="Center" Width="500" Height="200" Visibility="Collapsed">

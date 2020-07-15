@@ -70,10 +70,6 @@ namespace TFG_Worldbuilder_Application
             {
                 return X.ToString() + ',' + Y.ToString();
             }
-            set
-            {
-                ;
-            }
         }
 
         /// <summary>
@@ -116,6 +112,19 @@ namespace TFG_Worldbuilder_Application
         {
             PointCollection output = new PointCollection();
             for(int i=0; i<list.Count; i++)
+            {
+                output.Add(Point2D.ToWindowsPoint(list[i]));
+            }
+            return output;
+        }
+
+        /// <summary>
+        /// Converts a Point2D IList to a Point List
+        /// </summary>
+        public static ObservableCollection<Point> ToWindowsPoints2(IList<Point2D> list)
+        {
+            ObservableCollection<Point> output = new ObservableCollection<Point>();
+            for (int i = 0; i < list.Count; i++)
             {
                 output.Add(Point2D.ToWindowsPoint(list[i]));
             }
@@ -441,6 +450,40 @@ namespace TFG_Worldbuilder_Application
                     return true;
             }
             return false;
+        }
+
+        /// <summary>
+        /// Creates and returns a centerpoint for the polygon
+        /// </summary>
+        public Point2D GetCenter()
+        {
+            long minX, maxX, minY, maxY, sumX, sumY;
+            minX = minY = Int64.MaxValue;
+            maxX = maxY = Int64.MinValue;
+            sumX = sumY = 0;
+            for(int i=0; i<vertices.Count; i++)
+            {
+                minX = Math.Min(minX, vertices[i].X);
+                maxX = Math.Max(maxX, vertices[i].X);
+                minY = Math.Min(minY, vertices[i].Y);
+                maxY = Math.Max(maxY, vertices[i].Y);
+                sumX += vertices[i].X;
+                sumY += vertices[i].Y;
+            }
+            Point2D abs_center = new Point2D((minX + maxX) / 2, (minY + maxY) / 2);
+            Point2D avg_center = new Point2D(sumX / vertices.Count, sumY / vertices.Count);
+            if (PointInPolygon(abs_center))
+                return abs_center;
+            else if (PointInPolygon(avg_center))
+            {
+                Point2D inc_center = new Point2D(abs_center);
+                while (!PointInPolygon(inc_center))
+                {
+                    inc_center = ((9 * inc_center) + avg_center) / 10;
+                }
+                return inc_center;
+            }
+            return abs_center;
         }
     }
 
@@ -1084,6 +1127,23 @@ namespace TFG_Worldbuilder_Application
             }
         }
 
+        public Point center
+        {
+            get
+            {
+                return Point2D.ToWindowsPoint(border.GetCenter());
+            }
+        }
+
+        public string margin
+        {
+            get
+            {
+                Point _center = center;
+                return (_center.X-50).ToString() + ',' + (_center.Y-20).ToString();
+            }
+        }
+
         /// <summary>
         /// Extended constructor, creates a level given a name, level number, level type, parent level, and border object
         /// </summary>
@@ -1193,6 +1253,8 @@ namespace TFG_Worldbuilder_Application
         {
             Point2D output = this.border.AppendPoint(point);
             RaisePropertyChanged("points");
+            RaisePropertyChanged("center");
+            RaisePropertyChanged("margin");
             return output;
         }
 
@@ -1215,7 +1277,11 @@ namespace TFG_Worldbuilder_Application
             {
                 Point2D output = border.MovePoint(old_position, new_position);
                 if (output != null)
+                {
                     RaisePropertyChanged("points");
+                    RaisePropertyChanged("center");
+                    RaisePropertyChanged("margin");
+                }
                 return output;
             }
             return old_position;
