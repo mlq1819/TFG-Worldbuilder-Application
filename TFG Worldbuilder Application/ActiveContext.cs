@@ -19,8 +19,9 @@ namespace TFG_Worldbuilder_Application
         public ObservableCollection<Level1> Worlds;
         public SuperLevel ActiveLevel;
         public ObservableCollection<BorderLevel> Shapes;
-        public ObservableCollection<Point2D> Points;
-        //public PointCollection Points;
+        public ObservableCollection<Level5> Circles;
+        public ObservableCollection<Level6> Points;
+        public MyPointCollection ExtraPoints;
 
         public event PropertyChangedEventHandler PropertyChanged;
         public void RaisePropertyChanged(string str)
@@ -36,7 +37,9 @@ namespace TFG_Worldbuilder_Application
             this.Worlds = new ObservableCollection<Level1>();
             this.ActiveLevel = null;
             this.Shapes = new ObservableCollection<BorderLevel>();
-            this.Points = new ObservableCollection<Point2D>();
+            this.Circles = new ObservableCollection<Level5>();
+            this.Points = new ObservableCollection<Level6>();
+            this.ExtraPoints = new GenericPointCollection();
         }
 
         public ActiveContext(ObservableCollection<Level1> Worlds)
@@ -44,7 +47,9 @@ namespace TFG_Worldbuilder_Application
             this.Worlds = Worlds;
             this.ActiveLevel = null;
             this.Shapes = new ObservableCollection<BorderLevel>();
-            this.Points = new ObservableCollection<Point2D>();
+            this.Circles = new ObservableCollection<Level5>();
+            this.Points = new ObservableCollection<Level6>();
+            this.ExtraPoints = new GenericPointCollection();
         }
 
         /// <summary>
@@ -61,18 +66,21 @@ namespace TFG_Worldbuilder_Application
                 UpdateShapesAndPoints();
             } else
             {
-                Shapes.Clear();
-                Points.Clear();
+                Shapes = new ObservableCollection<BorderLevel>();
+                Circles = new ObservableCollection<Level5>();
+                Points = new ObservableCollection<Level6>();
+                RaisePropertyChanged("Shapes");
+                RaisePropertyChanged("Circles");
+                RaisePropertyChanged("Points");
             }
             RaisePropertyChanged("ActiveLevel");
         }
 
         /// <summary>
-        /// Updates the Shapes and Points to match the ActiveWorld
+        /// Updates the Shapes, Circles, and Points to match the ActiveWorld
         /// </summary>
         public void UpdateShapesAndPoints()
         {
-
             IList<SuperLevel> temp = SuperLevel.Filter(ActiveLevel.GetSublevels(), 2);
             temp.Concat<SuperLevel>(SuperLevel.Filter(ActiveLevel.GetSublevels(), 3));
             temp.Concat<SuperLevel>(SuperLevel.Filter(ActiveLevel.GetSublevels(), 4));
@@ -88,34 +96,56 @@ namespace TFG_Worldbuilder_Application
                     ;
                 }
             }
+            RaisePropertyChanged("Shapes");
             temp = SuperLevel.Filter(ActiveLevel.GetSublevels(), 5);
-            temp.Concat<SuperLevel>(SuperLevel.Filter(ActiveLevel.GetSublevels(), 6));
-            //Points = new ObservableCollection<Point2D>();
-            Points = new ObservableCollection<Point2D>();
             for (int i = 0; i < temp.Count; i++)
             {
                 try
                 {
-                    Point2D temp2 = ((PointLevel)temp[i]).GetCenter();
-                    Points.Add(new Point2D(temp2.X, temp2.Y));
+                    Circles.Add((Level5)temp[i]);
                 }
                 catch (InvalidCastException)
                 {
                     ;
                 }
             }
+            RaisePropertyChanged("Circles");
+            temp = SuperLevel.Filter(ActiveLevel.GetSublevels(), 6);
+            for (int i = 0; i < temp.Count; i++)
+            {
+                try
+                {
+                    Points.Add((Level6)temp[i]);
+                }
+                catch (InvalidCastException)
+                {
+                    ;
+                }
+            }
+            RaisePropertyChanged("Points");
         }
 
         /// <summary>
-        /// Sets this.Points to the list
+        /// Sets this.ExtraPoints to the list
         /// </summary>
         public void SetPoints(IList<Point2D> list)
         {
-            this.Points = new ObservableCollection<Point2D>();
+            this.ExtraPoints = new GenericPointCollection();
             for(int i=0; i<list.Count; i++)
             {
-                this.Points.Add(new Point2D(list[i].X, list[i].Y));
+                this.ExtraPoints.AppendPoint(new Point2D(list[i].X, list[i].Y));
             }
+            RaisePropertyChanged("ExtraPoints");
+        }
+
+        /// <summary>
+        /// Clears the ExtraPoints
+        /// </summary>
+        public void ClearPoints()
+        {
+            this.ExtraPoints = new GenericPointCollection();
+            ((GenericPointCollection) this.ExtraPoints).RaisePropertyChanged("points");
+            RaisePropertyChanged("ExtraPoints");
         }
 
         /// <summary>

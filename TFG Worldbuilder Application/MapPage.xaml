@@ -85,8 +85,8 @@
                 <TextBlock x:Name="FileNameBlock" Text="" Height="25" Width="300" HorizontalAlignment="Left" Margin="100,0,0,0"/>
             </Grid>
             <Grid HorizontalAlignment="Stretch" Height="50" VerticalAlignment="Bottom">
+                <Rectangle Fill="#FFF4F4F5" HorizontalAlignment="Stretch" Stroke="Black" VerticalAlignment="Stretch"/>
                 <StackPanel x:Name="MenuBarPanel" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Orientation="Horizontal">
-                    <Rectangle Fill="#FFF4F4F5" HorizontalAlignment="Stretch" Height="50" Margin="10" Stroke="Black" VerticalAlignment="Top"/>
                     <Button x:Name="FileButton" Content="File" HorizontalAlignment="Left" Margin="10" VerticalAlignment="Top" Width="80" Flyout="{StaticResource FileMenu}"/>
                     <Button x:Name="ViewButton" Content="View" HorizontalAlignment="Left" Margin="10" VerticalAlignment="Top" Width="80" Flyout="{StaticResource ViewMenu}"/>
                     <Button x:Name="WorldsButton" Content="Worlds" HorizontalAlignment="Left" Margin="10" VerticalAlignment="Top" Width="80" Flyout="{StaticResource WorldsMenu}">
@@ -104,11 +104,16 @@
                     </Button-->
                     <Button x:Name="CreateButton" Content="Create" HorizontalAlignment="Left" Margin="10" VerticalAlignment="Top" Width="80" Flyout="{StaticResource CreateMenu}"/>
                 </StackPanel>
+                <StackPanel x:Name="ZoomPanel" HorizontalAlignment="Right" Height="50" Orientation="Horizontal">
+                    <Button x:Name="Reset_Zoom_Button" Content="Reset" Background="LightGray" HorizontalAlignment="Right" Margin="10" VerticalAlignment="Top" Click="Reset_Zoom_Button_Click"/>
+                    <Button x:Name="Zoom_In_Button" Content="+" Background="LightGray" HorizontalAlignment="Right" Margin="10" VerticalAlignment="Top" Width="40" Click="Zoom_In_Button_Click"/>
+                    <Button x:Name="Zoom_Out_Button" Content="-" Background="LightGray" HorizontalAlignment="Right" Margin="10" VerticalAlignment="Top" Width="40" Click="Zoom_Out_Button_Click"/>
+                </StackPanel>
             </Grid>
         </Grid>
         <Grid x:Name="MapDisplay" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,75,0,0">
             <Canvas x:Name="WorldCanvas" Background="Azure" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" PointerPressed="WorldCanvas_PointerPressed">
-                <ItemsControl ItemsSource="{x:Bind Path=Context.Shapes, Mode=OneWay}">
+                <ItemsControl x:Name="ShapesControl" ItemsSource="{x:Bind Path=Context.Shapes, Mode=OneWay}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="local:BorderLevel">
                             <Polygon Fill="{x:Bind Path=color, Mode=OneWay}" Stroke="Black" Name="{x:Bind Path=name, Mode=OneWay}" Points="{x:Bind Path=points, Mode=OneWay}"/>
@@ -124,7 +129,7 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
-                <ItemsControl ItemsSource="{x:Bind Path=Context.Points, Mode=OneWay}">
+                <ItemsControl x:Name="ExtraPointsControl" ItemsSource="{x:Bind Path=Context.ExtraPoints.points, Mode=OneWay}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="local:Point2D">
                             <Path Fill="LightCoral" StrokeThickness="0">

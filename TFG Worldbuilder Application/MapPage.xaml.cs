@@ -42,6 +42,8 @@ public sealed partial class MapPage : Page
         public MapPage()
         {
             this.InitializeComponent();
+
+            ResetZoom();
             this.FileNameBlock.Text = Global.ActiveFile.FileName();
             this.MapCanvas = (Canvas)this.FindName("WorldCanvas");
             this.Worlds = Global.ActiveFile.Worlds;
@@ -287,6 +289,8 @@ public sealed partial class MapPage : Page
             LevelNum = 2;
             LevelStep = 1;
             ActiveJob = "Create";
+            vertices = new Polygon2D();
+            Context.ClearPoints();
             OpenTapPrompt("Enter at least 3 points for Greater Region");
         }
 
@@ -324,6 +328,7 @@ public sealed partial class MapPage : Page
         /// Creates a new greater region object with the given name, type, subtype, and border
         /// </summary>
         private void NewGreaterRegion(string name, LevelType type, string subtype, Polygon2D border) {
+            Context.ClearPoints();
             if (Context.ActiveLevel.HasSublevelWithName(name))
             {
                 OpenPopupAlert("Error: " + Enum.GetName(typeof(LevelType), type) + " sublevel with name \"" + name + "\" already exists");
@@ -333,6 +338,9 @@ public sealed partial class MapPage : Page
                 if (!Context.ActiveLevel.AddSublevel(new_level))
                 {
                     OpenPopupAlert("Error: unknown error adding level");
+                } else
+                {
+                    Context.UpdateShapesAndPoints();
                 }
             }
             ActiveJob = "None";
@@ -401,18 +409,26 @@ public sealed partial class MapPage : Page
         {
             if (string.Equals(ActiveJob, "Create") && LevelNum > 1 && LevelNum < 5)
             {
+                point = Point2D.RevertTransformation(point);
                 if (Context.ActiveLevel != null)
                 {
                     if (Context.ActiveLevel.CanFitPoint(point))
                     {
                         vertices.AppendPoint(point);
-                        Context.RaisePropertyChanged("Points");
+                        Context.ExtraPoints.AppendPoint(point);
+                        Context.RaisePropertyChanged("ExtraPoints");
                     } else
                     {
                         OpenPopupAlert("Point (" + point.X + ',' + point.Y + ") not in range");
                     }
                 }
                 TapPromptTab.Text = label + ": " + vertices.Size() + " points";
+            } else //Set the new center there without moving anything
+            {
+                //Global.Shift += Global.Center - point;
+                Global.Center += (point - Global.OriginalCenter);
+                if (Context.ActiveLevel != null)
+                    Context.ActiveLevel.ForceUpdatePoints();
             }
         }
         
@@ -437,11 +453,39 @@ public sealed partial class MapPage : Page
             } else
             {
                 LevelStep++;
-                Context.UpdateShapesAndPoints();
                 TapPrompt.Visibility = Visibility.Collapsed;
                 OpenTextPrompt("What type of " + Enum.GetName(typeof(LevelType), type) + " region are you creating?\nEnter a subtype:");
             }
         }
 
+        private void Zoom_In_Button_Click(object sender, RoutedEventArgs e)
+        {
+            Global.Zoom = Math.Min(5, Global.Zoom * 1.1);
+            if (Context.ActiveLevel != null)
+                Context.ActiveLevel.ForceUpdatePoints();
+        }
+
+        private void Zoom_Out_Button_Click(object sender, RoutedEventArgs e)
+        {
+            Global.Zoom = Math.Max(0.2, Global.Zoom / 1.1);
+            if (Context.ActiveLevel != null)
+                Context.ActiveLevel.ForceUpdatePoints();
+        }
+
+        private void ResetZoom()
+        {
+            Global.OriginalCenter.X = (long)WorldCanvas.ActualWidth / 2;
+            Global.OriginalCenter.Y = (long)WorldCanvas.ActualHeight / 2;
+            Global.Center = new Point2D(Global.OriginalCenter);
+            Global.Shift = new Point2D(0, 0);
+            Global.Zoom = 1.0f;
+        }
+
+        private void Reset_Zoom_Button_Click(object sender, RoutedEventArgs e)
+        {
+            ResetZoom();
+            if (Context.ActiveLevel != null)
+                Context.ActiveLevel.ForceUpdatePoints();
+        }
     }
 }
