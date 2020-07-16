@@ -113,9 +113,9 @@ namespace TFG_Worldbuilder_Application
         /// <param name="point">Point2D object to transform</param>
         public static RenderedPoint ApplyTransformation(AbsolutePoint input)
         {
-            RenderedPoint output = new RenderedPoint(input.X, input.Y);
-            output = ((output - Global.Center) * Global.Zoom) + Global.OriginalCenter;
-            return output;
+            AbsolutePoint translated_input = input - Global.Center; //translated_input is set to the input translated such that Global.Center becomes (0,0)
+            RenderedPoint untraslated_output = new RenderedPoint((long)(translated_input.X * Global.Zoom), (long)(translated_input.Y * Global.Zoom)); //untraslated_output is set to a rescaling of translated_input based on Global.Zoom
+            return untraslated_output + Global.OriginalCenter; //The returned point is untraslated_output translated such that (0,0) becomes Global.OriginalCenter
         }
 
         /// <summary>
@@ -165,8 +165,9 @@ namespace TFG_Worldbuilder_Application
         /// <param name="point">Point2D object to revert</param>
         public static AbsolutePoint RevertTransformation(RenderedPoint input)
         {
-            RenderedPoint output = ((input - Global.Center) / Global.Zoom) + Global.OriginalCenter;
-            return new AbsolutePoint(output.X, output.Y);
+            RenderedPoint translated_input = input - Global.OriginalCenter; //translated_input is set to the input translated such that Global.OriginalCenter becomes (0,0)
+            AbsolutePoint untraslated_output = new AbsolutePoint((long)(translated_input.X / Global.Zoom), (long)(translated_input.Y / Global.Zoom)); //untraslated_output is set to a rescaling of translated_input based on Global.Zoom
+            return untraslated_output + Global.Center; //The returned point is untraslated_output translated such that (0,0) becomes Global.Center
         }
 
         /// <summary>

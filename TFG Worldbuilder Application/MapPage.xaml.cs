@@ -406,7 +406,7 @@ public sealed partial class MapPage : Page
         /// Moves the focus to point
         /// </summary>
         /// <param name="point">an AbsolutePoint object representing the translated click location</param>
-        private void WorldCanvas_Refocus(AbsolutePoint point)
+        private void WorldCanvas_Refocus(RenderedPoint point)
         {
             Global.Center = point; //Sets the center to the abolute coordinates of the point
             ForceUpdatePoints();
@@ -446,7 +446,7 @@ public sealed partial class MapPage : Page
                 WorldCanvas_Add_Point(new AbsolutePoint(point));
             } else
             {
-                WorldCanvas_Refocus(new AbsolutePoint(point));
+                WorldCanvas_Refocus(point);
             }
             
         }
@@ -495,7 +495,7 @@ public sealed partial class MapPage : Page
         {
             Global.CanvasSize.X = (long)WorldCanvas.ActualWidth;
             Global.CanvasSize.Y = (long)WorldCanvas.ActualHeight;
-            Global.Center = new AbsolutePoint(Global.OriginalCenter);
+            Global.Center = new RenderedPoint(Global.OriginalCenter);
             Global.Zoom = 1.0f;
         }
 

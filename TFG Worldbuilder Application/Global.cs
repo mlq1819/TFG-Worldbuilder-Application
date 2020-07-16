@@ -10,15 +10,17 @@ namespace TFG_Worldbuilder_Application
     {
         public static FileManager ActiveFile;
         public static double Zoom = 0;
-        public static RenderedPoint CanvasSize = new RenderedPoint(0, 0); //Must always be in absolute coordinates
-        //public static AbsolutePoint OriginalCenter = new AbsolutePoint(0, 0);
+        public static RenderedPoint CanvasSize = new RenderedPoint(0, 0); //Must always be in Rendered coordinates
         public static RenderedPoint OriginalCenter
         {
             get
             {
                 return CanvasSize / 2;
             }
-        }
-        public static RenderedPoint Center = new RenderedPoint(0, 0); //Must always be in absolute coordinates
+        } //Again, always in Rendered coordinates
+        /// <summary>
+        /// The point which the canvas will zoom around; should be recorded in absolute coordinates
+        /// </summary>
+        public static AbsolutePoint Center = new AbsolutePoint(0, 0); //Must always be in absolute coordinates
     }
 }
