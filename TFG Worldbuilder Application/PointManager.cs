@@ -401,9 +401,9 @@ namespace TFG_Worldbuilder_Application
         }
 
         /// <summary>
-        /// Creates a RenderedPoint by reverting an AbsolutePoint
+        /// Creates a RenderedPoint by transforming an AbsolutePoint
         /// </summary>
-        public RenderedPoint(AbsolutePoint o) : base(Point2D.ApplyTransformation(o))
+        public RenderedPoint(AbsolutePoint o) : base((Point2D) Point2D.ApplyTransformation(o))
         {
             ;
         }
@@ -418,7 +418,7 @@ namespace TFG_Worldbuilder_Application
             return new Point(point.X, point.Y);
         }
 
-        public AbsolutePoint ToRenderedPoint()
+        public AbsolutePoint ToAbsolutePoint()
         {
             return new AbsolutePoint(this);
         }
@@ -566,9 +566,9 @@ namespace TFG_Worldbuilder_Application
         }
 
         /// <summary>
-        /// Creates an AbsolutePoint by transforming a RenderedPoint
+        /// Creates an AbsolutePoint by reverting a RenderedPoint
         /// </summary>
-        public AbsolutePoint(RenderedPoint o) : base(Point2D.RevertTransformation(o))
+        public AbsolutePoint(RenderedPoint o) : base((Point2D) Point2D.RevertTransformation(o))
         {
             ;
         }

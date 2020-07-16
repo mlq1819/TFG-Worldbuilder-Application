@@ -572,7 +572,7 @@ namespace TFG_Worldbuilder_Application
                 if (line.IndexOf("Border Vertex") == 0)
                 {
                     line = line.Substring("Border Vertex".Length + 1).Trim();
-                    Point2D point = Point2D.FromString(line);
+                    AbsolutePoint point = AbsolutePoint.FromString(line);
                     if (point != null)
                     {
                         vertices.AppendPoint(point);
@@ -602,7 +602,7 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Given text, gets the Center within the text and returns a ParseContainer holding it
         /// </summary>
-        private ParseContainer<Point2D> ParseCenter(ParseContainer<Point2D> text)
+        private ParseContainer<AbsolutePoint> ParseCenter(ParseContainer<AbsolutePoint> text)
         {
             string ActiveText = text.ActiveText;
             int length = Math.Max(text.length, 0);
@@ -615,10 +615,10 @@ namespace TFG_Worldbuilder_Application
                 if (line.IndexOf("Center") == 0)
                 {
                     line = line.Substring("Center".Length + 1).Trim();
-                    Point2D point = Point2D.FromString(line);
+                    AbsolutePoint point = AbsolutePoint.FromString(line);
                     if (point != null)
                     {
-                        text = new ParseContainer<Point2D>(length, index + length + 1, ActiveText, point);
+                        text = new ParseContainer<AbsolutePoint>(length, index + length + 1, ActiveText, point);
                         return text;
                     }
                 }
@@ -677,7 +677,7 @@ namespace TFG_Worldbuilder_Application
             string level_subtype = "";
             string line = "";
             Polygon2D border = null;
-            Point2D center = null;
+            AbsolutePoint center = null;
             long radius = 0;
             int index = 0;
             int length = 0;
@@ -741,7 +741,7 @@ namespace TFG_Worldbuilder_Application
             }
             if (continue_parse && SuperLevel.HasCenterProperty(level_num)) //Parse Center
             {
-                ParseContainer<Point2D> container = new ParseContainer<Point2D>(length, index, ActiveText, null);
+                ParseContainer<AbsolutePoint> container = new ParseContainer<AbsolutePoint>(length, index, ActiveText, null);
                 container = ParseCenter(container);
                 if (container.Valid)
                 {

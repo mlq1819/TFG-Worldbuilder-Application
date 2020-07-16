@@ -291,7 +291,7 @@ namespace TFG_Worldbuilder_Application
             {
                 try
                 {
-                    Point2D center = ((PointLevel)this).GetCenter();
+                    AbsolutePoint center = ((PointLevel)this).GetCenter();
                     Text += "Center" + inner_delimiter + center.ToString() + outer_delimiter;
                 }
                 catch (InvalidCastException) { }
@@ -545,7 +545,15 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Returns true if the passed point fits within the boundaries and level
         /// </summary>
-        public virtual bool CanFitPoint(Point2D point)
+        public bool CanFitPoint(RenderedPoint point)
+        {
+            return CanFitPoint(point.ToAbsolutePoint());
+        }
+
+        /// <summary>
+        /// Returns true if the passed point fits within the boundaries and level
+        /// </summary>
+        public virtual bool CanFitPoint(AbsolutePoint point)
         {
             return true;
         }
@@ -553,15 +561,31 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Returns true if the passed point fits within the boundaries
         /// </summary>
-        public virtual bool FitsPoint(Point2D point)
+        public bool FitsPoint(RenderedPoint point)
+        {
+            return FitsPoint(point.ToAbsolutePoint());
+        }
+
+        /// <summary>
+        /// Returns true if the passed point fits within the boundaries
+        /// </summary>
+        public virtual bool FitsPoint(AbsolutePoint point)
         {
             return false;
+        }
+        
+        /// <summary>
+        /// Returns true if the parent is of the correct type and the given point fits within the constraints of the parent, or if the parent is not of the correct type
+        /// </summary>
+        public bool PointInParent(RenderedPoint point)
+        {
+            return PointInParent(point.ToAbsolutePoint());
         }
 
         /// <summary>
         /// Returns true if the parent is of the correct type and the given point fits within the constraints of the parent, or if the parent is not of the correct type
         /// </summary>
-        public bool PointInParent(Point2D point)
+        public bool PointInParent(AbsolutePoint point)
         {
             if (this.level == 1)
                 return true;
@@ -700,7 +724,7 @@ namespace TFG_Worldbuilder_Application
             get
             {
                 Point _center;
-                return (_center.X-50).ToString() + ',' + (_center.Y-20).ToString();
+                return (_center.X - 50).ToString() + ',' + (_center.Y - 20).ToString() + ',' + (Global.CanvasSize.X - _center.X - 50).ToString() + ',' + (Global.CanvasSize.Y - _center.Y - 20).ToString();
             }
         }
 
@@ -759,7 +783,7 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Returns true if the passed point fits within the boundaries and level
         /// </summary>
-        public override bool CanFitPoint(Point2D point)
+        public override bool CanFitPoint(AbsolutePoint point)
         {
             return PointInPolygon(point);
         }
@@ -767,7 +791,7 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Returns true if the passed point fits within the boundaries
         /// </summary>
-        public override bool FitsPoint(Point2D point)
+        public override bool FitsPoint(AbsolutePoint point)
         {
             return PointInPolygon(point);
         }
@@ -816,13 +840,13 @@ namespace TFG_Worldbuilder_Application
         {
             return this.border.Size();
         }
-
+        
         /// <summary>
         /// Appends a new point to the end of the borders's vertices
         /// </summary>
-        public Point2D AppendPoint(Point2D point)
+        public AbsolutePoint AppendPoint(AbsolutePoint point)
         {
-            Point2D output = this.border.AppendPoint(point);
+            AbsolutePoint output = this.border.AppendPoint(point);
             RaisePropertyChanged("points");
             RaisePropertyChanged("center");
             RaisePropertyChanged("margin");
@@ -832,9 +856,9 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Creates a new point between two existing points
         /// </summary>
-        public Point2D NewPoint(Point2D a, Point2D b)
+        public AbsolutePoint NewPoint(AbsolutePoint a, AbsolutePoint b)
         {
-            Point2D output = border.NewPoint(a, b);
+            AbsolutePoint output = border.NewPoint(a, b);
             RaisePropertyChanged("points");
             return output;
         }
@@ -842,11 +866,11 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Moves a point to another, but only if the new position is also within the parent or if the old position was outside the parents
         /// </summary>
-        public Point2D MovePoint(Point2D old_position, Point2D new_position)
+        public AbsolutePoint MovePoint(AbsolutePoint old_position, AbsolutePoint new_position)
         {
             if (PointInParent(new_position) || !PointInParent(old_position))
             {
-                Point2D output = border.MovePoint(old_position, new_position);
+                AbsolutePoint output = border.MovePoint(old_position, new_position);
                 if (output != null)
                 {
                     RaisePropertyChanged("points");
@@ -861,7 +885,7 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Checks whether a given point is constrained by a polygon
         /// </summary>
-        public bool PointInPolygon(Point2D point)
+        public bool PointInPolygon(AbsolutePoint point)
         {
             return border.PointInPolygon(point);
         }
@@ -894,7 +918,7 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Checks whether the polygon has a given point
         /// </summary>
-        public bool HasPoint(Point2D point)
+        public bool HasPoint(AbsolutePoint point)
         {
             return border.HasPoint(point);
         }
@@ -1096,7 +1120,7 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Returns true if the passed point fits within the boundaries and level
         /// </summary>
-        public override bool CanFitPoint(Point2D point)
+        public override bool CanFitPoint(AbsolutePoint point)
         {
             return true;
         }
@@ -1192,7 +1216,7 @@ namespace TFG_Worldbuilder_Application
         /// <param name="parent">Level parent, must be of same type as child or World</param>
         /// <param name="center">Level center</param>
         /// <param name="radius">Level radius, indicates region in which sublevels can be placed surrounding center</param>
-        public Level5(string name, LevelType leveltype, SuperLevel parent, Point2D center, long radius) : base(name, 5, leveltype, parent, center)
+        public Level5(string name, LevelType leveltype, SuperLevel parent, AbsolutePoint center, long radius) : base(name, 5, leveltype, parent, center)
         {
             if (PointInParent(center))
             {
@@ -1213,7 +1237,7 @@ namespace TFG_Worldbuilder_Application
         /// <param name="parent">Level parent, must be of same type as child or World</param>
         /// <param name="center">Level center</param>
         /// <param name="radius">Level radius, indicates region in which sublevels can be placed surrounding center</param>
-        public Level5(string name, LevelType leveltype, string sublevel, SuperLevel parent, Point2D center, long radius) : base(name, 5, leveltype, sublevel, parent, center)
+        public Level5(string name, LevelType leveltype, string sublevel, SuperLevel parent, AbsolutePoint center, long radius) : base(name, 5, leveltype, sublevel, parent, center)
         {
             if (PointInParent(center))
             {
@@ -1228,7 +1252,7 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Returns true if the point is within the radius of the center
         /// </summary>
-        public bool PointInRadius(Point2D point)
+        public bool PointInRadius(AbsolutePoint point)
         {
             return (point - center).Length() <= radius;
         }
@@ -1236,7 +1260,7 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Returns true if the passed point fits within the boundaries and level
         /// </summary>
-        public override bool CanFitPoint(Point2D point)
+        public override bool CanFitPoint(AbsolutePoint point)
         {
             return PointInRadius(point);
         }
@@ -1244,7 +1268,7 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Returns true if the passed point fits within the boundaries
         /// </summary>
-        public override bool FitsPoint(Point2D point)
+        public override bool FitsPoint(AbsolutePoint point)
         {
             return PointInRadius(point);
         }
@@ -1270,7 +1294,7 @@ namespace TFG_Worldbuilder_Application
         /// <param name="leveltype">Level type, provides specific context that indicates what type of level it is of the 6 basic types or World</param>
         /// <param name="parent">Level parent, must be of same type as child or World</param>
         /// <param name="center">Level center</param>
-        public Level6(string name, LevelType leveltype, SuperLevel parent, Point2D center) : base(name, 6, leveltype, parent, center)
+        public Level6(string name, LevelType leveltype, SuperLevel parent, AbsolutePoint center) : base(name, 6, leveltype, parent, center)
         {
 
         }
@@ -1283,7 +1307,7 @@ namespace TFG_Worldbuilder_Application
         /// <param name="subtype">Level subtype, can be more customized by the user</param>
         /// <param name="parent">Level parent, must be of same type as child or World</param>
         /// <param name="center">Level center</param>
-        public Level6(string name, LevelType leveltype, string sublevel, SuperLevel parent, Point2D center) : base(name, 6, leveltype, sublevel, parent, center)
+        public Level6(string name, LevelType leveltype, string sublevel, SuperLevel parent, AbsolutePoint center) : base(name, 6, leveltype, sublevel, parent, center)
         {
 
         }
