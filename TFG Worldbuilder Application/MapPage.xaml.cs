@@ -407,28 +407,31 @@ public sealed partial class MapPage : Page
         /// </summary>
         private void WorldCanvas_Add_Point(Point2D point)
         {
-            if (string.Equals(ActiveJob, "Create") && LevelNum > 1 && LevelNum < 5)
+            if (string.Equals(ActiveJob, "Create"))
             {
-                point = Point2D.RevertTransformation(point);
-                if (Context.ActiveLevel != null)
+                //point = Point2D.ApplyTransformation(point);
+                if(LevelNum > 1 && LevelNum < 5)
                 {
-                    if (Context.ActiveLevel.CanFitPoint(point))
+                    if (Context.ActiveLevel != null)
                     {
-                        vertices.AppendPoint(point);
-                        Context.ExtraPoints.AppendPoint(point);
-                        Context.RaisePropertyChanged("ExtraPoints");
-                    } else
-                    {
-                        OpenPopupAlert("Point (" + point.X + ',' + point.Y + ") not in range");
+                        if (Context.ActiveLevel.CanFitPoint(point))
+                        {
+                            vertices.AppendPoint(point);
+                            Context.ExtraPoints.AppendPoint(point);
+                            Context.RaisePropertyChanged("ExtraPoints");
+                        }
+                        else
+                        {
+                            OpenPopupAlert("Point (" + point.X + ',' + point.Y + ") not in range");
+                        }
                     }
+                    TapPromptTab.Text = label + ": " + vertices.Size() + " points";
                 }
-                TapPromptTab.Text = label + ": " + vertices.Size() + " points";
             } else //Set the new center there without moving anything
             {
                 //Global.Shift += Global.Center - point;
                 Global.Center += (point - Global.OriginalCenter);
-                if (Context.ActiveLevel != null)
-                    Context.ActiveLevel.ForceUpdatePoints();
+                ForceUpdatePoints();
             }
         }
         
@@ -442,7 +445,7 @@ public sealed partial class MapPage : Page
         {
             TapPrompt.Visibility = Visibility.Collapsed;
             ActiveJob = "None";
-            Context.UpdateShapesAndPoints();
+            Context.ClearPoints();
         }
 
         private void Tap_Prompt_Confirm_Click(object sender, RoutedEventArgs e)
@@ -458,18 +461,24 @@ public sealed partial class MapPage : Page
             }
         }
 
+        /// <summary>
+        /// Forces all points to update their positions
+        /// </summary>
+        private void ForceUpdatePoints()
+        {
+            Context.ForceUpdatePoints();
+        }
+
         private void Zoom_In_Button_Click(object sender, RoutedEventArgs e)
         {
             Global.Zoom = Math.Min(5, Global.Zoom * 1.1);
-            if (Context.ActiveLevel != null)
-                Context.ActiveLevel.ForceUpdatePoints();
+            ForceUpdatePoints();
         }
 
         private void Zoom_Out_Button_Click(object sender, RoutedEventArgs e)
         {
             Global.Zoom = Math.Max(0.2, Global.Zoom / 1.1);
-            if (Context.ActiveLevel != null)
-                Context.ActiveLevel.ForceUpdatePoints();
+            ForceUpdatePoints();
         }
 
         private void ResetZoom()
@@ -484,8 +493,7 @@ public sealed partial class MapPage : Page
         private void Reset_Zoom_Button_Click(object sender, RoutedEventArgs e)
         {
             ResetZoom();
-            if (Context.ActiveLevel != null)
-                Context.ActiveLevel.ForceUpdatePoints();
+            ForceUpdatePoints();
         }
     }
 }

@@ -663,7 +663,7 @@ namespace TFG_Worldbuilder_Application
     /// <summary>
     /// Superclass for levels with a defined border
     /// </summary>
-    public class BorderLevel : SuperLevel, MyPointCollection
+    public class BorderLevel : SuperLevel
     {
         private Polygon2D border;
         

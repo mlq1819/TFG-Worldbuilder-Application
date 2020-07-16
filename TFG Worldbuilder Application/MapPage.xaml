@@ -80,7 +80,38 @@
     </Page.Resources>
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <Grid HorizontalAlignment="Stretch" Height="75" VerticalAlignment="Top">
+        <Grid x:Name="MapDisplay" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,75,0,0">
+            <Canvas x:Name="WorldCanvas" Background="Azure" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" PointerPressed="WorldCanvas_PointerPressed">
+                <ItemsControl x:Name="ShapesControl" ItemsSource="{x:Bind Path=Context.Shapes, Mode=OneWay}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="local:BorderLevel">
+                            <Polygon Fill="{x:Bind Path=color, Mode=OneWay}" Stroke="Black" Name="{x:Bind Path=name, Mode=OneWay}" Points="{x:Bind Path=points, Mode=OneWay}"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <ItemsControl x:Name="ShapeNamesControl" ItemsSource="{x:Bind Path=Context.Shapes, Mode=OneWay}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="local:BorderLevel">
+                            <Grid VerticalAlignment="Center" HorizontalAlignment="Center" Margin="{x:Bind Path=margin, Mode=OneWay}">
+                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" TextAlignment="Center" Text="{x:Bind Path=name, Mode=OneWay}"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <ItemsControl x:Name="ExtraPointsControl" ItemsSource="{x:Bind Path=Context.ExtraPoints.points, Mode=OneWay}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="local:Point2D">
+                            <Path Fill="LightCoral" StrokeThickness="0">
+                                <Path.Data>
+                                    <EllipseGeometry Center="{x:Bind Path=pointstr, Mode=OneWay}" RadiusX="3" RadiusY="3"/>
+                                </Path.Data>
+                            </Path>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Canvas>
+        </Grid>
+        <Grid x:Name="WindowAndToolbarGrid" HorizontalAlignment="Stretch" Height="75" VerticalAlignment="Top">
             <Grid HorizontalAlignment="Stretch" Height="25" VerticalAlignment="Top">
                 <TextBlock x:Name="FileNameBlock" Text="" Height="25" Width="300" HorizontalAlignment="Left" Margin="100,0,0,0"/>
             </Grid>
@@ -111,37 +142,7 @@
                 </StackPanel>
             </Grid>
         </Grid>
-        <Grid x:Name="MapDisplay" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,75,0,0">
-            <Canvas x:Name="WorldCanvas" Background="Azure" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" PointerPressed="WorldCanvas_PointerPressed">
-                <ItemsControl x:Name="ShapesControl" ItemsSource="{x:Bind Path=Context.Shapes, Mode=OneWay}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate x:DataType="local:BorderLevel">
-                            <Polygon Fill="{x:Bind Path=color, Mode=OneWay}" Stroke="Black" Name="{x:Bind Path=name, Mode=OneWay}" Points="{x:Bind Path=points, Mode=OneWay}"/>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-                <ItemsControl ItemsSource="{x:Bind Path=Context.Shapes, Mode=OneWay}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate x:DataType="local:BorderLevel">
-                            <Grid VerticalAlignment="Center" HorizontalAlignment="Center" Margin="{x:Bind Path=margin, Mode=OneWay}">
-                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" TextAlignment="Center" Text="{x:Bind Path=name, Mode=OneWay}"/>
-                            </Grid>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-                <ItemsControl x:Name="ExtraPointsControl" ItemsSource="{x:Bind Path=Context.ExtraPoints.points, Mode=OneWay}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate x:DataType="local:Point2D">
-                            <Path Fill="LightCoral" StrokeThickness="0">
-                                <Path.Data>
-                                    <EllipseGeometry Center="{x:Bind Path=pointstr, Mode=OneWay}" RadiusX="3" RadiusY="3"/>
-                                </Path.Data>
-                            </Path>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </Canvas>
-        </Grid>
+        
         <Grid x:Name="TextPrompt" HorizontalAlignment="Center" VerticalAlignment="Center" Width="500" Height="200" Visibility="Collapsed">
             <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="50">
                 <Rectangle Fill="#FFF4F4F5" HorizontalAlignment="Stretch" Margin="0,0,0,0" Stroke="Black" VerticalAlignment="Stretch"/>

@@ -39,7 +39,7 @@ namespace TFG_Worldbuilder_Application
             this.Shapes = new ObservableCollection<BorderLevel>();
             this.Circles = new ObservableCollection<Level5>();
             this.Points = new ObservableCollection<Level6>();
-            this.ExtraPoints = new GenericPointCollection();
+            this.ExtraPoints = new MyPointCollection();
         }
 
         public ActiveContext(ObservableCollection<Level1> Worlds)
@@ -49,7 +49,7 @@ namespace TFG_Worldbuilder_Application
             this.Shapes = new ObservableCollection<BorderLevel>();
             this.Circles = new ObservableCollection<Level5>();
             this.Points = new ObservableCollection<Level6>();
-            this.ExtraPoints = new GenericPointCollection();
+            this.ExtraPoints = new MyPointCollection();
         }
 
         /// <summary>
@@ -126,11 +126,31 @@ namespace TFG_Worldbuilder_Application
         }
 
         /// <summary>
+        /// Forces all point-related objects to update
+        /// </summary>
+        public void ForceUpdatePoints()
+        {
+            if (ActiveLevel != null)
+            {
+                ActiveLevel.ForceUpdatePoints();
+                RaisePropertyChanged("ActiveLevel");
+            }
+            if (ExtraPoints != null)
+            {
+                ExtraPoints.ForceUpdatePoints();
+                RaisePropertyChanged("ExtraPoints");
+            }
+            RaisePropertyChanged("Shapes");
+            RaisePropertyChanged("Circles");
+            RaisePropertyChanged("Points");
+        }
+
+        /// <summary>
         /// Sets this.ExtraPoints to the list
         /// </summary>
         public void SetPoints(IList<Point2D> list)
         {
-            this.ExtraPoints = new GenericPointCollection();
+            this.ExtraPoints = new MyPointCollection();
             for(int i=0; i<list.Count; i++)
             {
                 this.ExtraPoints.AppendPoint(new Point2D(list[i].X, list[i].Y));
@@ -143,8 +163,8 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         public void ClearPoints()
         {
-            this.ExtraPoints = new GenericPointCollection();
-            ((GenericPointCollection) this.ExtraPoints).RaisePropertyChanged("points");
+            this.ExtraPoints = new MyPointCollection();
+            ((MyPointCollection) this.ExtraPoints).RaisePropertyChanged("points");
             RaisePropertyChanged("ExtraPoints");
         }
 

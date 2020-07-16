@@ -128,6 +128,22 @@ namespace TFG_Worldbuilder_Application
         }
 
         /// <summary>
+        /// Applies the render coordinate transformation to all elements in an ObservableCollection<Point2D>
+        /// </summary>
+        /// <param name="points">PointCollection to perform the transformation on</param>
+        public static ObservableCollection<Point2D> ApplyTransformation(ObservableCollection<Point2D> input)
+        {
+            ObservableCollection<Point2D> output = new ObservableCollection<Point2D>();
+            if (input == null)
+                return output;
+            for (int i = 0; i < input.Count; i++)
+            {
+                output.Add(ApplyTransformation(input[i]));
+            }
+            return output;
+        }
+
+        /// <summary>
         /// Applies the render coordinate transformation to all elements in a PointCollection
         /// </summary>
         /// <param name="points">PointCollection to perform the transformation on</param>
@@ -162,7 +178,23 @@ namespace TFG_Worldbuilder_Application
             output = Point2D.ToWindowsPoint(((new Point2D(input) - Global.OriginalCenter) / Global.Zoom) + Global.Center);
             return output;
         }
-
+        
+        /// <summary>
+        /// Reverts the render coordinate transformation to all elements in an ObservableCollection<Point2D>
+        /// </summary>
+        /// <param name="points">PointCollection to perform the transformation on</param>
+        public static ObservableCollection<Point2D> RevertTransformation(ObservableCollection<Point2D> input)
+        {
+            ObservableCollection<Point2D> output = new ObservableCollection<Point2D>();
+            if (input == null)
+                return output;
+            for (int i = 0; i < input.Count; i++)
+            {
+                output.Add(RevertTransformation(input[i]));
+            }
+            return output;
+        }
+        
         /// <summary>
         /// Reverts the render coordinate transformation to all elements in a PointCollection
         /// </summary>
@@ -548,20 +580,7 @@ namespace TFG_Worldbuilder_Application
         }
     }
 
-    /// <summary>
-    /// Interface that defines a collection of points with a valid points property that can be used for the intended purpose
-    /// </summary>
-    public interface MyPointCollection : INotifyPropertyChanged
-    {
-        PointCollection points
-        {
-            get;
-        }
-
-        Point2D AppendPoint(Point2D point);
-    }
-
-    public class GenericPointCollection : MyPointCollection
+    public class MyPointCollection
     {
         public event PropertyChangedEventHandler PropertyChanged;
         public void RaisePropertyChanged(string str)
@@ -572,8 +591,8 @@ namespace TFG_Worldbuilder_Application
             }
         }
 
-        private PointCollection _points;
-        public PointCollection points
+        private ObservableCollection<Point2D> _points;
+        public ObservableCollection<Point2D> points
         {
             get
             {
@@ -581,18 +600,23 @@ namespace TFG_Worldbuilder_Application
             }
         }
 
-        public GenericPointCollection()
+        public MyPointCollection()
         {
-            this._points = new PointCollection();
+            this._points = new ObservableCollection<Point2D>();
         }
 
         public Point2D AppendPoint(Point2D point)
         {
             if (this._points == null)
-                this._points = new PointCollection();
-            this._points.Add(Point2D.ToWindowsPoint(point));
+                this._points = new ObservableCollection<Point2D>();
+            this._points.Add(new Point2D(point));
             RaisePropertyChanged("points");
             return point;
+        }
+
+        public void ForceUpdatePoints()
+        {
+            RaisePropertyChanged("points");
         }
     }
 }
