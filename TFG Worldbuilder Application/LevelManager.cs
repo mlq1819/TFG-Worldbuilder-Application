@@ -671,23 +671,35 @@ namespace TFG_Worldbuilder_Application
         {
             get
             {
-                return Point2D.ApplyTransformation(Point2D.ToWindowsPoints(border.vertices));
+                return RenderedPoint.ToWindowsPoints(border.verticesr);
             }
         }
-
+        
+        private RenderedPoint _center
+        {
+            get
+            {
+                return border.GetCenter().ToRenderedPoint();
+            }
+        }
+        /// <summary>
+        /// center object used for rendering
+        /// </summary>
         public Point center
         {
             get
             {
-                return Point2D.ApplyTransformation(Point2D.ToWindowsPoint(border.GetCenter()));
+                return _center.ToWindowsPoint();
             }
         }
-
+        /// <summary>
+        /// string designed to be set to the margins of a textblock
+        /// </summary>
         public string margin
         {
             get
             {
-                Point _center = Point2D.ApplyTransformation(center);
+                Point _center;
                 return (_center.X-50).ToString() + ',' + (_center.Y-20).ToString();
             }
         }
@@ -909,8 +921,8 @@ namespace TFG_Worldbuilder_Application
     /// </summary>
     public class PointLevel : SuperLevel
     {
-        private Point2D _center;
-        public Point2D center
+        private AbsolutePoint _center;
+        public AbsolutePoint center
         {
             get
             {
@@ -931,11 +943,11 @@ namespace TFG_Worldbuilder_Application
         /// <param name="leveltype">Level type, provides specific context that indicates what type of level it is of the 6 basic types or World</param>
         /// <param name="parent">Level parent, must be of same type as child or World</param>
         /// <param name="center">Level center</param>
-        protected PointLevel(string name, int level, LevelType leveltype, SuperLevel parent, Point2D center) : base(name, level, leveltype, parent)
+        protected PointLevel(string name, int level, LevelType leveltype, SuperLevel parent, AbsolutePoint center) : base(name, level, leveltype, parent)
         {
             if (PointInParent(center))
             {
-                this.center = new Point2D(center);
+                this.center = new AbsolutePoint(center);
             }
             else
             {
@@ -952,11 +964,11 @@ namespace TFG_Worldbuilder_Application
         /// <param name="subtype">Level subtype, can be more customized by the user</param>
         /// <param name="parent">Level parent, must be of same type as child or World</param>
         /// <param name="center">Level center</param>
-        protected PointLevel(string name, int level, LevelType leveltype, string sublevel, SuperLevel parent, Point2D center) : base(name, level, leveltype, sublevel, parent)
+        protected PointLevel(string name, int level, LevelType leveltype, string sublevel, SuperLevel parent, AbsolutePoint center) : base(name, level, leveltype, sublevel, parent)
         {
             if (PointInParent(center))
             {
-                this.center = new Point2D(center);
+                this.center = new AbsolutePoint(center);
             }
             else
             {
@@ -981,19 +993,19 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Returns the center
         /// </summary>
-        public Point2D GetCenter()
+        public AbsolutePoint GetCenter()
         {
-            return new Point2D(this.center);
+            return new AbsolutePoint(this.center);
         }
 
         /// <summary>
         /// Moves the center somewhere else
         /// </summary>
-        public bool MoveCenter(Point2D point)
+        public bool MoveCenter(AbsolutePoint point)
         {
             if (PointInParent(point))
             {
-                this.center = new Point2D(point);
+                this.center = new AbsolutePoint(point);
                 return true;
             }
             return false;

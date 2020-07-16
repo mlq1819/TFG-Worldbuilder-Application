@@ -10,7 +10,15 @@ namespace TFG_Worldbuilder_Application
     {
         public static FileManager ActiveFile;
         public static double Zoom = 0;
-        public static AbsolutePoint OriginalCenter = new AbsolutePoint(0, 0); //Must always be in absolute coordinates
+        public static AbsolutePoint CanvasSize = new AbsolutePoint(0, 0); //Must always be in absolute coordinates
+        //public static AbsolutePoint OriginalCenter = new AbsolutePoint(0, 0);
+        public static AbsolutePoint OriginalCenter
+        {
+            get
+            {
+                return CanvasSize / 2;
+            }
+        }
         public static AbsolutePoint Center = new AbsolutePoint(0, 0); //Must always be in absolute coordinates
     }
 }

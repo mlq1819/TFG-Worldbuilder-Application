@@ -225,29 +225,6 @@ namespace TFG_Worldbuilder_Application
         }
 
         /// <summary>
-        /// Attempts to convert a string in the format "(X,Y)" to a Point2D object
-        /// </summary>
-        public static Point2D FromString(string str)
-        {
-            if (str.Trim().IndexOf('(') == 0 && str.Trim().IndexOf(')') == str.Trim().Length - 1 && str.IndexOf(',') > 0)
-            {
-                str = str.Trim().Substring(1, str.Trim().Length - 2).Trim();
-                long X, Y;
-                try
-                {
-                    X = Convert.ToInt64(str.Substring(0, str.IndexOf(',')));
-                    Y = Convert.ToInt64(str.Substring(str.IndexOf(',') + 1));
-                    return new Point2D(X, Y);
-                }
-                catch (InvalidCastException)
-                {
-                    return null;
-                }
-            }
-            return null;
-        }
-
-        /// <summary>
         /// adds two Point2D objects together
         /// </summary>
         public static Point2D operator +(Point2D a, Point2D b)
@@ -312,7 +289,14 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         public override bool Equals(object that)
         {
-            return this.GetType() == that.GetType() && this == (Point2D)that;
+            try
+            {
+                return this.GetType() == that.GetType() && this == (Point2D)that;
+            }
+            catch (InvalidCastException)
+            {
+                return false;
+            }
         }
 
         /// <summary>
@@ -423,6 +407,142 @@ namespace TFG_Worldbuilder_Application
         {
             ;
         }
+        
+        public static implicit operator AbsolutePoint(RenderedPoint point)
+        {
+            return new AbsolutePoint(point);
+        }
+
+        public static implicit operator Point(RenderedPoint point)
+        {
+            return new Point(point.X, point.Y);
+        }
+
+        public AbsolutePoint ToRenderedPoint()
+        {
+            return new AbsolutePoint(this);
+        }
+
+        public Point ToWindowsPoint()
+        {
+            return RenderedPoint.ToWindowsPoint(this);
+        }
+
+        /// <summary>
+        /// Converts a RenderedPoint into a Point
+        /// </summary>
+        public static Point ToWindowsPoint(RenderedPoint point)
+        {
+            return new Point(point.X, point.Y);
+        }
+
+        /// <summary>
+        /// Converts a Point2D IList to a Point List
+        /// </summary>
+        public static PointCollection ToWindowsPoints(IList<RenderedPoint> list)
+        {
+            PointCollection output = new PointCollection();
+            for (int i = 0; i < list.Count; i++)
+            {
+                output.Add(RenderedPoint.ToWindowsPoint(list[i]));
+            }
+            return output;
+        }
+
+        /// <summary>
+        /// adds two RenderedPoint objects together
+        /// </summary>
+        public static RenderedPoint operator +(RenderedPoint a, RenderedPoint b)
+        {
+            return new RenderedPoint(a.X + b.X, a.Y + b.Y);
+        }
+
+        /// <summary>
+        /// takes the difference of two RenderedPoint objects
+        /// </summary>
+        public static RenderedPoint operator -(RenderedPoint a, RenderedPoint b)
+        {
+            return new RenderedPoint(a.X - b.X, a.Y - b.Y);
+        }
+
+        /// <summary>
+        /// multiplies a RenderedPoint object by a scalar
+        /// </summary>
+        public static RenderedPoint operator *(RenderedPoint a, double s)
+        {
+            return new RenderedPoint((long)(a.X * s), (long)(a.Y * s));
+        }
+
+        /// <summary>
+        /// multiplies a RenderedPoint object by a scalar
+        /// </summary>
+        public static RenderedPoint operator *(double s, RenderedPoint a)
+        {
+            return new RenderedPoint((long)(a.X * s), (long)(a.Y * s));
+        }
+
+        /// <summary>
+        /// divides a RenderedPoint object by a scalar
+        /// </summary>
+        public static RenderedPoint operator /(RenderedPoint a, double s)
+        {
+            return new RenderedPoint((long)(a.X / s), (long)(a.Y / s));
+        }
+
+        /// <summary>
+        /// divides a scalar by a RenderedPoint object
+        /// </summary>
+        public static RenderedPoint operator /(long s, RenderedPoint a)
+        {
+            return new RenderedPoint((long)(s / a.X), (long)(s / a.Y));
+        }
+
+        /// <summary>
+        /// checks equality between two RenderedPoint objects
+        /// </summary>
+        public static bool operator ==(RenderedPoint a, RenderedPoint b)
+        {
+            if (((object)a) == null && ((object)b) == null)
+                return true;
+            if (((object)a) == null ^ ((object)b) == null)
+                return false;
+            return a.X == b.X && a.Y == b.Y;
+        }
+
+        /// <summary>
+        /// checks inequality between two RenderedPoint objects
+        /// </summary>
+        public static bool operator !=(RenderedPoint a, RenderedPoint b)
+        {
+            if (((object)a) == null && ((object)b) == null)
+                return false;
+            if (((object)a) == null ^ ((object)b) == null)
+                return true;
+            return a.X != b.X || a.Y != b.Y;
+        }
+
+        /// <summary>
+        /// checks equality between two RenderedPoint objects
+        /// </summary>
+        public override bool Equals(object that)
+        {
+            try
+            {
+                return this.GetType() == that.GetType() && this == (RenderedPoint)that;
+            }
+            catch (InvalidCastException)
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Generates a possible hash value for any RenderedPoint object
+        /// </summary>
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 
     /// <summary>
@@ -452,10 +572,138 @@ namespace TFG_Worldbuilder_Application
         {
             ;
         }
+
+        public static implicit operator RenderedPoint(AbsolutePoint point)
+        {
+            return new RenderedPoint(point);
+        }
+        
+        public RenderedPoint ToRenderedPoint()
+        {
+            return new RenderedPoint(this);
+        }
+
+        /// <summary>
+        /// Attempts to convert a string in the format "(X,Y)" to a Point2D object
+        /// </summary>
+        public static AbsolutePoint FromString(string str)
+        {
+            if (str.Trim().IndexOf('(') == 0 && str.Trim().IndexOf(')') == str.Trim().Length - 1 && str.IndexOf(',') > 0)
+            {
+                str = str.Trim().Substring(1, str.Trim().Length - 2).Trim();
+                long X, Y;
+                try
+                {
+                    X = Convert.ToInt64(str.Substring(0, str.IndexOf(',')));
+                    Y = Convert.ToInt64(str.Substring(str.IndexOf(',') + 1));
+                    return new AbsolutePoint(X, Y);
+                }
+                catch (InvalidCastException)
+                {
+                    return null;
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// adds two AbsolutePoint objects together
+        /// </summary>
+        public static AbsolutePoint operator +(AbsolutePoint a, AbsolutePoint b)
+        {
+            return new AbsolutePoint(a.X + b.X, a.Y + b.Y);
+        }
+
+        /// <summary>
+        /// takes the difference of two AbsolutePoint objects
+        /// </summary>
+        public static AbsolutePoint operator -(AbsolutePoint a, AbsolutePoint b)
+        {
+            return new AbsolutePoint(a.X - b.X, a.Y - b.Y);
+        }
+
+        /// <summary>
+        /// multiplies a AbsolutePoint object by a scalar
+        /// </summary>
+        public static AbsolutePoint operator *(AbsolutePoint a, double s)
+        {
+            return new AbsolutePoint((long)(a.X * s), (long)(a.Y * s));
+        }
+
+        /// <summary>
+        /// multiplies a AbsolutePoint object by a scalar
+        /// </summary>
+        public static AbsolutePoint operator *(double s, AbsolutePoint a)
+        {
+            return new AbsolutePoint((long)(a.X * s), (long)(a.Y * s));
+        }
+
+        /// <summary>
+        /// divides a AbsolutePoint object by a scalar
+        /// </summary>
+        public static AbsolutePoint operator /(AbsolutePoint a, double s)
+        {
+            return new AbsolutePoint((long)(a.X / s), (long)(a.Y / s));
+        }
+
+        /// <summary>
+        /// divides a scalar by a AbsolutePoint object
+        /// </summary>
+        public static AbsolutePoint operator /(long s, AbsolutePoint a)
+        {
+            return new AbsolutePoint((long)(s / a.X), (long)(s / a.Y));
+        }
+
+        /// <summary>
+        /// checks equality between two AbsolutePoint objects
+        /// </summary>
+        public static bool operator ==(AbsolutePoint a, AbsolutePoint b)
+        {
+            if (((object)a) == null && ((object)b) == null)
+                return true;
+            if (((object)a) == null ^ ((object)b) == null)
+                return false;
+            return a.X == b.X && a.Y == b.Y;
+        }
+
+        /// <summary>
+        /// checks inequality between two AbsolutePoint objects
+        /// </summary>
+        public static bool operator !=(AbsolutePoint a, AbsolutePoint b)
+        {
+            if (((object)a) == null && ((object)b) == null)
+                return false;
+            if (((object)a) == null ^ ((object)b) == null)
+                return true;
+            return a.X != b.X || a.Y != b.Y;
+        }
+        
+        /// <summary>
+        /// checks equality between two AbsolutePoint objects
+        /// </summary>
+        public override bool Equals(object that)
+        {
+            try
+            {
+                return this.GetType() == that.GetType() && this == (AbsolutePoint)that;
+            } catch (InvalidCastException)
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Generates a possible hash value for any AbsolutePoint object
+        /// </summary>
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 
     /// <summary>
-    /// Polygon2D object of Point2D points
+    /// Polygon2D object of AbsolutePoint points
+    /// Is able to interface with RenderedPoint objects through conversions to AbsolutePoints
     /// </summary>
     public class Polygon2D : INotifyPropertyChanged
     {
@@ -468,7 +716,14 @@ namespace TFG_Worldbuilder_Application
             }
         }
 
-        public ObservableCollection<Point2D> vertices;
+        public ObservableCollection<RenderedPoint> verticesr
+        {
+            get
+            {
+                return Point2D.ApplyTransformation(vertices);
+            }
+        }
+        public ObservableCollection<AbsolutePoint> vertices;
         public int Count
         {
             get
@@ -476,16 +731,17 @@ namespace TFG_Worldbuilder_Application
                 return this.Size();
             }
         }
-        public Point2D this[int i]
+        public AbsolutePoint this[int i]
         {
             get
             {
-                return new Point2D(this.vertices[i]);
+                return new AbsolutePoint(this.vertices[i]);
             }
             set
             {
                 this.vertices[i] = value;
                 RaisePropertyChanged("vertices");
+                RaisePropertyChanged("verticesr");
             }
         }
 
@@ -494,17 +750,17 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         public Polygon2D()
         {
-            vertices = new ObservableCollection<Point2D>();
+            vertices = new ObservableCollection<AbsolutePoint>();
         }
 
         /// <summary>
         /// Constructs a Polygon2D from a list of Point2D objects
         /// </summary>
-        public Polygon2D(IList<Point2D> list) : this()
+        public Polygon2D(IList<AbsolutePoint> list) : this()
         {
             for (int i = 0; i < list.Count; i++)
             {
-                this.vertices.Add(new Point2D(list[i]));
+                this.vertices.Add(new AbsolutePoint(list[i]));
             }
         }
 
@@ -527,17 +783,38 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Appends a new point to the end of the polygon's vertices
         /// </summary>
-        public Point2D AppendPoint(Point2D point)
+        public RenderedPoint AppendPoint(RenderedPoint point)
         {
-            vertices.Add(new Point2D(point));
+            AppendPoint(new AbsolutePoint(point));
+            return point;
+        }
+
+        /// <summary>
+        /// Appends a new point to the end of the polygon's vertices
+        /// </summary>
+        public AbsolutePoint AppendPoint(AbsolutePoint point)
+        {
+            vertices.Add(new AbsolutePoint(point));
             RaisePropertyChanged("vertices");
+            RaisePropertyChanged("verticesr");
             return point;
         }
 
         /// <summary>
         /// Creates a new point between two existing points
         /// </summary>
-        public Point2D NewPoint(Point2D a, Point2D b)
+        public RenderedPoint NewPoint(RenderedPoint a, RenderedPoint b)
+        {
+            AbsolutePoint output = NewPoint(new AbsolutePoint(a), new AbsolutePoint(b));
+            if (output != null)
+                return new RenderedPoint(output);
+            return null;
+        }
+
+        /// <summary>
+        /// Creates a new point between two existing points
+        /// </summary>
+        public AbsolutePoint NewPoint(AbsolutePoint a, AbsolutePoint b)
         {
             for (int i = 0; i < vertices.Count - 1; i++)
             {
@@ -554,13 +831,24 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Moves a point to another
         /// </summary>
-        public Point2D MovePoint(Point2D old_position, Point2D new_position)
+        public RenderedPoint MovePoint(RenderedPoint old_position, RenderedPoint new_position)
+        {
+            AbsolutePoint output = MovePoint(new AbsolutePoint(old_position), new AbsolutePoint(new_position));
+            if (output != null)
+                return new RenderedPoint(output);
+            return null;
+        }
+
+        /// <summary>
+        /// Moves a point to another
+        /// </summary>
+        public AbsolutePoint MovePoint(AbsolutePoint old_position, AbsolutePoint new_position)
         {
             for (int i = 0; i < vertices.Count; i++)
             {
                 if (vertices[i] == old_position)
                 {
-                    vertices[i] = new Point2D(new_position);
+                    vertices[i] = new AbsolutePoint(new_position);
                     RaisePropertyChanged("vertices");
                     return vertices[i];
                 }
@@ -571,7 +859,15 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Checks whether a given point is constrained by a polygon
         /// </summary>
-        public bool PointInPolygon(Point2D point)
+        public bool PointInPolygon(RenderedPoint point)
+        {
+            return PointInPolygon(new AbsolutePoint(point));
+        }
+
+        /// <summary>
+        /// Checks whether a given point is constrained by a polygon
+        /// </summary>
+        public bool PointInPolygon(AbsolutePoint point)
         {
             int i, j;
             bool c = false;
@@ -601,7 +897,7 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Checks whether the polygon has a given point
         /// </summary>
-        public bool HasPoint(Point2D point)
+        public bool HasPoint(AbsolutePoint point)
         {
             for (int i = 0; i < vertices.Count; i++)
             {
@@ -614,7 +910,7 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Creates and returns a centerpoint for the polygon
         /// </summary>
-        public Point2D GetCenter()
+        public AbsolutePoint GetCenter()
         {
             long minX, maxX, minY, maxY, sumX, sumY;
             minX = minY = Int64.MaxValue;
@@ -629,13 +925,13 @@ namespace TFG_Worldbuilder_Application
                 sumX += vertices[i].X;
                 sumY += vertices[i].Y;
             }
-            Point2D abs_center = new Point2D((minX + maxX) / 2, (minY + maxY) / 2);
-            Point2D avg_center = new Point2D(sumX / vertices.Count, sumY / vertices.Count);
+            AbsolutePoint abs_center = new AbsolutePoint((minX + maxX) / 2, (minY + maxY) / 2);
+            AbsolutePoint avg_center = new AbsolutePoint(sumX / vertices.Count, sumY / vertices.Count);
             if (PointInPolygon(abs_center))
                 return abs_center;
             else if (PointInPolygon(avg_center))
             {
-                Point2D inc_center = new Point2D(abs_center);
+                AbsolutePoint inc_center = new AbsolutePoint(abs_center);
                 while (!PointInPolygon(inc_center))
                 {
                     inc_center = ((9 * inc_center) + avg_center) / 10;

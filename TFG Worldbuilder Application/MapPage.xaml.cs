@@ -493,8 +493,8 @@ public sealed partial class MapPage : Page
 
         private void ResetZoom()
         {
-            Global.OriginalCenter.X = (long)WorldCanvas.ActualWidth / 2;
-            Global.OriginalCenter.Y = (long)WorldCanvas.ActualHeight / 2;
+            Global.CanvasSize.X = (long)WorldCanvas.ActualWidth;
+            Global.CanvasSize.Y = (long)WorldCanvas.ActualHeight;
             Global.Center = new AbsolutePoint(Global.OriginalCenter);
             Global.Zoom = 1.0f;
         }
