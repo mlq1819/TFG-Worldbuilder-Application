@@ -403,42 +403,52 @@ public sealed partial class MapPage : Page
         }
 
         /// <summary>
+        /// Moves the focus to point
+        /// </summary>
+        /// <param name="point">an AbsolutePoint object representing the translated click location</param>
+        private void WorldCanvas_Refocus(AbsolutePoint point)
+        {
+            Global.Center = point; //Sets the center to the abolute coordinates of the point
+            ForceUpdatePoints();
+        }
+
+        /// <summary>
         /// Adds a point to the working list of vertices
         /// </summary>
-        private void WorldCanvas_Add_Point(Point2D point)
+        /// <param name="point">an AbsolutePoint object representing the translated click location</param>
+        private void WorldCanvas_Add_Point(AbsolutePoint point)
         {
-            if (string.Equals(ActiveJob, "Create"))
+            //point = Point2D.ApplyTransformation(point);
+            if(LevelNum > 1 && LevelNum < 5)
             {
-                //point = Point2D.ApplyTransformation(point);
-                if(LevelNum > 1 && LevelNum < 5)
+                if (Context.ActiveLevel != null)
                 {
-                    if (Context.ActiveLevel != null)
+                    if (Context.ActiveLevel.CanFitPoint(point))
                     {
-                        if (Context.ActiveLevel.CanFitPoint(point))
-                        {
-                            vertices.AppendPoint(point);
-                            Context.ExtraPoints.AppendPoint(point);
-                            Context.RaisePropertyChanged("ExtraPoints");
-                        }
-                        else
-                        {
-                            OpenPopupAlert("Point (" + point.X + ',' + point.Y + ") not in range");
-                        }
+                        vertices.AppendPoint(point);
+                        Context.ExtraPoints.AppendPoint(point);
+                        Context.RaisePropertyChanged("ExtraPoints");
                     }
-                    TapPromptTab.Text = label + ": " + vertices.Size() + " points";
+                    else
+                    {
+                        OpenPopupAlert("Point (" + point.X + ',' + point.Y + ") not in range");
+                    }
                 }
-            } else //Set the new center there without moving anything
-            {
-                //Global.Shift += Global.Center - point;
-                Global.Center += (point - Global.OriginalCenter);
-                ForceUpdatePoints();
+                TapPromptTab.Text = label + ": " + vertices.Size() + " points";
             }
         }
         
         private void WorldCanvas_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
-            Point2D point = new Point2D(e.GetCurrentPoint((Windows.UI.Xaml.UIElement)sender).Position);
-            WorldCanvas_Add_Point(point);
+            RenderedPoint point = new RenderedPoint(e.GetCurrentPoint((Windows.UI.Xaml.UIElement)sender).Position);
+
+            if(string.Equals(ActiveJob, "Create")){
+                WorldCanvas_Add_Point(new AbsolutePoint(point));
+            } else
+            {
+                WorldCanvas_Refocus(new AbsolutePoint(point));
+            }
+            
         }
 
         private void Tap_Prompt_Cancel_Click(object sender, RoutedEventArgs e)
@@ -485,8 +495,7 @@ public sealed partial class MapPage : Page
         {
             Global.OriginalCenter.X = (long)WorldCanvas.ActualWidth / 2;
             Global.OriginalCenter.Y = (long)WorldCanvas.ActualHeight / 2;
-            Global.Center = new Point2D(Global.OriginalCenter);
-            Global.Shift = new Point2D(0, 0);
+            Global.Center = new AbsolutePoint(Global.OriginalCenter);
             Global.Zoom = 1.0f;
         }
 

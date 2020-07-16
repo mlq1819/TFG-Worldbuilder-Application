@@ -100,7 +100,7 @@
                 </ItemsControl>
                 <ItemsControl x:Name="ExtraPointsControl" ItemsSource="{x:Bind Path=Context.ExtraPoints.points, Mode=OneWay}">
                     <ItemsControl.ItemTemplate>
-                        <DataTemplate x:DataType="local:Point2D">
+                        <DataTemplate x:DataType="local:RenderedPoint">
                             <Path Fill="LightCoral" StrokeThickness="0">
                                 <Path.Data>
                                     <EllipseGeometry Center="{x:Bind Path=pointstr, Mode=OneWay}" RadiusX="3" RadiusY="3"/>
@@ -111,28 +111,17 @@
                 </ItemsControl>
             </Canvas>
         </Grid>
-        <Grid x:Name="WindowAndToolbarGrid" HorizontalAlignment="Stretch" Height="75" VerticalAlignment="Top">
-            <Grid HorizontalAlignment="Stretch" Height="25" VerticalAlignment="Top">
+        <Grid x:Name="FileAndToolbarGrid" HorizontalAlignment="Stretch" Height="75" VerticalAlignment="Top">
+            <Grid x:Name="FileGrid" HorizontalAlignment="Stretch" Height="25" VerticalAlignment="Top">
+                <Rectangle Fill="White" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
                 <TextBlock x:Name="FileNameBlock" Text="" Height="25" Width="300" HorizontalAlignment="Left" Margin="100,0,0,0"/>
             </Grid>
-            <Grid HorizontalAlignment="Stretch" Height="50" VerticalAlignment="Bottom">
+            <Grid x:Name="ToolbarGrid" HorizontalAlignment="Stretch" Height="50" VerticalAlignment="Bottom">
                 <Rectangle Fill="#FFF4F4F5" HorizontalAlignment="Stretch" Stroke="Black" VerticalAlignment="Stretch"/>
                 <StackPanel x:Name="MenuBarPanel" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Orientation="Horizontal">
                     <Button x:Name="FileButton" Content="File" HorizontalAlignment="Left" Margin="10" VerticalAlignment="Top" Width="80" Flyout="{StaticResource FileMenu}"/>
                     <Button x:Name="ViewButton" Content="View" HorizontalAlignment="Left" Margin="10" VerticalAlignment="Top" Width="80" Flyout="{StaticResource ViewMenu}"/>
-                    <Button x:Name="WorldsButton" Content="Worlds" HorizontalAlignment="Left" Margin="10" VerticalAlignment="Top" Width="80" Flyout="{StaticResource WorldsMenu}">
-                    </Button>
-                    <!--Button x:Name="WorldButton" Content="Worlds" HorizontalAlignment="Left" Margin="10" VerticalAlignment="Top" Width="80">
-                        <Button.Flyout>
-                            <Flyout x:Name="WorldMenu" local:BindableFlyout.ItemsSource="{Binding Worlds}">
-                                <local:BindableFlyout.ItemTemplate>
-                                    <DataTemplate x:DataType="local:Level1">
-                                        <MenuFlyoutItem x:Name="Select_World" Text="{Binding name}"/>
-                                    </DataTemplate>
-                                </local:BindableFlyout.ItemTemplate>
-                            </Flyout>
-                        </Button.Flyout>
-                    </Button-->
+                    <Button x:Name="WorldsButton" Content="Worlds" HorizontalAlignment="Left" Margin="10" VerticalAlignment="Top" Width="80" Flyout="{StaticResource WorldsMenu}"/>
                     <Button x:Name="CreateButton" Content="Create" HorizontalAlignment="Left" Margin="10" VerticalAlignment="Top" Width="80" Flyout="{StaticResource CreateMenu}"/>
                 </StackPanel>
                 <StackPanel x:Name="ZoomPanel" HorizontalAlignment="Right" Height="50" Orientation="Horizontal">

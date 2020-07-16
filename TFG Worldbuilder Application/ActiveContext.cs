@@ -148,12 +148,12 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Sets this.ExtraPoints to the list
         /// </summary>
-        public void SetPoints(IList<Point2D> list)
+        public void SetPoints(IList<AbsolutePoint> list)
         {
             this.ExtraPoints = new MyPointCollection();
             for(int i=0; i<list.Count; i++)
             {
-                this.ExtraPoints.AppendPoint(new Point2D(list[i].X, list[i].Y));
+                this.ExtraPoints.AppendPoint(new AbsolutePoint(list[i].X, list[i].Y));
             }
             RaisePropertyChanged("ExtraPoints");
         }

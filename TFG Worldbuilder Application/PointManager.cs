@@ -53,7 +53,7 @@ namespace TFG_Worldbuilder_Application
                 RaisePropertyChanged("pointstr");
             }
         }
-        public Point pointstr
+        public virtual Point pointstr
         {
             get
             {
@@ -111,9 +111,11 @@ namespace TFG_Worldbuilder_Application
         /// Uses Global.Zoom, Global.Center, and Global.Shift to output the render coordinates for the point
         /// </summary>
         /// <param name="point">Point2D object to transform</param>
-        public static Point2D ApplyTransformation(Point2D input)
+        public static RenderedPoint ApplyTransformation(AbsolutePoint input)
         {
-            return new Point2D(Point2D.ApplyTransformation(Point2D.ToWindowsPoint(input)));
+            AbsolutePoint output = new AbsolutePoint(input);
+            output = (AbsolutePoint)(((((Point2D)output) - Global.Center) * Global.Zoom) + Global.OriginalCenter);
+            return new RenderedPoint(output.X, output.Y);
         }
 
         /// <summary>
@@ -122,18 +124,16 @@ namespace TFG_Worldbuilder_Application
         /// <param name="point">Point object to transform</param>
         public static Point ApplyTransformation(Point input)
         {
-            Point output = new Point(input.X, input.Y);
-            output = Point2D.ToWindowsPoint(((new Point2D(input) - Global.Center) * Global.Zoom) + Global.OriginalCenter);
-            return output;
+            return Point2D.ToWindowsPoint(Point2D.ApplyTransformation(new AbsolutePoint(input)));
         }
 
         /// <summary>
         /// Applies the render coordinate transformation to all elements in an ObservableCollection<Point2D>
         /// </summary>
         /// <param name="points">PointCollection to perform the transformation on</param>
-        public static ObservableCollection<Point2D> ApplyTransformation(ObservableCollection<Point2D> input)
+        public static ObservableCollection<RenderedPoint> ApplyTransformation(ObservableCollection<AbsolutePoint> input)
         {
-            ObservableCollection<Point2D> output = new ObservableCollection<Point2D>();
+            ObservableCollection<RenderedPoint> output = new ObservableCollection<RenderedPoint>();
             if (input == null)
                 return output;
             for (int i = 0; i < input.Count; i++)
@@ -163,9 +163,11 @@ namespace TFG_Worldbuilder_Application
         /// Uses Global.Zoom, Global.Center, and Global.Shift to output the absolute coordinates for the point
         /// </summary>
         /// <param name="point">Point2D object to revert</param>
-        public static Point2D RevertTransformation(Point2D input)
+        public static AbsolutePoint RevertTransformation(RenderedPoint input)
         {
-            return new Point2D(Point2D.RevertTransformation(Point2D.ToWindowsPoint(input)));
+            RenderedPoint output = new RenderedPoint(input);
+            output = (RenderedPoint)(((((RenderedPoint)output) - Global.Center) / Global.Zoom) + Global.OriginalCenter);
+            return new AbsolutePoint(output.X, output.Y);
         }
 
         /// <summary>
@@ -174,18 +176,16 @@ namespace TFG_Worldbuilder_Application
         /// <param name="point">Point object to revert</param>
         public static Point RevertTransformation(Point input)
         {
-            Point output = new Point(input.X, input.Y);
-            output = Point2D.ToWindowsPoint(((new Point2D(input) - Global.OriginalCenter) / Global.Zoom) + Global.Center);
-            return output;
+            return Point2D.ToWindowsPoint(Point2D.RevertTransformation(new RenderedPoint(input)));
         }
         
         /// <summary>
         /// Reverts the render coordinate transformation to all elements in an ObservableCollection<Point2D>
         /// </summary>
         /// <param name="points">PointCollection to perform the transformation on</param>
-        public static ObservableCollection<Point2D> RevertTransformation(ObservableCollection<Point2D> input)
+        public static ObservableCollection<AbsolutePoint> RevertTransformation(ObservableCollection<RenderedPoint> input)
         {
-            ObservableCollection<Point2D> output = new ObservableCollection<Point2D>();
+            ObservableCollection<AbsolutePoint> output = new ObservableCollection<AbsolutePoint>();
             if (input == null)
                 return output;
             for (int i = 0; i < input.Count; i++)
@@ -389,6 +389,72 @@ namespace TFG_Worldbuilder_Application
     }
 
     /// <summary>
+    /// Class for Point2D objects that are Rendered Points; their values represent the rendering values for objects they represent
+    /// </summary>
+    public class RenderedPoint : Point2D
+    {
+        public override Point pointstr
+        {
+            get
+            {
+                return Point2D.ToWindowsPoint(this);
+            }
+        }
+
+        public RenderedPoint(long X, long Y) : base(X, Y)
+        {
+            ;
+        }
+
+        public RenderedPoint(RenderedPoint o) : base((Point2D)o)
+        {
+            ;
+        }
+
+        public RenderedPoint(Point o) : base(o)
+        {
+            ;
+        }
+
+        /// <summary>
+        /// Creates a RenderedPoint by reverting an AbsolutePoint
+        /// </summary>
+        public RenderedPoint(AbsolutePoint o) : base(Point2D.ApplyTransformation(o))
+        {
+            ;
+        }
+    }
+
+    /// <summary>
+    /// Class for Point2D objects that are Absolute Points; their values represent the real, saved values of the objects they represent
+    /// </summary>
+    public class AbsolutePoint : Point2D
+    {
+        public AbsolutePoint(long X, long Y) : base(X, Y)
+        {
+            ;
+        }
+
+        public AbsolutePoint(AbsolutePoint o) : base((Point2D)o)
+        {
+            ;
+        }
+
+        public AbsolutePoint(Point o) : base(o)
+        {
+            ;
+        }
+
+        /// <summary>
+        /// Creates an AbsolutePoint by transforming a RenderedPoint
+        /// </summary>
+        public AbsolutePoint(RenderedPoint o) : base(Point2D.RevertTransformation(o))
+        {
+            ;
+        }
+    }
+
+    /// <summary>
     /// Polygon2D object of Point2D points
     /// </summary>
     public class Polygon2D : INotifyPropertyChanged
@@ -580,7 +646,10 @@ namespace TFG_Worldbuilder_Application
         }
     }
 
-    public class MyPointCollection
+    /// <summary>
+    /// Class that stores AbsolutePoints but is accessed as RenderedPoints
+    /// </summary>
+    public class MyPointCollection : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
         public void RaisePropertyChanged(string str)
@@ -591,8 +660,8 @@ namespace TFG_Worldbuilder_Application
             }
         }
 
-        private ObservableCollection<Point2D> _points;
-        public ObservableCollection<Point2D> points
+        private ObservableCollection<AbsolutePoint> _points;
+        public ObservableCollection<RenderedPoint> points
         {
             get
             {
@@ -602,14 +671,14 @@ namespace TFG_Worldbuilder_Application
 
         public MyPointCollection()
         {
-            this._points = new ObservableCollection<Point2D>();
+            this._points = new ObservableCollection<AbsolutePoint>();
         }
 
-        public Point2D AppendPoint(Point2D point)
+        public AbsolutePoint AppendPoint(AbsolutePoint point)
         {
             if (this._points == null)
-                this._points = new ObservableCollection<Point2D>();
-            this._points.Add(new Point2D(point));
+                this._points = new ObservableCollection<AbsolutePoint>();
+            this._points.Add(new AbsolutePoint(point));
             RaisePropertyChanged("points");
             return point;
         }
