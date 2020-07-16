@@ -109,6 +109,7 @@ namespace TFG_Worldbuilder_Application
 
         /// <summary>
         /// Uses Global.Zoom, Global.Center, and Global.OriginalCenter to output the render coordinates for the point
+        /// Produces coordinates by translating such that Global.Center becomes (0,0), then scaling by Global.Zoom, then translating such that (0,0) becomes Global.OriginalCenter
         /// </summary>
         /// <param name="point">Point2D object to transform</param>
         public static RenderedPoint ApplyTransformation(AbsolutePoint input)
@@ -161,6 +162,7 @@ namespace TFG_Worldbuilder_Application
 
         /// <summary>
         /// Uses Global.Zoom, Global.Center, and Global.OriginalCenter to output the absolute coordinates for the point
+        /// /// Produces coordinates by translating such that Global.OriginalCenter becomes (0,0), then scaling by Global.Zoom, then translating such that (0,0) becomes Global.Center
         /// </summary>
         /// <param name="point">Point2D object to revert</param>
         public static AbsolutePoint RevertTransformation(RenderedPoint input)

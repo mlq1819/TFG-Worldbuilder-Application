@@ -22,6 +22,27 @@ namespace TFG_Worldbuilder_Application
         public ObservableCollection<Level5> Circles;
         public ObservableCollection<Level6> Points;
         public MyPointCollection ExtraPoints;
+        private double _Zoom = 1;
+        public string ZoomStr
+        {
+            get
+            {
+                return ((int)(Zoom * 100)).ToString() + '%';
+            }
+        }
+        public double Zoom
+        {
+            get
+            {
+                return _Zoom;
+            }
+            set
+            {
+                _Zoom = value;
+                RaisePropertyChanged("Zoom");
+                RaisePropertyChanged("ZoomStr");
+            }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
         public void RaisePropertyChanged(string str)

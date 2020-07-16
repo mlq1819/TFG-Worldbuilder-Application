@@ -42,12 +42,11 @@ public sealed partial class MapPage : Page
         public MapPage()
         {
             this.InitializeComponent();
-
-            ResetZoom();
             this.FileNameBlock.Text = Global.ActiveFile.FileName();
             this.MapCanvas = (Canvas)this.FindName("WorldCanvas");
             this.Worlds = Global.ActiveFile.Worlds;
             this.Context = new ActiveContext(Global.ActiveFile.Worlds);
+            ResetZoom();
             this.DataContext = this.Context;
             if (Worlds.Count > 0)
             {
@@ -482,21 +481,34 @@ public sealed partial class MapPage : Page
         private void Zoom_In_Button_Click(object sender, RoutedEventArgs e)
         {
             Global.Zoom = Math.Min(5, Global.Zoom * 1.1);
+            Context.Zoom = Global.Zoom;
             ForceUpdatePoints();
+            Zoom_Out_Button.IsEnabled = true;
+            if(Global.Zoom == 5)
+            {
+                Zoom_In_Button.IsEnabled = false;
+            }
         }
 
         private void Zoom_Out_Button_Click(object sender, RoutedEventArgs e)
         {
             Global.Zoom = Math.Max(0.2, Global.Zoom / 1.1);
+            Context.Zoom = Global.Zoom;
             ForceUpdatePoints();
+            Zoom_In_Button.IsEnabled = true;
+            if (Global.Zoom == 0.2)
+            {
+                Zoom_Out_Button.IsEnabled = false;
+            }
         }
 
         private void ResetZoom()
         {
             Global.CanvasSize.X = (long)WorldCanvas.ActualWidth;
             Global.CanvasSize.Y = (long)WorldCanvas.ActualHeight;
-            Global.Center = new RenderedPoint(Global.OriginalCenter);
+            Global.Center = new RenderedPoint(Global.OriginalCenter.X, Global.OriginalCenter.Y);
             Global.Zoom = 1.0f;
+            Context.Zoom = Global.Zoom;
         }
 
         private void Reset_Zoom_Button_Click(object sender, RoutedEventArgs e)
