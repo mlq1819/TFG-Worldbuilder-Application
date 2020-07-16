@@ -108,18 +108,18 @@ namespace TFG_Worldbuilder_Application
         }
 
         /// <summary>
-        /// Uses Global.Zoom, Global.Center, and Global.Shift to output the render coordinates for the point
+        /// Uses Global.Zoom, Global.Center, and Global.OriginalCenter to output the render coordinates for the point
         /// </summary>
         /// <param name="point">Point2D object to transform</param>
         public static RenderedPoint ApplyTransformation(AbsolutePoint input)
         {
-            AbsolutePoint output = new AbsolutePoint(input);
-            output = (AbsolutePoint)(((((Point2D)output) - Global.Center) * Global.Zoom) + Global.OriginalCenter);
-            return new RenderedPoint(output.X, output.Y);
+            RenderedPoint output = new RenderedPoint(input.X, input.Y);
+            output = ((output - Global.Center) * Global.Zoom) + Global.OriginalCenter;
+            return output;
         }
 
         /// <summary>
-        /// Uses Global.Zoom, Global.Center, and Global.Shift to output the render coordinates for the point
+        /// Uses Global.Zoom, Global.Center, and Global.OriginalCenter to output the render coordinates for the point
         /// </summary>
         /// <param name="point">Point object to transform</param>
         public static Point ApplyTransformation(Point input)
@@ -160,18 +160,17 @@ namespace TFG_Worldbuilder_Application
         }
 
         /// <summary>
-        /// Uses Global.Zoom, Global.Center, and Global.Shift to output the absolute coordinates for the point
+        /// Uses Global.Zoom, Global.Center, and Global.OriginalCenter to output the absolute coordinates for the point
         /// </summary>
         /// <param name="point">Point2D object to revert</param>
         public static AbsolutePoint RevertTransformation(RenderedPoint input)
         {
-            RenderedPoint output = new RenderedPoint(input);
-            output = (RenderedPoint)(((((RenderedPoint)output) - Global.Center) / Global.Zoom) + Global.OriginalCenter);
+            RenderedPoint output = ((input - Global.Center) / Global.Zoom) + Global.OriginalCenter;
             return new AbsolutePoint(output.X, output.Y);
         }
 
         /// <summary>
-        /// Uses Global.Zoom, Global.Center, and Global.Shift to output the absolute coordinates for the point
+        /// Uses Global.Zoom, Global.Center, and Global.OriginalCenter to output the absolute coordinates for the point
         /// </summary>
         /// <param name="point">Point object to revert</param>
         public static Point RevertTransformation(Point input)
@@ -417,7 +416,7 @@ namespace TFG_Worldbuilder_Application
         {
             return new Point(point.X, point.Y);
         }
-
+        
         public AbsolutePoint ToAbsolutePoint()
         {
             return new AbsolutePoint(this);
@@ -426,6 +425,11 @@ namespace TFG_Worldbuilder_Application
         public Point ToWindowsPoint()
         {
             return RenderedPoint.ToWindowsPoint(this);
+        }
+
+        public Point2D ToPoint2D()
+        {
+            return (Point2D)this;
         }
 
         /// <summary>
@@ -581,6 +585,11 @@ namespace TFG_Worldbuilder_Application
         public RenderedPoint ToRenderedPoint()
         {
             return new RenderedPoint(this);
+        }
+
+        public Point2D ToPoint2D()
+        {
+            return (Point2D)this;
         }
 
         /// <summary>
