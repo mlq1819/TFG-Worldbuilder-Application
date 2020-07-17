@@ -36,12 +36,14 @@ public sealed partial class MapPage : Page
         private LevelType type = LevelType.Invalid;
         private string subtype = "";
         private string ActiveJob = "";
+        private bool ForceClose = false;
         public ActiveContext Context;
         public ObservableCollection<Level1> Worlds;
         
         public MapPage()
         {
             this.InitializeComponent();
+            ForceClose = false;
             Global.RenderCanvas = WorldCanvas;
             this.FileNameBlock.Text = Global.ActiveFile.FileName();
             this.MapCanvas = (Canvas)this.FindName("WorldCanvas");
@@ -54,14 +56,7 @@ public sealed partial class MapPage : Page
                 Context.SetWorld(Worlds[0].name, Worlds[0].subtype);
             }
             UpdateSaveState();
-        }
-
-        /// <summary>
-        /// TODO :: Warns the user that their current file is unsaved, and asks if they'd like to either save it, lose the changes, or cancel the operation. Returns false on cancelled operation.
-        /// </summary>
-        private bool WarnClose()
-        {
-            return true;
+            Context.UpdateAll();
         }
 
         /// <summary>
@@ -92,13 +87,18 @@ public sealed partial class MapPage : Page
             Windows.Storage.StorageFile file = await savePicker.PickSaveFileAsync();
             if (file != null)
             {
-                if (Global.ActiveFile.MatchesSave() || WarnClose())
+                if (Global.ActiveFile.MatchesSave() || ForceClose)
                 {
                     // Application now has read/write access to the picked file
                     Global.ActiveFile = new FileManager(file, true);
                     await Global.ActiveFile.ReadyFile();
                     this.Frame.Navigate(typeof(MapPage));
                 }
+            }
+            else
+            {
+                ActiveJob = "New File";
+                OpenUnsavedWorkAlert();
             }
         }
 
@@ -112,11 +112,20 @@ public sealed partial class MapPage : Page
         }
 
         /// <summary>
+        /// Opens the Unsaved Work Alert
+        /// </summary>
+        private void OpenUnsavedWorkAlert()
+        {
+            UnsavedWorkAlertText.Text = "You have unsaved work.\nContinue anyway?";
+            UnsavedWorkAlert.Visibility = Visibility.Visible;
+        }
+
+        /// <summary>
         /// Checks if the current project has unsaved work, then opens the requested file
         /// </summary>
         private async void File_Open_Click(object sender, RoutedEventArgs e)
         {
-            if(Global.ActiveFile.MatchesSave() || WarnClose())
+            if(Global.ActiveFile.MatchesSave() || ForceClose)
             {
                 var picker = new Windows.Storage.Pickers.FileOpenPicker();
                 picker.ViewMode = Windows.Storage.Pickers.PickerViewMode.Thumbnail;
@@ -135,6 +144,11 @@ public sealed partial class MapPage : Page
                         OpenPopupAlert("File not formatted for Worldbuilding - Invalid File");
                     }
                 }
+            }
+            else
+            {
+                ActiveJob = "Open File";
+                OpenUnsavedWorkAlert();
             }
         }
 
@@ -175,9 +189,13 @@ public sealed partial class MapPage : Page
         /// </summary>
         private void File_Close_Click(object sender, RoutedEventArgs e)
         {
-            if (Global.ActiveFile.MatchesSave() || WarnClose())
+            if (Global.ActiveFile.MatchesSave() || ForceClose)
             {
                 this.Frame.Navigate(typeof(MainPage));
+            } else
+            {
+                ActiveJob = "Close File";
+                OpenUnsavedWorkAlert();
             }
         }
 
@@ -186,9 +204,12 @@ public sealed partial class MapPage : Page
         /// </summary>
         private void File_Exit_Click(object sender, RoutedEventArgs e)
         {
-            if (Global.ActiveFile.MatchesSave() || WarnClose())
+            if (Global.ActiveFile.MatchesSave() || ForceClose)
             {
                 CoreApplication.Exit();
+            } else {
+                ActiveJob = "Exit";
+                OpenUnsavedWorkAlert();
             }
         }
         
@@ -514,6 +535,32 @@ public sealed partial class MapPage : Page
         {
             ResetZoom();
             ForceUpdatePoints();
+        }
+
+        private void Unsaved_Work_Cancel_Click(object sender, RoutedEventArgs e)
+        {
+            UnsavedWorkAlert.Visibility = Visibility.Collapsed;
+        }
+
+        private void Unsaved_Work_Confirm_Click(object sender, RoutedEventArgs e)
+        {
+            UnsavedWorkAlert.Visibility = Visibility.Collapsed;
+            ForceClose = true;
+            if(string.Equals(ActiveJob, "New File")){
+                File_New_Click(sender, e);
+            } else if(string.Equals(ActiveJob, "Open File"))
+            {
+                File_Open_Click(sender, e);
+            } else if(string.Equals(ActiveJob, "Close File"))
+            {
+                File_Close_Click(sender, e);
+            } else if(string.Equals(ActiveJob, "Exit"))
+            {
+                File_Exit_Click(sender, e);
+            } else
+            {
+                OpenPopupAlert("Unrecognized Click Event - Please recall original event");
+            }
         }
     }
 }

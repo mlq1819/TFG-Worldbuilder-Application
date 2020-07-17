@@ -111,7 +111,8 @@ namespace TFG_Worldbuilder_Application
             {
                 try
                 {
-                    Shapes.Add((BorderLevel)temp[i]);
+                    if(((BorderLevel)temp[i]).border.verticesr.Count > 0)
+                        Shapes.Add((BorderLevel)temp[i]);
                 }
                 catch (InvalidCastException)
                 {
@@ -189,10 +190,10 @@ namespace TFG_Worldbuilder_Application
             for(int i=0; i<Shapes.Count; i++)
             {
                 ObservableCollection<Line2D> edges = Shapes[i].border.edges;
-                for(int j=0; j<edges.Count; i++)
+                for(int j=0; j<edges.Count; j++)
                 {
-                    if (!Lines.Contains(edges[i]))
-                        Lines.Add(new Line2D(edges[i]));
+                    if (!Line2D.Contains(Lines, edges[j]))
+                        Lines.Add(new Line2D(edges[j]));
                 }
             }
         }

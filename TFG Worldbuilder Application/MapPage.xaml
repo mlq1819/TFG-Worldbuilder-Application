@@ -101,7 +101,7 @@
                 <ItemsControl x:Name="ShapesEdgesControl" ItemsSource="{x:Bind Path=Context.Lines, Mode=OneWay}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="local:Line2D">
-                            <Line Fill="Black" Stroke="1" X1="{x:Bind Path=X1, Mode=OneWay}" Y1="{x:Bind Path=Y1, Mode=OneWay}" X2="{x:Bind Path=X2, Mode=OneWay}" Y2="{x:Bind Path=Y2, Mode=OneWay}"/>
+                            <Line Fill="Black" StrokeThickness="1" X1="{x:Bind Path=X1, Mode=OneWay}" Y1="{x:Bind Path=Y1, Mode=OneWay}" X2="{x:Bind Path=X2, Mode=OneWay}" Y2="{x:Bind Path=Y2, Mode=OneWay}"/>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
@@ -164,6 +164,17 @@
                 <Rectangle Fill="#FFFFFFFF" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Stroke="Black"/>
                 <Button x:Name="Tap_Prompt_Cancel" Content="Cancel" HorizontalAlignment="Left" VerticalAlignment="Center" Height="30" Width="200" Margin="10" Click="Tap_Prompt_Cancel_Click"/>
                 <Button x:Name="Tap_Prompt_Confirm" Content="Confirm" HorizontalAlignment="Right" VerticalAlignment="Center" Height="30" Width="200" Margin="10" Click="Tap_Prompt_Confirm_Click"/>
+            </Grid>
+        </Grid>
+        <Grid HorizontalAlignment="Center" x:Name="UnsavedWorkAlert" Visibility="Collapsed" Height="100" Width="300" Margin="100,100,100,100" VerticalAlignment="Top">
+            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="50">
+                <Rectangle Fill="#FFF4F4F5" HorizontalAlignment="Stretch" Margin="0,0,0,0" Stroke="Black" VerticalAlignment="Stretch"/>
+                <TextBlock x:Name="UnsavedWorkAlertText" Text="Name Me!" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" Margin="10,5,10,5"/>
+            </Grid>
+            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,50,0,0">
+                <Rectangle Fill="#FFFFFFFF" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Stroke="Black"/>
+                <Button x:Name="Unsaved_Work_Cancel" Content="Cancel" HorizontalAlignment="Left" VerticalAlignment="Center" Height="30" Width="120" Margin="10" Click="Unsaved_Work_Cancel_Click"/>
+                <Button x:Name="Unsaved_Work_Confirm" Content="Confirm" HorizontalAlignment="Right" VerticalAlignment="Center" Height="30" Width="120" Margin="10" Click="Unsaved_Work_Confirm_Click"/>
             </Grid>
         </Grid>
         <Grid HorizontalAlignment="Center" x:Name="PopupAlert" Visibility="Collapsed" Height="200" Width="200" Margin="100,100,100,100" VerticalAlignment="Top">
