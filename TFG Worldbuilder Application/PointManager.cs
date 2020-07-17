@@ -741,17 +741,25 @@ namespace TFG_Worldbuilder_Application
             }
             if (string.Equals(str, "vertices"))
             {
+                RaisePropertyChanged("untrimmedvertices");
                 RaisePropertyChanged("verticesr");
                 update_edges = false;
                 RaisePropertyChanged("edges");
             }
         }
 
+        public ObservableCollection<RenderedPoint> untrimmedvertices
+        {
+            get
+            {
+                return Point2D.ApplyTransformation(vertices);
+            }
+        }
         public ObservableCollection<RenderedPoint> verticesr
         {
             get
             {
-                return Polygon2D.TrimVertices(Point2D.ApplyTransformation(vertices));
+                return Polygon2D.TrimVertices(untrimmedvertices);
             }
         }
         public ObservableCollection<AbsolutePoint> vertices;
@@ -1155,9 +1163,18 @@ namespace TFG_Worldbuilder_Application
                 return Direction.Middle;
             }
 
+            public Point2D SquishToSide(Point2D point)
+            {
+                return new Point2D(Math.Max(Math.Min(point.X, Right), Left), Math.Max(Math.Min(point.Y, Bottom), Top));
+            }
+
             public Point2D PinToSide(Point2D point, Point2D last)
             {
                 Direction pinto = WhereIsPoint(point);
+                if (pinto == Direction.Middle)
+                    return point;
+                if (WhereIsPoint(last) != Direction.Middle)
+                    return SquishToSide(point);
                 double changed = 0.0f;
                 if(GetHorizontal(pinto) != Direction.Middle) //Either left or right; trimming X
                 {
@@ -1181,6 +1198,7 @@ namespace TFG_Worldbuilder_Application
                         changed = Math.Max(changed, ((double)Bottom - last.Y) / ((double)point.Y - last.Y));
                     }
                 }
+                changed *= 0.95;
                 Point2D output = ((point - last) * changed) + last;
                 return output;
             }
@@ -1191,7 +1209,7 @@ namespace TFG_Worldbuilder_Application
             }
 
             public static bool NeedsAdd(Direction a, Direction b)
-            {
+            {   
                 if (a == b)
                     return false;
                 if (b == Direction.Middle)
@@ -1222,36 +1240,27 @@ namespace TFG_Worldbuilder_Application
             for(int i=0; i<list.Count; i++)
             {
                 current_dir = Square2D.FramePolygon().WhereIsPoint(list[i%list.Count]);
-                if (current_dir == Direction.Middle)
+                if(current_dir == Direction.Middle) //This point is within frame, and will be added
                 {
                     if (!found_first_in)
                     {
                         first_in = i;
                         found_first_in = true;
                     }
-                    if(last_dir != Direction.Invalid && last_dir != Direction.Middle)
+                    if(last_dir != Direction.Invalid && last_dir != Direction.Middle) //The previous point was not in frame, and the intersection between that and the frame needs to be added
                     {
-                        Point2D temp;
-                        temp = Square2D.FramePolygon().PinToSide(last_added, list[i % list.Count]);
+                        Point2D temp = Square2D.FramePolygon().PinToSide(last_added, list[i]);
                         output.Add(new RenderedPoint(temp.X, temp.Y));
                     }
-                    if (i < list.Count)
-                    {
-                        output.Add(list[i % list.Count]);
-                        last_added = list[i % list.Count];
-                    }
+                    output.Add(list[i]);
+                    last_added = list[i];
                     last_dir = current_dir;
                 }
-                else if(last_dir != Direction.Invalid && last_dir != current_dir)
+                else if(last_dir != Direction.Invalid) //This point is outside of frame, and it needs to be squished to the side if the last one was also out of frame, or the intersection between it and the last point with the frame needs to be added
                 {
-                    if(Square2D.NeedsAdd(last_dir, current_dir))
-                    {
-                        Point2D temp;
-                        temp = Square2D.FramePolygon().PinToSide(list[i % list.Count], last_added);
-                        output.Add(new RenderedPoint(temp.X, temp.Y));
-                        last_added = list[i % list.Count];
-                        last_dir = current_dir;
-                    }
+                    Point2D temp = Square2D.FramePolygon().PinToSide(list[i], last_added);
+                    output.Add(new RenderedPoint(temp.X, temp.Y));
+                    last_added = list[i];
                 }
             }
             if (found_first_in)
@@ -1259,27 +1268,27 @@ namespace TFG_Worldbuilder_Application
                 for(int i=0; i<first_in; i++)
                 {
                     current_dir = Square2D.FramePolygon().WhereIsPoint(list[i % list.Count]);
-                    if (current_dir == Direction.Middle)
+                    if (current_dir == Direction.Middle) //This point is within frame, and needs to be considered
                     {
-                        if (last_dir != Direction.Invalid && last_dir != Direction.Middle)
+                        if (!found_first_in)
                         {
-                            Point2D temp;
-                            temp = Square2D.FramePolygon().PinToSide(last_added, list[i % list.Count]);
+                            first_in = i;
+                            found_first_in = true;
+                        }
+                        if (last_dir != Direction.Invalid && last_dir != Direction.Middle) //The previous point was not in frame, and the intersection between that and the frame needs to be added
+                        {
+                            Point2D temp = Square2D.FramePolygon().PinToSide(last_added, list[i]);
                             output.Add(new RenderedPoint(temp.X, temp.Y));
                         }
+                        last_added = list[i];
                         last_dir = current_dir;
                         break;
                     }
-                    else if (last_dir != Direction.Invalid && last_dir != current_dir)
+                    else if (last_dir != Direction.Invalid) //This point is outside of frame, and it needs to be squished to the side if the last one was also out of frame, or the intersection between it and the last point with the frame needs to be added
                     {
-                        if (Square2D.NeedsAdd(last_dir, current_dir))
-                        {
-                            Point2D temp;
-                            temp = Square2D.FramePolygon().PinToSide(list[i % list.Count], last_added);
-                            output.Add(new RenderedPoint(temp.X, temp.Y));
-                            last_added = list[i % list.Count];
-                            last_dir = current_dir;
-                        }
+                        Point2D temp = Square2D.FramePolygon().PinToSide(list[i], last_added);
+                        output.Add(new RenderedPoint(temp.X, temp.Y));
+                        last_added = list[i];
                     }
                 }
             }
@@ -1383,6 +1392,112 @@ namespace TFG_Worldbuilder_Application
                 return (_vertex1 - _vertex2).Length();
             }
         }
+        public bool vertical
+        {
+            get
+            {
+                return dx == 0;
+            }
+        }
+        public bool horizontal
+        {
+            get
+            {
+                return dy == 0;
+            }
+        }
+        /// <summary>
+        /// X such that this line would reach (X,0) if extended
+        /// </summary>
+        public double x_intercept
+        {
+            get
+            {
+                if (horizontal)
+                    return 0;
+                return _vertex1.X - _vertex1.Y * slope_y;
+            }
+        }
+        /// <summary>
+        /// Y such that this line would reach (0,Y) if extended
+        /// </summary>
+        public double y_intercept
+        {
+            get
+            {
+                if (vertical)
+                    return 0;
+                return _vertex1.Y - _vertex1.X * slope_x;
+            }
+        }
+        /// <summary>
+        /// The rise/run slope of the given line; multiply by change in X to get the change in Y
+        /// </summary>
+        public double slope_x
+        {
+            get
+            {
+                if (vertical)
+                    return 0;
+                return ((double)dy) / ((double)dx);
+            }
+        }
+        /// <summary>
+        /// The run/rise slope of the given line; multiply by change in Y to get the change in X
+        /// </summary>
+        public double slope_y
+        {
+            get
+            {
+                if (horizontal)
+                    return 0;
+                return ((double)dx) / ((double)dy);
+            }
+        }
+        private long dx
+        {
+            get
+            {
+                return _vertex2.X - _vertex1.X;
+            }
+        }
+        private long dy
+        {
+            get
+            {
+                return _vertex2.Y - _vertex1.Y;
+            }
+        }
+        /// <summary>
+        /// This line presented in the form: AX + BY = C
+        /// </summary>
+        public double A
+        {
+            get
+            {
+                return dy;
+            }
+        }
+        /// <summary>
+        /// This line presented in the form: AX + BY = C
+        /// </summary>
+        public double B
+        {
+            get
+            {
+                return dx;
+            }
+        }
+        /// <summary>
+        /// This line presented in the form: AX + BY = C
+        /// </summary>
+        public double C
+        {
+            get
+            {
+                return A * _vertex1.X + B * _vertex1.Y;
+            }
+        }
 
         public string X1
         {
@@ -1420,6 +1535,8 @@ namespace TFG_Worldbuilder_Application
         /// <param name="v2">An AbsolutePoint object</param>
         public Line2D(AbsolutePoint v1, AbsolutePoint v2)
         {
+            if (v1 == v2)
+                throw new ArgumentException("Line2D vertices may not be the same");
             this._vertex1 = new AbsolutePoint(v1);
             this._vertex2 = new AbsolutePoint(v2);
         }
@@ -1552,6 +1669,133 @@ namespace TFG_Worldbuilder_Application
             }
             return false;
         }
+
+        /// <summary>
+        /// Checks whether a point would fall on the line
+        /// </summary>
+        /// <param name="point">Point to check</param>
+        public bool On(AbsolutePoint point)
+        {
+            return OnExtended(point) && point.X >= Math.Min(_vertex1.X, _vertex2.X) && point.X <= Math.Max(_vertex1.X, _vertex2.X) && point.Y >= Math.Min(_vertex1.Y, _vertex2.Y) && point.Y <= Math.Max(_vertex1.Y, _vertex2.Y);
+        }
+
+        /// <summary>
+        /// Checks whether a point would fall on the line if it were extended infinitely
+        /// </summary>
+        /// <param name="point">Point to check</param>
+        public bool OnExtended(AbsolutePoint point)
+        {
+            if (vertical)
+            {
+                return point.X == (long)(point.Y * slope_y);
+            }
+            return point.Y == (long)(point.X * slope_x);
+        }
+
+        /// <summary>
+        /// Checks whether a point is above the line
+        /// </summary>
+        public bool Above(AbsolutePoint point)
+        {
+            if (vertical)
+                return false;
+            return point.Y < point.X * slope_x + y_intercept;
+        }
+
+        /// <summary>
+        /// Checks whether a point is below the line
+        /// </summary>
+        public bool Below(AbsolutePoint point)
+        {
+            if (vertical)
+                return false;
+            return point.Y > point.X * slope_x + y_intercept;
+        }
+
+        /// <summary>
+        /// Checks whether a point is left of the line
+        /// </summary>
+        public bool Left(AbsolutePoint point)
+        {
+            if (horizontal)
+                return false;
+            return point.X < point.Y * slope_y + x_intercept;
+        }
+
+        /// <summary>
+        /// Checks whether a point is right of the line
+        /// </summary>
+        public bool Right(AbsolutePoint point)
+        {
+            if (horizontal)
+                return false;
+            return point.X > point.Y * slope_y + x_intercept;
+        }
+        
+        /// <summary>
+        /// Creates and returns a point on the line at the specified percent from vertex1
+        /// </summary>
+        /// <param name="percent"></param>
+        public AbsolutePoint Get(double percent)
+        {
+            return _vertex1 + ((_vertex2 - _vertex1) * percent);
+        }
+
+        /// <summary>
+        /// Returns true if the provided line is parallel
+        /// </summary>
+        /// <param name="line"></param>
+        /// <returns></returns>
+        public bool IsPerpendicular(Line2D line)
+        {
+            if (this.vertical)
+                return line.horizontal;
+            if (this.horizontal)
+                return line.vertical;
+            if (line.vertical)
+                return horizontal;
+            if (line.horizontal)
+                return vertical;
+            return this.slope_x * line.slope_x == 1;
+        }
+
+        /// <summary>
+        /// Returns true if the provided line is parallel
+        /// </summary>
+        /// <param name="line"></param>
+        /// <returns></returns>
+        public bool IsParallel(Line2D line)
+        {
+            double delta = this.A * line.B - line.A * this.B;
+            return delta == 0;
+        }
+
+        /// <summary>
+        /// Returns true if the provided line intersects this line
+        /// </summary>
+        /// <param name="line"></param>
+        /// <returns></returns>
+        public bool Intersects(Line2D line)
+        {
+            if (IsParallel(line))
+                return false;
+            return On(Intersection(line));
+        }
+
+        /// <summary>
+        /// Returns the point of intersection between two lines
+        /// Will throw an ArgumentException on parallel lines
+        /// </summary>
+        /// <param name="line">A non-parallel line</param>
+        /// <returns></returns>
+        public AbsolutePoint Intersection(Line2D line)
+        {
+            double delta = this.A * line.B - line.A * this.B;
+            if (delta == 0)
+                throw new ArgumentException("Lines are parallel");
+            return new AbsolutePoint((long)((line.B * this.C - this.B * line.C) / delta), (long)((this.A * line.C - line.A * this.C) / delta));
+        }
+
     }
 
     /// <summary>
