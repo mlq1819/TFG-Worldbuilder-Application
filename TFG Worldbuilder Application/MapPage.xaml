@@ -6,6 +6,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:Maps="using:Windows.UI.Xaml.Controls.Maps"
     x:Class="TFG_Worldbuilder_Application.MapPage"
+    Loaded="Page_Loaded"
     mc:Ignorable="d">
     <Page.Resources>
         <MenuFlyout x:Name = "FileMenu" x:Key="FileMenu">

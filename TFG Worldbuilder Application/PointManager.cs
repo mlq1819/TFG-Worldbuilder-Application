@@ -1068,7 +1068,7 @@ namespace TFG_Worldbuilder_Application
             {
                 minX = Math.Min(p1.X, p2.X);
                 minY = Math.Min(p1.Y, p2.Y);
-                maxX = Math.Max(p1.X, p2.Y);
+                maxX = Math.Max(p1.X, p2.X);
                 maxY = Math.Max(p1.Y, p2.Y);
             }
 
@@ -1155,9 +1155,34 @@ namespace TFG_Worldbuilder_Application
                 return Direction.Middle;
             }
 
-            public Point2D PinToSide(Point2D point)
+            public Point2D PinToSide(Point2D point, Point2D last)
             {
-                return new Point2D(Math.Min(Math.Max(point.X, minX), maxX), Math.Min(Math.Max(point.Y, minY), maxY));
+                Direction pinto = WhereIsPoint(point);
+                double changed = 0.0f;
+                if(GetHorizontal(pinto) != Direction.Middle) //Either left or right; trimming X
+                {
+                    if (pinto == Direction.Left) //Trim Left
+                    {
+                        changed = Math.Max(changed, ((double)Left - last.X) / ((double)point.X - last.X));
+                    }
+                    else //Trim Right
+                    {
+                        changed = Math.Max(changed, ((double)Right - last.X) / ((double)point.X - last.X));
+                    }
+                }
+                if(GetVertical(pinto) != Direction.Middle) //Either top or bottom; trimming Y
+                {
+                    if(pinto == Direction.Top) //Trim Top
+                    {
+                        changed = Math.Max(changed, ((double)Top - last.Y) / ((double)point.Y - last.Y));
+                    }
+                    else //Trim Bottom
+                    {
+                        changed = Math.Max(changed, ((double)Bottom - last.Y) / ((double)point.Y - last.Y));
+                    }
+                }
+                Point2D output = ((point - last) * changed) + last;
+                return output;
             }
 
             public static bool SharesSide(Direction a, Direction b)
@@ -1191,21 +1216,70 @@ namespace TFG_Worldbuilder_Application
             ObservableCollection<RenderedPoint> output = new ObservableCollection<RenderedPoint>();
             Direction last_dir = Direction.Invalid;
             Direction current_dir;
-            for(int i=0; i<list.Count + 1; i++)
+            int first_in = 0;
+            bool found_first_in = false;
+            Point2D last_added = null;
+            for(int i=0; i<list.Count; i++)
             {
                 current_dir = Square2D.FramePolygon().WhereIsPoint(list[i%list.Count]);
                 if (current_dir == Direction.Middle)
                 {
-                    if(i<list.Count)
-                        output.Add(list[i]);
+                    if (!found_first_in)
+                    {
+                        first_in = i;
+                        found_first_in = true;
+                    }
+                    if(last_dir != Direction.Invalid && last_dir != Direction.Middle)
+                    {
+                        Point2D temp;
+                        temp = Square2D.FramePolygon().PinToSide(last_added, list[i % list.Count]);
+                        output.Add(new RenderedPoint(temp.X, temp.Y));
+                    }
+                    if (i < list.Count)
+                    {
+                        output.Add(list[i % list.Count]);
+                        last_added = list[i % list.Count];
+                    }
                     last_dir = current_dir;
                 }
                 else if(last_dir != Direction.Invalid && last_dir != current_dir)
                 {
                     if(Square2D.NeedsAdd(last_dir, current_dir))
                     {
-                        output.Add((RenderedPoint) Square2D.FramePolygon().PinToSide(list[i%list.Count]));
+                        Point2D temp;
+                        temp = Square2D.FramePolygon().PinToSide(list[i % list.Count], last_added);
+                        output.Add(new RenderedPoint(temp.X, temp.Y));
+                        last_added = list[i % list.Count];
                         last_dir = current_dir;
+                    }
+                }
+            }
+            if (found_first_in)
+            {
+                for(int i=0; i<first_in; i++)
+                {
+                    current_dir = Square2D.FramePolygon().WhereIsPoint(list[i % list.Count]);
+                    if (current_dir == Direction.Middle)
+                    {
+                        if (last_dir != Direction.Invalid && last_dir != Direction.Middle)
+                        {
+                            Point2D temp;
+                            temp = Square2D.FramePolygon().PinToSide(last_added, list[i % list.Count]);
+                            output.Add(new RenderedPoint(temp.X, temp.Y));
+                        }
+                        last_dir = current_dir;
+                        break;
+                    }
+                    else if (last_dir != Direction.Invalid && last_dir != current_dir)
+                    {
+                        if (Square2D.NeedsAdd(last_dir, current_dir))
+                        {
+                            Point2D temp;
+                            temp = Square2D.FramePolygon().PinToSide(list[i % list.Count], last_added);
+                            output.Add(new RenderedPoint(temp.X, temp.Y));
+                            last_added = list[i % list.Count];
+                            last_dir = current_dir;
+                        }
                     }
                 }
             }

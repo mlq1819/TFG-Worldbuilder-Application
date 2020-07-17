@@ -9,7 +9,35 @@ namespace TFG_Worldbuilder_Application
 {
     class Global
     {
-        public static Canvas RenderCanvas = null;
+        private static bool _hascanvas = false;
+        private static bool HasCanvas {
+            get
+            {
+                return _hascanvas;
+            }
+        }
+        private static Canvas _rendercanvas = null;
+        public static Canvas RenderCanvas
+        {
+            get
+            {
+                if (HasCanvas)
+                    return _rendercanvas;
+                return null;
+            }
+            set
+            {
+                if(value != null)
+                {
+                    _rendercanvas = value;
+                    _hascanvas = true;
+                } else
+                {
+                    _rendercanvas = null;
+                    _hascanvas = false;
+                }
+            }
+        }
         public static FileManager ActiveFile;
         public static double Zoom = 1;
         private static double _defaultzoom = 1.0f;
@@ -45,7 +73,7 @@ namespace TFG_Worldbuilder_Application
         {
             get
             {
-                if (RenderCanvas == null)
+                if (!HasCanvas || RenderCanvas == null)
                     return new RenderedPoint(0, 0);
                 return new RenderedPoint((long)(RenderCanvas.ActualWidth), (long)(RenderCanvas.ActualHeight));
             }

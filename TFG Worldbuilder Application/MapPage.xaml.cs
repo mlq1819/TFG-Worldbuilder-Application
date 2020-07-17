@@ -27,7 +27,19 @@ namespace TFG_Worldbuilder_Application
 public sealed partial class MapPage : Page
     {
 
-        private Canvas MapCanvas;
+        private Canvas _mapcanvas;
+        public Canvas MapCanvas
+        {
+            get
+            {
+                return _mapcanvas;
+            }
+            set
+            {
+                _mapcanvas = value;
+                Global.RenderCanvas = value;
+            }
+        }
         private int LevelNum = 0;
         private int LevelStep = 0;
         private string name = "";
@@ -44,19 +56,24 @@ public sealed partial class MapPage : Page
         {
             this.InitializeComponent();
             ForceClose = false;
-            Global.RenderCanvas = WorldCanvas;
             this.FileNameBlock.Text = Global.ActiveFile.FileName();
-            this.MapCanvas = (Canvas)this.FindName("WorldCanvas");
             this.Worlds = Global.ActiveFile.Worlds;
             this.Context = new ActiveContext(Global.ActiveFile.Worlds);
-            ResetZoom();
             this.DataContext = this.Context;
+            ResetZoom();
+        }
+
+
+
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            this.MapCanvas = WorldCanvas;
             if (Worlds.Count > 0)
             {
                 Context.SetWorld(Worlds[0].name, Worlds[0].subtype);
+                Context.UpdateAll();
             }
             UpdateSaveState();
-            Context.UpdateAll();
         }
 
         /// <summary>
