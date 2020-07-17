@@ -682,6 +682,16 @@ namespace TFG_Worldbuilder_Application
                 }
             }
         }
+        
+        /// <summary>
+        /// Returns the MedZoom for the region such that being zoomed in will fully encompass the region
+        /// </summary>
+        public virtual double GetMedZoom()
+        {
+            if (parent == null)
+                return 1.0f;
+            return Math.Min(1.0f, parent.GetMedZoom());
+        }
     };
 
     /// <summary>
@@ -689,7 +699,7 @@ namespace TFG_Worldbuilder_Application
     /// </summary>
     public class BorderLevel : SuperLevel
     {
-        private Polygon2D border;
+        public Polygon2D border;
         
         public PointCollection points
         {
@@ -937,6 +947,31 @@ namespace TFG_Worldbuilder_Application
         public override bool HasBorderProperty()
         {
             return true;
+        }
+        
+        /// <summary>
+        /// Returns the MedZoom for the region such that being zoomed in will fully encompass the region
+        /// </summary>
+        public override double GetMedZoom()
+        {
+            double myZoom = 1.0f;
+            long MinX, MinY, MaxX, MaxY;
+            MinX = MinY = Int64.MaxValue;
+            MaxX = MaxY = Int64.MinValue;
+            for(int i=0; i<border.vertices.Count; i++)
+            {
+                MinX = Math.Min(MinX, border.vertices[i].X);
+                MinY = Math.Min(MinY, border.vertices[i].Y);
+                MaxX = Math.Max(MaxX, border.vertices[i].X);
+                MaxY = Math.Max(MaxY, border.vertices[i].Y);
+            }
+            double width_percent, height_percent;
+            width_percent = ((double)(MaxX - MinX)) / Global.CanvasSize.X;
+            height_percent = ((double)(MaxY - MinY)) / Global.CanvasSize.Y;
+            myZoom = Math.Max(width_percent, height_percent);
+            if (parent == null)
+                return myZoom;
+            return Math.Min(myZoom, parent.GetMedZoom());
         }
     }
 
@@ -1279,6 +1314,21 @@ namespace TFG_Worldbuilder_Application
         public override bool HasRadiusProperty()
         {
             return true;
+        }
+
+        /// <summary>
+        /// Returns the MedZoom for the region such that being zoomed in will fully encompass the region
+        /// </summary>
+        public override double GetMedZoom()
+        {
+            double myZoom = 1.0f;
+            double width_percent, height_percent;
+            width_percent = ((double)(radius * 2)) / Global.CanvasSize.X;
+            height_percent = ((double)(radius * 2)) / Global.CanvasSize.Y;
+            myZoom = Math.Max(width_percent, height_percent);
+            if (parent == null)
+                return myZoom;
+            return Math.Min(myZoom, parent.GetMedZoom());
         }
     }
 

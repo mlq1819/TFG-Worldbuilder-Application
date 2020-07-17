@@ -21,6 +21,8 @@ namespace TFG_Worldbuilder_Application
         public ObservableCollection<BorderLevel> Shapes;
         public ObservableCollection<Level5> Circles;
         public ObservableCollection<Level6> Points;
+        public MyPointCollection Vertices;
+        public ObservableCollection<Line2D> Lines;
         public MyPointCollection ExtraPoints;
         private double _Zoom = 1;
         public string ZoomStr
@@ -60,17 +62,14 @@ namespace TFG_Worldbuilder_Application
             this.Shapes = new ObservableCollection<BorderLevel>();
             this.Circles = new ObservableCollection<Level5>();
             this.Points = new ObservableCollection<Level6>();
+            this.Vertices = new MyPointCollection();
+            this.Lines = new ObservableCollection<Line2D>();
             this.ExtraPoints = new MyPointCollection();
         }
 
-        public ActiveContext(ObservableCollection<Level1> Worlds)
+        public ActiveContext(ObservableCollection<Level1> Worlds) : this()
         {
             this.Worlds = Worlds;
-            this.ActiveLevel = null;
-            this.Shapes = new ObservableCollection<BorderLevel>();
-            this.Circles = new ObservableCollection<Level5>();
-            this.Points = new ObservableCollection<Level6>();
-            this.ExtraPoints = new MyPointCollection();
         }
 
         /// <summary>
@@ -84,8 +83,10 @@ namespace TFG_Worldbuilder_Application
             if (ActiveLevel != null)
             {
                 ActiveLevel.color = "LightSkyBlue";
-                UpdateShapesAndPoints();
-            } else
+                Global.DefaultZoom = ActiveLevel.GetMedZoom();
+                ForceUpdatePoints();
+                UpdateAll();
+            } else //If ActiveLevel *is* null
             {
                 Shapes = new ObservableCollection<BorderLevel>();
                 Circles = new ObservableCollection<Level5>();
@@ -98,9 +99,9 @@ namespace TFG_Worldbuilder_Application
         }
 
         /// <summary>
-        /// Updates the Shapes, Circles, and Points to match the ActiveWorld
+        /// Updates the Shapes to match those in ActiveLevel
         /// </summary>
-        public void UpdateShapesAndPoints()
+        public void UpdateShapes()
         {
             IList<SuperLevel> temp = SuperLevel.Filter(ActiveLevel.GetSublevels(), 2);
             temp.Concat<SuperLevel>(SuperLevel.Filter(ActiveLevel.GetSublevels(), 3));
@@ -118,7 +119,16 @@ namespace TFG_Worldbuilder_Application
                 }
             }
             RaisePropertyChanged("Shapes");
-            temp = SuperLevel.Filter(ActiveLevel.GetSublevels(), 5);
+            UpdateVertices();
+            UpdateLines();
+        }
+
+        /// <summary>
+        /// Updates the Circles to match those in ActiveLevel
+        /// </summary>
+        public void UpdateCircles()
+        {
+            IList<SuperLevel> temp = SuperLevel.Filter(ActiveLevel.GetSublevels(), 5);
             for (int i = 0; i < temp.Count; i++)
             {
                 try
@@ -131,7 +141,14 @@ namespace TFG_Worldbuilder_Application
                 }
             }
             RaisePropertyChanged("Circles");
-            temp = SuperLevel.Filter(ActiveLevel.GetSublevels(), 6);
+        }
+
+        /// <summary>
+        /// Updates the Points to match those in ActiveLevel
+        /// </summary>
+        public void UpdatePoints()
+        {
+            IList<SuperLevel> temp = SuperLevel.Filter(ActiveLevel.GetSublevels(), 6);
             for (int i = 0; i < temp.Count; i++)
             {
                 try
@@ -144,6 +161,50 @@ namespace TFG_Worldbuilder_Application
                 }
             }
             RaisePropertyChanged("Points");
+        }
+
+        /// <summary>
+        /// Updates the Vertices to match those of the Shapes
+        /// </summary>
+        public void UpdateVertices()
+        {
+            Vertices = new MyPointCollection();
+            for (int i = 0; i < Shapes.Count; i++)
+            {
+                for (int j = 0; j < Shapes[i].border.Count; j++)
+                {
+                    if (!Vertices.Contains(Shapes[i].border[j]))
+                        Vertices.AppendPoint(Shapes[i].border[j]);
+                }
+            }
+            RaisePropertyChanged("Vertices");
+        }
+
+        /// <summary>
+        /// Updates the Lines to match those of the Shapes
+        /// </summary>
+        public void UpdateLines()
+        {
+            Lines = new ObservableCollection<Line2D>();
+            for(int i=0; i<Shapes.Count; i++)
+            {
+                ObservableCollection<Line2D> edges = Shapes[i].border.edges;
+                for(int j=0; j<edges.Count; i++)
+                {
+                    if (!Lines.Contains(edges[i]))
+                        Lines.Add(new Line2D(edges[i]));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Updates the Shapes, Circles, and Points to match the ActiveWorld
+        /// </summary>
+        public void UpdateAll()
+        {
+            UpdateShapes();
+            UpdateCircles();
+            UpdatePoints();
         }
 
         /// <summary>

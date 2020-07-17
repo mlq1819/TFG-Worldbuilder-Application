@@ -42,6 +42,7 @@ public sealed partial class MapPage : Page
         public MapPage()
         {
             this.InitializeComponent();
+            Global.RenderCanvas = WorldCanvas;
             this.FileNameBlock.Text = Global.ActiveFile.FileName();
             this.MapCanvas = (Canvas)this.FindName("WorldCanvas");
             this.Worlds = Global.ActiveFile.Worlds;
@@ -339,7 +340,7 @@ public sealed partial class MapPage : Page
                     OpenPopupAlert("Error: unknown error adding level");
                 } else
                 {
-                    Context.UpdateShapesAndPoints();
+                    Context.UpdateAll();
                 }
             }
             ActiveJob = "None";
@@ -405,7 +406,7 @@ public sealed partial class MapPage : Page
         /// Moves the focus to point
         /// </summary>
         /// <param name="point">an AbsolutePoint object representing the translated click location</param>
-        private void WorldCanvas_Refocus(RenderedPoint point)
+        private void WorldCanvas_Refocus(AbsolutePoint point)
         {
             Global.Center = point; //Sets the center to the abolute coordinates of the point
             ForceUpdatePoints();
@@ -445,7 +446,7 @@ public sealed partial class MapPage : Page
                 WorldCanvas_Add_Point(new AbsolutePoint(point));
             } else
             {
-                WorldCanvas_Refocus(point);
+                WorldCanvas_Refocus(new AbsolutePoint(point));
             }
             
         }
@@ -480,11 +481,11 @@ public sealed partial class MapPage : Page
 
         private void Zoom_In_Button_Click(object sender, RoutedEventArgs e)
         {
-            Global.Zoom = Math.Min(5, Global.Zoom * 1.1);
+            Global.Zoom = Math.Min(Global.MaxZoom, Global.Zoom * 1.1);
             Context.Zoom = Global.Zoom;
             ForceUpdatePoints();
             Zoom_Out_Button.IsEnabled = true;
-            if(Global.Zoom == 5)
+            if(Global.Zoom == Global.MaxZoom)
             {
                 Zoom_In_Button.IsEnabled = false;
             }
@@ -492,11 +493,11 @@ public sealed partial class MapPage : Page
 
         private void Zoom_Out_Button_Click(object sender, RoutedEventArgs e)
         {
-            Global.Zoom = Math.Max(0.2, Global.Zoom / 1.1);
+            Global.Zoom = Math.Max(Global.MinZoom, Global.Zoom / 1.1);
             Context.Zoom = Global.Zoom;
             ForceUpdatePoints();
             Zoom_In_Button.IsEnabled = true;
-            if (Global.Zoom == 0.2)
+            if (Global.Zoom == Global.MinZoom)
             {
                 Zoom_Out_Button.IsEnabled = false;
             }
@@ -504,10 +505,8 @@ public sealed partial class MapPage : Page
 
         private void ResetZoom()
         {
-            Global.CanvasSize.X = (long)WorldCanvas.ActualWidth;
-            Global.CanvasSize.Y = (long)WorldCanvas.ActualHeight;
-            Global.Center = new RenderedPoint(Global.OriginalCenter.X, Global.OriginalCenter.Y);
-            Global.Zoom = 1.0f;
+            Global.Center = new AbsolutePoint(Global.RenderedCenter.X, Global.RenderedCenter.Y);
+            Global.Zoom = Global.DefaultZoom;
             Context.Zoom = Global.Zoom;
         }
 

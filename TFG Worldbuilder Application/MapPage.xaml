@@ -98,6 +98,13 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
+                <ItemsControl x:Name="ShapesEdgesControl" ItemsSource="{x:Bind Path=Context.Lines, Mode=OneWay}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="local:Line2D">
+                            <Line Fill="Black" Stroke="1" X1="{x:Bind Path=X1, Mode=OneWay}" Y1="{x:Bind Path=Y1, Mode=OneWay}" X2="{x:Bind Path=X2, Mode=OneWay}" Y2="{x:Bind Path=Y2, Mode=OneWay}"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
                 <ItemsControl x:Name="ExtraPointsControl" ItemsSource="{x:Bind Path=Context.ExtraPoints.points, Mode=OneWay}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="local:RenderedPoint">

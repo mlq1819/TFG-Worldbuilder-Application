@@ -108,19 +108,19 @@ namespace TFG_Worldbuilder_Application
         }
 
         /// <summary>
-        /// Uses Global.Zoom, Global.Center, and Global.OriginalCenter to output the render coordinates for the point
-        /// Produces coordinates by translating such that Global.Center becomes (0,0), then scaling by Global.Zoom, then translating such that (0,0) becomes Global.OriginalCenter
+        /// Uses Global.Zoom, Global.Center, and Global.RenderedCenter to output the render coordinates for the point
+        /// Produces coordinates by translating such that Global.Center becomes (0,0), then scaling by Global.Zoom, then translating such that (0,0) becomes Global.RenderedCenter
         /// </summary>
         /// <param name="point">Point2D object to transform</param>
         public static RenderedPoint ApplyTransformation(AbsolutePoint input)
         {
             AbsolutePoint translated_input = input - Global.Center; //translated_input is set to the input translated such that Global.Center becomes (0,0)
             RenderedPoint untraslated_output = new RenderedPoint((long)(translated_input.X * Global.Zoom), (long)(translated_input.Y * Global.Zoom)); //untraslated_output is set to a rescaling of translated_input based on Global.Zoom
-            return untraslated_output + Global.OriginalCenter; //The returned point is untraslated_output translated such that (0,0) becomes Global.OriginalCenter
+            return untraslated_output + Global.RenderedCenter; //The returned point is untraslated_output translated such that (0,0) becomes Global.RenderedCenter
         }
 
         /// <summary>
-        /// Uses Global.Zoom, Global.Center, and Global.OriginalCenter to output the render coordinates for the point
+        /// Uses Global.Zoom, Global.Center, and Global.RenderedCenter to output the render coordinates for the point
         /// </summary>
         /// <param name="point">Point object to transform</param>
         public static Point ApplyTransformation(Point input)
@@ -161,19 +161,19 @@ namespace TFG_Worldbuilder_Application
         }
 
         /// <summary>
-        /// Uses Global.Zoom, Global.Center, and Global.OriginalCenter to output the absolute coordinates for the point
-        /// /// Produces coordinates by translating such that Global.OriginalCenter becomes (0,0), then scaling by Global.Zoom, then translating such that (0,0) becomes Global.Center
+        /// Uses Global.Zoom, Global.Center, and Global.RenderedCenter to output the absolute coordinates for the point
+        /// /// Produces coordinates by translating such that Global.RenderedCenter becomes (0,0), then scaling by Global.Zoom, then translating such that (0,0) becomes Global.Center
         /// </summary>
         /// <param name="point">Point2D object to revert</param>
         public static AbsolutePoint RevertTransformation(RenderedPoint input)
         {
-            RenderedPoint translated_input = input - Global.OriginalCenter; //translated_input is set to the input translated such that Global.OriginalCenter becomes (0,0)
+            RenderedPoint translated_input = input - Global.RenderedCenter; //translated_input is set to the input translated such that Global.RenderedCenter becomes (0,0)
             AbsolutePoint untraslated_output = new AbsolutePoint((long)(translated_input.X / Global.Zoom), (long)(translated_input.Y / Global.Zoom)); //untraslated_output is set to a rescaling of translated_input based on Global.Zoom
             return untraslated_output + Global.Center; //The returned point is untraslated_output translated such that (0,0) becomes Global.Center
         }
 
         /// <summary>
-        /// Uses Global.Zoom, Global.Center, and Global.OriginalCenter to output the absolute coordinates for the point
+        /// Uses Global.Zoom, Global.Center, and Global.RenderedCenter to output the absolute coordinates for the point
         /// </summary>
         /// <param name="point">Point object to revert</param>
         public static Point RevertTransformation(Point input)
@@ -410,12 +410,12 @@ namespace TFG_Worldbuilder_Application
             ;
         }
         
-        public static implicit operator AbsolutePoint(RenderedPoint point)
+        public static explicit operator AbsolutePoint(RenderedPoint point)
         {
             return new AbsolutePoint(point);
         }
 
-        public static implicit operator Point(RenderedPoint point)
+        public static explicit operator Point(RenderedPoint point)
         {
             return new Point(point.X, point.Y);
         }
@@ -580,7 +580,7 @@ namespace TFG_Worldbuilder_Application
             ;
         }
 
-        public static implicit operator RenderedPoint(AbsolutePoint point)
+        public static explicit operator RenderedPoint(AbsolutePoint point)
         {
             return new RenderedPoint(point);
         }
@@ -736,6 +736,18 @@ namespace TFG_Worldbuilder_Application
             }
         }
         public ObservableCollection<AbsolutePoint> vertices;
+        public ObservableCollection<Line2D> edges
+        {
+            get
+            {
+                ObservableCollection<Line2D> _edges = new ObservableCollection<Line2D>();
+                for(int i=0; i<vertices.Count; i++)
+                {
+                    _edges.Add(new Line2D(vertices[i], vertices[(i + 1) % vertices.Count]));
+                }
+                return _edges;
+            }
+        }
         public int Count
         {
             get
@@ -834,10 +846,19 @@ namespace TFG_Worldbuilder_Application
                 {
                     vertices.Insert(i + 1, (a + b) / 2);
                     RaisePropertyChanged("vertices");
+                    RaisePropertyChanged("edges");
                     return (a + b) / 2;
                 }
             }
             return null;
+        }
+
+        /// <summary>
+        /// Creates a new point on a specific edge
+        /// </summary>
+        public AbsolutePoint NewPoint(Line2D line)
+        {
+            return NewPoint(line._vertex1, line._vertex2);
         }
 
         /// <summary>
@@ -862,6 +883,7 @@ namespace TFG_Worldbuilder_Application
                 {
                     vertices[i] = new AbsolutePoint(new_position);
                     RaisePropertyChanged("vertices");
+                    RaisePropertyChanged("edges");
                     return vertices[i];
                 }
             }
@@ -955,6 +977,262 @@ namespace TFG_Worldbuilder_Application
     }
 
     /// <summary>
+    /// Line2D object of AbsolutePoint points
+    /// Is able to output some RenderedPoint objects
+    /// </summary>
+    public class Line2D : INotifyPropertyChanged
+    {
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void RaisePropertyChanged(string str)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(str));
+            }
+        }
+        private AbsolutePoint __vertex1;
+        private AbsolutePoint __vertex2;
+        public AbsolutePoint _vertex1
+        {
+            get
+            {
+                return __vertex1;
+            }
+            set
+            {
+                __vertex1 = value;
+                RaisePropertyChanged("vertex1");
+                RaisePropertyChanged("center_r");
+                RaisePropertyChanged("X1");
+                RaisePropertyChanged("Y1");
+            }
+        }
+        public AbsolutePoint _vertex2
+        {
+            get
+            {
+                return __vertex2;
+            }
+            set
+            {
+                __vertex2 = value;
+                RaisePropertyChanged("vertex2");
+                RaisePropertyChanged("center_r");
+                RaisePropertyChanged("X2");
+                RaisePropertyChanged("Y2");
+            }
+        }
+        public RenderedPoint vertex1
+        {
+            get
+            {
+                return _vertex1.ToRenderedPoint();
+            }
+            set
+            {
+                _vertex1 = value.ToAbsolutePoint();
+            }
+        }
+        public RenderedPoint vertex2
+        {
+            get
+            {
+                return _vertex2.ToRenderedPoint();
+            }
+            set
+            {
+                _vertex2 = value.ToAbsolutePoint();
+            }
+        }
+        public AbsolutePoint center_a
+        {
+            get
+            {
+                return (_vertex1 + _vertex2) / 2;
+            }
+        }
+        public RenderedPoint center_r
+        {
+            get
+            {
+                return (vertex1 + vertex2) / 2;
+            }
+        }
+        public double Length
+        {
+            get
+            {
+                return (_vertex1 - _vertex2).Length();
+            }
+        }
+
+        public string X1
+        {
+            get
+            {
+                return vertex1.X.ToString();
+            }
+        }
+        public string Y1
+        {
+            get
+            {
+                return vertex1.Y.ToString();
+            }
+        }
+        public string X2
+        {
+            get
+            {
+                return vertex2.X.ToString();
+            }
+        }
+        public string Y2
+        {
+            get
+            {
+                return vertex2.Y.ToString();
+            }
+        }
+
+        /// <summary>
+        /// Creates a Line2D object from two AbsolutePoint objects
+        /// </summary>
+        /// <param name="v1">An AbsolutePoint object</param>
+        /// <param name="v2">An AbsolutePoint object</param>
+        public Line2D(AbsolutePoint v1, AbsolutePoint v2)
+        {
+            this._vertex1 = new AbsolutePoint(v1);
+            this._vertex2 = new AbsolutePoint(v2);
+        }
+
+        /// <summary>
+        /// Creates a Line2D object from two RenderedPoint objects
+        /// </summary>
+        /// <param name="v1">A RenderedPoint object</param>
+        /// <param name="v2">A RenderedPoint object</param>
+        public Line2D(RenderedPoint v1, RenderedPoint v2) : this(v1.ToAbsolutePoint(), v2.ToAbsolutePoint())
+        {
+            ;
+        }
+
+        /// <summary>
+        /// Copy constructor
+        /// </summary>
+        /// <param name="o">Another Line2D object</param>
+        public Line2D(Line2D o) : this(o._vertex1, o._vertex2)
+        {
+            ;
+        }
+
+        /// <summary>
+        /// Sets vertex1 to the passed point
+        /// </summary>
+        /// <param name="point">An AbsolutePoint object</param>
+        public AbsolutePoint MoveVertex1(AbsolutePoint point)
+        {
+            _vertex1 = new AbsolutePoint(point);
+            return point;
+        }
+
+        /// <summary>
+        /// Sets vertex2 to the passed point
+        /// </summary>
+        /// <param name="point">An AbsolutePoint object</param>
+        public AbsolutePoint MoveVertex2(AbsolutePoint point)
+        {
+            _vertex2 = new AbsolutePoint(point);
+            return point;
+        }
+
+        /// <summary>
+        /// Returns a line of Length==1 in the same direction as this
+        /// </summary>
+        public Line2D Normalized()
+        {
+            Line2D output = new Line2D(this);
+            output._vertex1 = new AbsolutePoint(0, 0);
+            output._vertex2 = (output._vertex2 / this.Length);
+            return output;
+        }
+
+        /// <summary>
+        /// Returns a line of the same length and direction but with _vertex1 set to (0,0)
+        /// </summary>
+        protected Line2D Centered()
+        {
+            return new Line2D(_vertex1, _vertex2 - _vertex1);
+        }
+
+        public static bool operator==(Line2D a, Line2D b)
+        {
+            if (((object)a) == null && ((object)b) == null)
+                return true;
+            if (((object)a) == null ^ ((object)b) == null)
+                return false;
+            return (a._vertex1 == b._vertex1 && a._vertex2 == b._vertex2) || (a._vertex1 == b._vertex2 && a._vertex1 == b._vertex1);
+        }
+
+        public static bool operator!=(Line2D a, Line2D b)
+        {
+            if (((object)a) == null && ((object)b) == null)
+                return false;
+            if (((object)a) == null ^ ((object)b) == null)
+                return true;
+            return (a._vertex1 != b._vertex1 && a._vertex1 != b._vertex2) || (a._vertex2 != b._vertex1 && a._vertex2 != b._vertex2);
+        }
+
+        public static Line2D operator+(Line2D a, Line2D b)
+        {
+            return new Line2D(a._vertex1, a._vertex2 + b.Centered()._vertex2);
+        }
+
+        public static Line2D operator-(Line2D a, Line2D b)
+        {
+            return new Line2D(a._vertex1, a._vertex2 - b.Centered()._vertex2);
+        }
+        
+        /// <summary>
+        /// checks equality between two objects
+        /// </summary>
+        public override bool Equals(object that)
+        {
+            try
+            {
+                return this.GetType() == that.GetType() && this == (Line2D)that;
+            }
+            catch (InvalidCastException)
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Generates a possible hash value for any Line2D object
+        /// </summary>
+        public override int GetHashCode()
+        {
+            return _vertex1.GetHashCode() ^ _vertex2.GetHashCode();
+        }
+
+        /// <summary>
+        /// Takes an IList of Line2D objects and a Line2D object and returns true if the list contains the Line
+        /// </summary>
+        /// <param name="list">The list within in which to search for the line</param>
+        /// <param name="line">The line to search for within the list</param>
+        /// <returns>true if the list contains the line; false otherwise</returns>
+        public static bool Contains(IList<Line2D> list, Line2D line)
+        {
+            for(int i=0; i<list.Count; i++)
+            {
+                if (list[i] == line)
+                    return true;
+            }
+            return false;
+        }
+    }
+
+    /// <summary>
     /// Class that stores AbsolutePoints but is accessed as RenderedPoints
     /// </summary>
     public class MyPointCollection : INotifyPropertyChanged
@@ -994,6 +1272,16 @@ namespace TFG_Worldbuilder_Application
         public void ForceUpdatePoints()
         {
             RaisePropertyChanged("points");
+        }
+
+        public bool Contains(AbsolutePoint point)
+        {
+            for(int i=0; i<_points.Count; i++)
+            {
+                if (point == _points[i])
+                    return true;
+            }
+            return false;
         }
     }
 }
