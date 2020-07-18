@@ -459,6 +459,14 @@ public sealed partial class MapPage : Page
             //point = Point2D.ApplyTransformation(point);
             if(LevelNum > 1 && LevelNum < 5)
             {
+                for(int i=0; i<vertices.Count; i++)
+                {
+                    if(point == vertices[i])
+                    {
+                        OpenPopupAlert("Point " + point.ToString() + " already added");
+                        return;
+                    }
+                }
                 if (Context.ActiveLevel != null)
                 {
                     if (Context.ActiveLevel.CanFitPoint(point))
@@ -469,7 +477,7 @@ public sealed partial class MapPage : Page
                     }
                     else
                     {
-                        OpenPopupAlert("Point (" + point.X + ',' + point.Y + ") not in range");
+                        OpenPopupAlert("Point " + point.ToString() + " not in range");
                     }
                 }
                 TapPromptTab.Text = label + ": " + vertices.Size() + " points";
@@ -479,12 +487,28 @@ public sealed partial class MapPage : Page
         private void WorldCanvas_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
             RenderedPoint point = new RenderedPoint(e.GetCurrentPoint((Windows.UI.Xaml.UIElement)sender).Position);
+            long mindistance = 11;
+            for(int i=0; i<Context.Vertices.points.Count; i++)
+            {
+                mindistance = Math.Min(mindistance, (point - Context.Vertices.points[i]).Length());
+            }
+            if(mindistance < 11)
+            {
+                for (int i = 0; i < Context.Vertices.points.Count; i++)
+                {
+                    if ((point - Context.Vertices.points[i]).Length() <= mindistance)
+                    {
+                        point = new RenderedPoint(Context.Vertices.points[i]);
+                        break;
+                    }
+                }
+            }
 
             if(string.Equals(ActiveJob, "Create")){
-                WorldCanvas_Add_Point(new AbsolutePoint(point));
+                WorldCanvas_Add_Point(point.ToAbsolutePoint());
             } else
             {
-                WorldCanvas_Refocus(new AbsolutePoint(point));
+                WorldCanvas_Refocus(point.ToAbsolutePoint());
             }
             
         }

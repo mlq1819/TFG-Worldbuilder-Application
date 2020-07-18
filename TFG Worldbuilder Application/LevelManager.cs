@@ -1240,6 +1240,14 @@ namespace TFG_Worldbuilder_Application
             {
                 _radius = value;
                 RaisePropertyChanged("radius");
+                RaisePropertyChanged("radius_r");
+            }
+        }
+        public long radius_r
+        {
+            get
+            {
+                return (long) (radius * Global.Zoom);
             }
         }
 

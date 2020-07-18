@@ -1170,6 +1170,8 @@ namespace TFG_Worldbuilder_Application
 
             public Point2D PinToSide(Point2D point, Point2D last)
             {
+                if (point == last)
+                    return null;
                 Direction pinto = WhereIsPoint(point);
                 if (pinto == Direction.Middle)
                     return point;
@@ -1198,7 +1200,6 @@ namespace TFG_Worldbuilder_Application
                         changed = Math.Max(changed, ((double)Bottom - last.Y) / ((double)point.Y - last.Y));
                     }
                 }
-                changed *= 0.95;
                 Point2D output = ((point - last) * changed) + last;
                 return output;
             }
@@ -1206,21 +1207,6 @@ namespace TFG_Worldbuilder_Application
             public static bool SharesSide(Direction a, Direction b)
             {
                 return (GetVertical(a) == GetVertical(b) && GetVertical(a) != Direction.Middle) || (GetHorizontal(a) == GetHorizontal(b) && GetHorizontal(a) != Direction.Middle);
-            }
-
-            public static bool NeedsAdd(Direction a, Direction b)
-            {   
-                if (a == b)
-                    return false;
-                if (b == Direction.Middle)
-                    return false;
-                if (a == Direction.Middle)
-                    return true;
-                if(SharesSide(a, b))
-                {
-                    return IsCorner(b); //Either b is a side and a is a corner, in which case they don't need new; or a is a side and b is a corner, in which case they do need new
-                }
-                return true;
             }
         }
         
@@ -1236,61 +1222,50 @@ namespace TFG_Worldbuilder_Application
             Direction current_dir;
             int first_in = 0;
             bool found_first_in = false;
-            Point2D last_added = null;
-            for(int i=0; i<list.Count; i++)
+            RenderedPoint last_added = null; //The untrimmed version of the most recently-added point to output
+            for(int i=0; i<list.Count && !found_first_in; i++)
             {
-                current_dir = Square2D.FramePolygon().WhereIsPoint(list[i%list.Count]);
-                if(current_dir == Direction.Middle) //This point is within frame, and will be added
+                current_dir = Square2D.FramePolygon().WhereIsPoint(list[i % list.Count]);
+                if (current_dir == Direction.Middle)
                 {
-                    if (!found_first_in)
-                    {
-                        first_in = i;
-                        found_first_in = true;
-                    }
-                    if(last_dir != Direction.Invalid && last_dir != Direction.Middle) //The previous point was not in frame, and the intersection between that and the frame needs to be added
-                    {
-                        Point2D temp = Square2D.FramePolygon().PinToSide(last_added, list[i]);
-                        output.Add(new RenderedPoint(temp.X, temp.Y));
-                    }
+                    found_first_in = true;
+                    first_in = i;
                     output.Add(list[i]);
                     last_added = list[i];
                     last_dir = current_dir;
-                }
-                else if(last_dir != Direction.Invalid) //This point is outside of frame, and it needs to be squished to the side if the last one was also out of frame, or the intersection between it and the last point with the frame needs to be added
-                {
-                    Point2D temp = Square2D.FramePolygon().PinToSide(list[i], last_added);
-                    output.Add(new RenderedPoint(temp.X, temp.Y));
-                    last_added = list[i];
+                    break;
                 }
             }
-            if (found_first_in)
+            if (!found_first_in)
+                return output;
+            for(int i=(first_in + 1)%list.Count; i!=first_in; i = (i + 1) % list.Count) //Main loop; iterates through the list starting after first_in until it loops back around and reaches first_in
             {
-                for(int i=0; i<first_in; i++)
+                current_dir = Square2D.FramePolygon().WhereIsPoint(list[i % list.Count]);
+                if (current_dir == Direction.Middle) //This point is within frame, and will be added
                 {
-                    current_dir = Square2D.FramePolygon().WhereIsPoint(list[i % list.Count]);
-                    if (current_dir == Direction.Middle) //This point is within frame, and needs to be considered
+                    if(last_dir != Direction.Middle) //The previous point was not in frame, and the intersection between that and the frame needs to be added
                     {
-                        if (!found_first_in)
-                        {
-                            first_in = i;
-                            found_first_in = true;
-                        }
-                        if (last_dir != Direction.Invalid && last_dir != Direction.Middle) //The previous point was not in frame, and the intersection between that and the frame needs to be added
-                        {
-                            Point2D temp = Square2D.FramePolygon().PinToSide(last_added, list[i]);
+                        Point2D temp = Square2D.FramePolygon().PinToSide(last_added, list[i]);
+                        if (temp != null)
                             output.Add(new RenderedPoint(temp.X, temp.Y));
-                        }
-                        last_added = list[i];
-                        last_dir = current_dir;
-                        break;
                     }
-                    else if (last_dir != Direction.Invalid) //This point is outside of frame, and it needs to be squished to the side if the last one was also out of frame, or the intersection between it and the last point with the frame needs to be added
-                    {
-                        Point2D temp = Square2D.FramePolygon().PinToSide(list[i], last_added);
-                        output.Add(new RenderedPoint(temp.X, temp.Y));
-                        last_added = list[i];
-                    }
+                    output.Add(list[i]);
+                    last_added = list[i];
                 }
+                else //This point is outside of frame, and it needs to be squished to the side if the last one was also out of frame, or the intersection between it and the last point with the frame needs to be added
+                {
+                    Point2D temp = Square2D.FramePolygon().PinToSide(list[i], last_added);
+                    if (temp != null)
+                        output.Add(new RenderedPoint(temp.X, temp.Y));
+                    last_added = list[i];
+                }
+                last_dir = current_dir;
+            }
+            if (last_dir != Direction.Middle) //The previous point was not in frame, and the intersection between that and the frame needs to be added
+            {
+                Point2D temp = Square2D.FramePolygon().PinToSide(last_added, list[first_in]);
+                if (temp != null)
+                    output.Add(new RenderedPoint(temp.X, temp.Y));
             }
             return output;
         }

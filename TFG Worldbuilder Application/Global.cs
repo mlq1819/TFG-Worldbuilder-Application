@@ -88,10 +88,21 @@ namespace TFG_Worldbuilder_Application
                 return CanvasSize / 2;
             }
         }//Again, always in Rendered coordinates
+        private static AbsolutePoint _center = new AbsolutePoint(0, 0);//Must always be in absolute coordinates
         /// <summary>
         /// The point around which zooming will take place; should be recorded in absolute coordinates.
         /// Any objects at this point will be rendered at RenderedCenter
         /// </summary>
-        public static AbsolutePoint Center = new AbsolutePoint(0, 0); //Must always be in absolute coordinates
+        public static AbsolutePoint Center
+        {
+            get
+            {
+                return _center;
+            }
+            set
+            {
+                _center = value;
+            }
+        }
     }
 }
