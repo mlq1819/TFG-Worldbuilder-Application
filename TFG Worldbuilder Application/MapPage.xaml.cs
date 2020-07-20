@@ -60,10 +60,7 @@ public sealed partial class MapPage : Page
             this.Worlds = Global.ActiveFile.Worlds;
             this.Context = new ActiveContext(Global.ActiveFile.Worlds);
             this.DataContext = this.Context;
-            ResetZoom();
         }
-
-
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
@@ -74,6 +71,7 @@ public sealed partial class MapPage : Page
                 Context.UpdateAll();
             }
             UpdateSaveState();
+            ResetZoom();
         }
 
         /// <summary>

@@ -734,7 +734,7 @@ namespace TFG_Worldbuilder_Application
             get
             {
                 Point _center;
-                return (_center.X - 50).ToString() + ',' + (_center.Y - 20).ToString() + ',' + (Global.CanvasSize.X - _center.X - 50).ToString() + ',' + (Global.CanvasSize.Y - _center.Y - 20).ToString();
+                return (_center.X - 50).ToString() + ',' + (_center.Y - 20).ToString();
             }
         }
 
