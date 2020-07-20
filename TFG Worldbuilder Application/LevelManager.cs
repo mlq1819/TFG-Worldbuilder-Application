@@ -733,7 +733,7 @@ namespace TFG_Worldbuilder_Application
         {
             get
             {
-                Point _center;
+                Point _center = center;
                 return (_center.X - 50).ToString() + ',' + (_center.Y - 20).ToString();
             }
         }
