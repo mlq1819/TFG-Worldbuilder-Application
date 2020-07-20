@@ -761,11 +761,11 @@ namespace TFG_Worldbuilder_Application
                 int intended_height = 20;
                 Point _center = center;
                 string left, top, right, bottom;
-                left = (_center.X - intended_width).ToString();
-                top = (_center.Y - intended_height).ToString();
+                left = (Math.Min(Global.CanvasSize.X - _center.X, _center.X) - intended_width).ToString();
+                top = (Math.Min(Global.CanvasSize.Y - _center.Y, _center.Y) - intended_height).ToString();
                 right = ((Global.CanvasSize.X - _center.X) - intended_width).ToString();
                 bottom = ((Global.CanvasSize.Y - _center.Y) - intended_height).ToString();
-                return left + ',' + top + ',' + right + ',' + bottom;
+                return left + ',' + top;
             }
         }
 
