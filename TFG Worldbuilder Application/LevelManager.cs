@@ -274,7 +274,7 @@ namespace TFG_Worldbuilder_Application
             Text += "Level Type" + inner_delimiter + Enum.GetName(typeof(LevelType), leveltype) + outer_delimiter;
             if(subtype.Length>0)
                 Text += "Level Subtype" + inner_delimiter + subtype + outer_delimiter;
-            if(level >= 2 && level <= 4) //Border Levels
+            if(HasBorderProperty()) //Border Levels
             {
                 try
                 {
@@ -287,7 +287,7 @@ namespace TFG_Worldbuilder_Application
                 }
                 catch (InvalidCastException) {}
             } 
-            if(level >= 5)//Point Levels
+            if(HasCenterProperty())//Point Levels
             {
                 try
                 {
@@ -296,7 +296,7 @@ namespace TFG_Worldbuilder_Application
                 }
                 catch (InvalidCastException) { }
             } 
-            if(level == 5)//Level 5's radius
+            if(HasRadiusProperty())//Level 5's radius
             {
                 try
                 {

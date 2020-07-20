@@ -567,8 +567,13 @@ namespace TFG_Worldbuilder_Application
             Polygon2D vertices = new Polygon2D();
             while (index < ActiveText.Length - 1)
             {
-                length = Math.Max(ActiveText.Substring(index).IndexOf(outer_delimiter), 0);
+                length = ActiveText.Substring(index).IndexOf(outer_delimiter);
+                if(length < 0)
+                {
+                    length = Math.Max(ActiveText.Substring(index).Length, 0);
+                }
                 line = ActiveText.Substring(index, length).Trim();
+                string temp = ActiveText.Substring(index);
                 if (line.IndexOf("Border Vertex") == 0)
                 {
                     line = line.Substring("Border Vertex".Length + 1).Trim();
@@ -579,23 +584,21 @@ namespace TFG_Worldbuilder_Application
                         if (!found_vertices && vertices.Size() >= 3)
                         {
                             found_vertices = true;
-                            text = new ParseContainer<Polygon2D>(length, index, ActiveText, vertices);
-                        }
-                        else if (found_vertices)
-                        {
-                            text.length = length;
-                            text.index = index;
-                            text.ActiveText = ActiveText;
-                            text.Data = vertices;
                         }
                     }
                 }
                 else if (found_vertices || line.IndexOf("Start Level") == 0)
                 {
+                    if (found_vertices)
+                    {
+                        text = new ParseContainer<Polygon2D>(length, index, ActiveText, vertices);
+                    }
                     return text;
                 }
                 index += length + 1;
             }
+            if(found_vertices)
+                text = new ParseContainer<Polygon2D>(length, index, ActiveText, vertices);
             return text;
         }
 
