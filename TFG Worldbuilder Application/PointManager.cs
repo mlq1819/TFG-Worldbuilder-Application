@@ -39,7 +39,7 @@ namespace TFG_Worldbuilder_Application
             }
 
             private long _X;
-            public long X
+            public virtual long X
             {
                 get
                 {
@@ -53,7 +53,7 @@ namespace TFG_Worldbuilder_Application
                 }
             }
             private long _Y;
-            public long Y
+            public virtual long Y
             {
                 get
                 {
@@ -392,11 +392,46 @@ namespace TFG_Worldbuilder_Application
     /// </summary>
     public class RenderedPoint : Point2D
     {
+        public override long X
+        {
+            get
+            {
+                return base.X;
+            }
+            set
+            {
+                base.X = value;
+                RaisePropertyChanged("visibility");
+            }
+        }
+        public override long Y
+        {
+            get
+            {
+                return base.Y;
+            }
+            set
+            {
+                base.Y = value;
+                RaisePropertyChanged("visibility");
+            }
+        }
+
         public override Point pointstr
         {
             get
             {
                 return Point2D.ToWindowsPoint(this);
+            }
+        }
+        
+        public string visibility
+        {
+            get
+            {
+                if (this.InFrame())
+                    return "Visible";
+                return "Collapsed";
             }
         }
 
@@ -563,6 +598,23 @@ namespace TFG_Worldbuilder_Application
         {
             return base.GetHashCode();
         }
+        
+        /// <summary>
+        /// Checks whether a given RenderedPoint in within the frame
+        /// </summary>
+        public static bool PointInFrame(RenderedPoint point)
+        {
+            return Polygon2D.Square2D.FramePolygon().WhereIsPoint(point) == Direction.Middle;
+        }
+
+        /// <summary>
+        /// Checks whether a given RenderedPoint in within the frame
+        /// </summary>
+        public bool InFrame()
+        {
+            return PointInFrame(this);
+        }
+
     }
 
     /// <summary>
@@ -745,6 +797,7 @@ namespace TFG_Worldbuilder_Application
                 RaisePropertyChanged("verticesr");
                 update_edges = false;
                 RaisePropertyChanged("edges");
+                RaisePropertyChanged("visibility");
             }
         }
 
@@ -800,6 +853,20 @@ namespace TFG_Worldbuilder_Application
                 this.vertices[i] = value;
                 RaisePropertyChanged("vertices");
                 RaisePropertyChanged("verticesr");
+            }
+        }
+        /// <summary>
+        /// string object used to set object visibility
+        /// </summary>
+        public string visibility
+        {
+            get
+            {
+                if (verticesr.Count > 0)
+                {
+                    return "Visible";
+                }
+                return "Collapsed";
             }
         }
 
@@ -1009,7 +1076,7 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Square class mostly made for figuring out rendering space
         /// </summary>
-        private class Square2D
+        public class Square2D
         {
             private long minX;
             private long minY;
@@ -1296,6 +1363,7 @@ namespace TFG_Worldbuilder_Application
                     ;
                 }
                 RaisePropertyChanged("center_r");
+                RaisePropertyChanged("visibility");
             }
         }
         private AbsolutePoint __vertex1;
@@ -1358,6 +1426,15 @@ namespace TFG_Worldbuilder_Application
             get
             {
                 return (vertex1 + vertex2) / 2;
+            }
+        }
+        public string visibility
+        {
+            get
+            {
+                if (vertex1.InFrame() || vertex2.InFrame() || IntersectsFrame())
+                    return "Visible";
+                return "Collapsed";
             }
         }
         public double Length
@@ -1602,6 +1679,26 @@ namespace TFG_Worldbuilder_Application
             return new Line2D(a._vertex1, a._vertex2 - b.Centered()._vertex2);
         }
         
+        /// <summary>
+        /// Returns true if the line intersects the render frame
+        /// </summary>
+        private bool IntersectsFrame()
+        {
+            AbsolutePoint Top_Left = (new RenderedPoint(0, 0)).ToAbsolutePoint();
+            AbsolutePoint Top_Right = (new RenderedPoint(Global.CanvasSize.X, 0)).ToAbsolutePoint();
+            AbsolutePoint Bottom_Right = Global.CanvasSize.ToAbsolutePoint();
+            AbsolutePoint Bottom_Left = (new RenderedPoint(0, Global.CanvasSize.Y)).ToAbsolutePoint();
+            if (Intersects(new Line2D(Top_Left, Top_Right)))
+                return true;
+            if (Intersects(new Line2D(Top_Right, Bottom_Right)))
+                return true;
+            if (Intersects(new Line2D(Bottom_Right, Bottom_Left)))
+                return true;
+            if (Intersects(new Line2D(Bottom_Left, Top_Left)))
+                return true;
+            return false;
+        }
+
         /// <summary>
         /// checks equality between two objects
         /// </summary>

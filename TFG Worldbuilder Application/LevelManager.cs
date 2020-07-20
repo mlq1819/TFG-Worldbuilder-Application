@@ -727,14 +727,45 @@ namespace TFG_Worldbuilder_Application
             }
         }
         /// <summary>
+        /// string object used to set object visibility
+        /// </summary>
+        public string visibility
+        {
+            get
+            {
+                if (border.verticesr.Count > 0)
+                    return "Visible";
+                return "Collapsed";
+            }
+        }
+        /// <summary>
+        /// string object used to set name visibility
+        /// </summary>
+        public string name_visibility
+        {
+            get
+            {
+                if(border.verticesr.Count>0)
+                    return _center.visibility;
+                return "Collapsed";
+            }
+        }
+        /// <summary>
         /// string designed to be set to the margins of a textblock
         /// </summary>
         public string margin
         {
             get
             {
+                int intended_width = 50;
+                int intended_height = 20;
                 Point _center = center;
-                return (_center.X - 50).ToString() + ',' + (_center.Y - 20).ToString();
+                string left, top, right, bottom;
+                left = (_center.X - intended_width).ToString();
+                top = (_center.Y - intended_height).ToString();
+                right = (_center.X - intended_width).ToString();
+                bottom = (_center.Y - intended_height).ToString();
+                return left + ',' + top + ',' + right + ',' + bottom;
             }
         }
 
@@ -746,6 +777,8 @@ namespace TFG_Worldbuilder_Application
             RaisePropertyChanged("points");
             RaisePropertyChanged("center");
             RaisePropertyChanged("margin");
+            RaisePropertyChanged("visibility");
+            RaisePropertyChanged("name_visibility");
             base.ForceUpdatePoints();
         }
 
@@ -860,6 +893,8 @@ namespace TFG_Worldbuilder_Application
             RaisePropertyChanged("points");
             RaisePropertyChanged("center");
             RaisePropertyChanged("margin");
+            RaisePropertyChanged("visibility");
+            RaisePropertyChanged("name_visibility");
             return output;
         }
 
@@ -870,6 +905,8 @@ namespace TFG_Worldbuilder_Application
         {
             AbsolutePoint output = border.NewPoint(a, b);
             RaisePropertyChanged("points");
+            RaisePropertyChanged("visibility");
+            RaisePropertyChanged("name_visibility");
             return output;
         }
 
@@ -886,6 +923,8 @@ namespace TFG_Worldbuilder_Application
                     RaisePropertyChanged("points");
                     RaisePropertyChanged("center");
                     RaisePropertyChanged("margin");
+                    RaisePropertyChanged("visibility");
+                    RaisePropertyChanged("name_visibility");
                 }
                 return output;
             }
