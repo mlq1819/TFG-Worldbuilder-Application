@@ -102,7 +102,7 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Converts an AbsolutePoint to a RenderedPoint
         /// </summary>
-        public static RenderedPoint Convert(AbsolutePoint point)
+        public static RenderedPoint ConvertPoint(AbsolutePoint point)
         {
             return point.ToRenderedPoint();
         }
@@ -110,7 +110,7 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Converts a RenderedPoint to an AbsolutePoint
         /// </summary>
-        public static AbsolutePoint Convert(RenderedPoint point)
+        public static AbsolutePoint ConvertPoint(RenderedPoint point)
         {
             return point.ToAbsolutePoint();
         }
@@ -118,7 +118,7 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Converts an ObservableCollection of AbsolutePoints to an ObservableCollection of RenderedPoints
         /// </summary>
-        public static ObservableCollection<RenderedPoint> Convert(ObservableCollection<AbsolutePoint> list)
+        public static ObservableCollection<RenderedPoint> ConvertCollection(ObservableCollection<AbsolutePoint> list)
         {
             return AbsolutePoint.ToRenderedPoints(list);
         }
@@ -126,7 +126,7 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Converts an ObservableCollection of RenderedPoints to an ObservableCollection of AbsolutePoints
         /// </summary>
-        public static ObservableCollection<AbsolutePoint> Convert(ObservableCollection<RenderedPoint> list)
+        public static ObservableCollection<AbsolutePoint> ConvertCollection(ObservableCollection<RenderedPoint> list)
         {
             return RenderedPoint.ToAbsolutePoints(list);
         }
@@ -526,6 +526,16 @@ namespace TFG_Worldbuilder_Application
         public Point2D ToPoint2D()
         {
             return (Point2D)this;
+        }
+
+        /// <summary>
+        /// Checks whether this point can snap to another point, within the given range
+        /// </summary>
+        /// <param name="o">The point to snap to</param>
+        /// <param name="snaprange">The range within which to snap</param>
+        public bool SnapsTo(RenderedPoint o, long snaprange)
+        {
+            return (this - o).Length() <= snaprange;
         }
 
         /// <summary>

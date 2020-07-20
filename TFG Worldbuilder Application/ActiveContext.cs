@@ -45,6 +45,7 @@ namespace TFG_Worldbuilder_Application
                 RaisePropertyChanged("ZoomStr");
             }
         }
+        public long snap_range = 10;
 
         public string CenterX
         {
@@ -255,6 +256,9 @@ namespace TFG_Worldbuilder_Application
             RaisePropertyChanged("Shapes");
             RaisePropertyChanged("Circles");
             RaisePropertyChanged("Points");
+            RaisePropertyChanged("Vertices");
+            RaisePropertyChanged("Lines");
+            RaisePropertyChanged("ExtraPoints");
         }
 
         /// <summary>
@@ -314,6 +318,174 @@ namespace TFG_Worldbuilder_Application
                 }
             }
             return false;
+        }
+
+        /// <summary>
+        /// Checks whether the given point will snap to an element of ExtraPoints
+        /// </summary>
+        public bool SnapsToExtraPoint(RenderedPoint point)
+        {
+            for(int i=0; i<ExtraPoints.points.Count; i++)
+            {
+                if (point.SnapsTo(ExtraPoints.points[i], snap_range))
+                    return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Checks whether the given point will snap to an element of Vertices
+        /// </summary>
+        public bool SnapsToVertices(RenderedPoint point)
+        {
+            for (int i = 0; i < Vertices.points.Count; i++)
+            {
+                if (point.SnapsTo(Vertices.points[i], snap_range))
+                    return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Checks whether the given point will snap to an element of Points
+        /// </summary>
+        public bool SnapsToPoints(RenderedPoint point)
+        {
+            for(int i=0; i < Points.Count; i++)
+            {
+                if (point.SnapsTo(Points[i].center.ToRenderedPoint(), snap_range))
+                    return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Checks whether the given point will snap to an element of Circles
+        /// </summary>
+        public bool SnapsToCircle(RenderedPoint point)
+        {
+            for(int i=0; i < Circles.Count; i++)
+            {
+                if (Circles[i].PointInRadius(point.ToAbsolutePoint()))
+                    return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Checks whether the given point will snap to an element of Shapes
+        /// </summary>
+        public bool SnapsToShape(RenderedPoint point)
+        {
+            for(int i=0; i < Shapes.Count; i++)
+            {
+                if (Shapes[i].PointInPolygon(point.ToAbsolutePoint()))
+                    return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Snaps the point to the closest ExtraPoint element in range
+        /// </summary>
+        public RenderedPoint SnapToExtraPoint(RenderedPoint point)
+        {
+            if (!SnapsToExtraPoint(point))
+                return point;
+            long distance = snap_range;
+            for(int i=0; i<ExtraPoints.points.Count; i++)
+            {
+                distance = Math.Min(distance, (point - ExtraPoints.points[i]).Length());
+            }
+            for(int i=0; i<ExtraPoints.points.Count; i++)
+            {
+                if ((point - ExtraPoints.points[i]).Length() == distance)
+                    return ExtraPoints.points[i];
+            }
+            return point;
+        }
+
+        /// <summary>
+        /// Snaps the point to the closest Vertices element in range
+        /// </summary>
+        public RenderedPoint SnapToVertices(RenderedPoint point)
+        {
+            if (!SnapsToVertices(point))
+                return point;
+            long distance = snap_range;
+            for (int i = 0; i < Vertices.points.Count; i++)
+            {
+                distance = Math.Min(distance, (point - Vertices.points[i]).Length());
+            }
+            for (int i = 0; i < Vertices.points.Count; i++)
+            {
+                if ((point - Vertices.points[i]).Length() == distance)
+                    return Vertices.points[i];
+            }
+            return point;
+        }
+
+        /// <summary>
+        /// Snaps the point to the closest Points element in range
+        /// </summary>
+        public RenderedPoint SnapToPoints(RenderedPoint point)
+        {
+            if (!SnapsToVertices(point))
+                return point;
+            long distance = snap_range;
+            for (int i = 0; i < Points.Count; i++)
+            {
+                distance = Math.Min(distance, (point - Points[i].center.ToRenderedPoint()).Length());
+            }
+            for (int i = 0; i < Points.Count; i++)
+            {
+                if ((point - Points[i].center.ToRenderedPoint()).Length() == distance)
+                    return Points[i].center.ToRenderedPoint();
+            }
+            return point;
+        }
+
+        /// <summary>
+        /// Snaps the point to the closest Circles element in range
+        /// </summary>
+        public RenderedPoint SnapToCircles(RenderedPoint point)
+        {
+            if (!SnapsToVertices(point))
+                return point;
+            long distance = long.MaxValue;
+            for (int i = 0; i < Points.Count; i++)
+            {
+                distance = Math.Min(distance, (point - Circles[i].center.ToRenderedPoint()).Length());
+            }
+            for (int i = 0; i < Points.Count; i++)
+            {
+                if ((point - Circles[i].center.ToRenderedPoint()).Length() == distance)
+                    return Circles[i].center.ToRenderedPoint();
+            }
+            return point;
+        }
+
+        
+
+        /// <summary>
+        /// Attempts to snap the given point to a point within range
+        /// </summary>
+        /// <param name="point"></param>
+        /// <returns></returns>
+        public RenderedPoint SnapsTo(RenderedPoint point)
+        {
+            if (SnapsToExtraPoint(point))
+                return SnapToExtraPoint(point);
+            if (SnapsToVertices(point))
+                return SnapToVertices(point);
+            return point;
+        }
+
+        public List<Object> GetObjectsContainingPoint(RenderedPoint point)
+        {
+            List<Object> output = new List<Object>();
+            
+            return output;
         }
     }
 }

@@ -1330,7 +1330,7 @@ namespace TFG_Worldbuilder_Application
                 this.radius = 0;
             }
         }
-
+        
         /// <summary>
         /// Returns true if the point is within the radius of the center
         /// </summary>
