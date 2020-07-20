@@ -763,8 +763,8 @@ namespace TFG_Worldbuilder_Application
                 string left, top, right, bottom;
                 left = (_center.X - intended_width).ToString();
                 top = (_center.Y - intended_height).ToString();
-                right = (_center.X - intended_width).ToString();
-                bottom = (_center.Y - intended_height).ToString();
+                right = ((Global.CanvasSize.X - _center.X) - intended_width).ToString();
+                bottom = ((Global.CanvasSize.Y - _center.Y) - intended_height).ToString();
                 return left + ',' + top + ',' + right + ',' + bottom;
             }
         }
