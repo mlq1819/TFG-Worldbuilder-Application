@@ -146,9 +146,9 @@
                 <StackPanel x:Name="ZoomPanel" HorizontalAlignment="Right" Height="50" Orientation="Horizontal">
                     <Button x:Name="Reset_Zoom_Button" Content="Reset" Background="LightGray" HorizontalAlignment="Right" Margin="10" VerticalAlignment="Top" Click="Reset_Zoom_Button_Click"/>
                     <Button x:Name="Zoom_In_Button" Content="+" Background="LightGray" HorizontalAlignment="Right" Margin="10" VerticalAlignment="Top" Width="40" Click="Zoom_In_Button_Click"/>
-                    <Grid HorizontalAlignment="Right" Margin="10" VerticalAlignment="Stretch" MinWidth="10">
+                    <Grid HorizontalAlignment="Right" Margin="10" VerticalAlignment="Stretch" Width="40">
                         <Rectangle Fill="LightGray"/>
-                        <TextBlock x:Name="Zoom_Box" Text="{Binding ElementName=ZoomStr, Mode=OneWay}"/>
+                        <TextBlock x:Name="Zoom_Box" Text="{x:Bind Path=Context.ZoomStr, Mode=OneWay}"/>
                     </Grid>
                     <Button x:Name="Zoom_Out_Button" Content="-" Background="LightGray" HorizontalAlignment="Right" Margin="10" VerticalAlignment="Top" Width="40" Click="Zoom_Out_Button_Click"/>
                 </StackPanel>
