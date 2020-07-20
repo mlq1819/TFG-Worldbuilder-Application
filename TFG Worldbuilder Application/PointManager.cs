@@ -28,364 +28,396 @@ namespace TFG_Worldbuilder_Application
 /// 2D Point object
     /// </summary>
     public class Point2D : INotifyPropertyChanged
+    {
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void RaisePropertyChanged(string str)
         {
-            public event PropertyChangedEventHandler PropertyChanged;
-            protected void RaisePropertyChanged(string str)
+            if (PropertyChanged != null)
             {
-                if (PropertyChanged != null)
-                {
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(str));
-                }
-            }
-
-            private long _X;
-            public virtual long X
-            {
-                get
-                {
-                    return _X;
-                }
-                set
-                {
-                    _X = value;
-                    RaisePropertyChanged("X");
-                    RaisePropertyChanged("pointstr");
-                }
-            }
-            private long _Y;
-            public virtual long Y
-            {
-                get
-                {
-                    return _Y;
-                }
-                set
-                {
-                    _Y = value;
-                    RaisePropertyChanged("Y");
-                    RaisePropertyChanged("pointstr");
-                }
-            }
-            public virtual Point pointstr
-            {
-                get
-                {
-                    return Point2D.ApplyTransformation(Point2D.ToWindowsPoint(this));
-                }
-            }
-
-            /// <summary>
-            /// creates a Point2D object
-            /// </summary>
-            public Point2D(long X, long Y)
-            {
-                this.X = X;
-                this.Y = Y;
-            }
-
-            /// <summary>
-            /// copy constructor
-            /// </summary>
-            public Point2D(Point2D o) : this(o.X, o.Y)
-            {
-                ;
-            }
-
-            /// <summary>
-            /// Converts a Windows Foundation Point into a Point2D
-            /// </summary>
-            public Point2D(Point o) : this((long)o.X, (long)o.Y)
-            {
-                ;
-            }
-
-            /// <summary>
-            /// Converts a Point2D into a Point
-            /// </summary>
-            public static Point ToWindowsPoint(Point2D point)
-            {
-                return new Point(point.X, point.Y);
-            }
-
-            /// <summary>
-            /// Converts a Point2D IList to a Point List
-            /// </summary>
-            public static PointCollection ToWindowsPoints(IList<Point2D> list)
-            {
-                PointCollection output = new PointCollection();
-                for (int i = 0; i < list.Count; i++)
-                {
-                    output.Add(Point2D.ToWindowsPoint(list[i]));
-                }
-                return output;
-            }
-
-            /// <summary>
-            /// Uses Global.Zoom, Global.Center, and Global.RenderedCenter to output the render coordinates for the point
-            /// Produces coordinates by translating such that Global.Center becomes (0,0), then scaling by Global.Zoom, then translating such that (0,0) becomes Global.RenderedCenter
-            /// </summary>
-            /// <param name="point">Point2D object to transform</param>
-            public static RenderedPoint ApplyTransformation(AbsolutePoint input)
-            {
-                AbsolutePoint translated_input = input - Global.Center; //translated_input is set to the input translated such that Global.Center becomes (0,0)
-                RenderedPoint untraslated_output = new RenderedPoint((long)(translated_input.X * Global.Zoom), (long)(translated_input.Y * Global.Zoom)); //untraslated_output is set to a rescaling of translated_input based on Global.Zoom
-                return untraslated_output + Global.RenderedCenter; //The returned point is untraslated_output translated such that (0,0) becomes Global.RenderedCenter
-            }
-
-            /// <summary>
-            /// Uses Global.Zoom, Global.Center, and Global.RenderedCenter to output the render coordinates for the point
-            /// </summary>
-            /// <param name="point">Point object to transform</param>
-            public static Point ApplyTransformation(Point input)
-            {
-                return Point2D.ToWindowsPoint(Point2D.ApplyTransformation(new AbsolutePoint(input)));
-            }
-
-            /// <summary>
-            /// Applies the render coordinate transformation to all elements in an ObservableCollection<Point2D>
-            /// </summary>
-            /// <param name="points">PointCollection to perform the transformation on</param>
-            public static ObservableCollection<RenderedPoint> ApplyTransformation(ObservableCollection<AbsolutePoint> input)
-            {
-                ObservableCollection<RenderedPoint> output = new ObservableCollection<RenderedPoint>();
-                if (input == null)
-                    return output;
-                for (int i = 0; i < input.Count; i++)
-                {
-                    output.Add(ApplyTransformation(input[i]));
-                }
-                return output;
-            }
-
-            /// <summary>
-            /// Applies the render coordinate transformation to all elements in a PointCollection
-            /// </summary>
-            /// <param name="points">PointCollection to perform the transformation on</param>
-            public static PointCollection ApplyTransformation(PointCollection input)
-            {
-                PointCollection output = new PointCollection();
-                if (input == null)
-                    return output;
-                for (int i = 0; i < input.Count; i++)
-                {
-                    output.Add(ApplyTransformation(input[i]));
-                }
-                return output;
-            }
-
-            /// <summary>
-            /// Uses Global.Zoom, Global.Center, and Global.RenderedCenter to output the absolute coordinates for the point
-            /// /// Produces coordinates by translating such that Global.RenderedCenter becomes (0,0), then scaling by Global.Zoom, then translating such that (0,0) becomes Global.Center
-            /// </summary>
-            /// <param name="point">Point2D object to revert</param>
-            public static AbsolutePoint RevertTransformation(RenderedPoint input)
-            {
-                RenderedPoint translated_input = input - Global.RenderedCenter; //translated_input is set to the input translated such that Global.RenderedCenter becomes (0,0)
-                AbsolutePoint untraslated_output = new AbsolutePoint((long)(translated_input.X / Global.Zoom), (long)(translated_input.Y / Global.Zoom)); //untraslated_output is set to a rescaling of translated_input based on Global.Zoom
-                return untraslated_output + Global.Center; //The returned point is untraslated_output translated such that (0,0) becomes Global.Center
-            }
-
-            /// <summary>
-            /// Uses Global.Zoom, Global.Center, and Global.RenderedCenter to output the absolute coordinates for the point
-            /// </summary>
-            /// <param name="point">Point object to revert</param>
-            public static Point RevertTransformation(Point input)
-            {
-                return Point2D.ToWindowsPoint(Point2D.RevertTransformation(new RenderedPoint(input)));
-            }
-        
-            /// <summary>
-            /// Reverts the render coordinate transformation to all elements in an ObservableCollection<Point2D>
-            /// </summary>
-            /// <param name="points">PointCollection to perform the transformation on</param>
-            public static ObservableCollection<AbsolutePoint> RevertTransformation(ObservableCollection<RenderedPoint> input)
-            {
-                ObservableCollection<AbsolutePoint> output = new ObservableCollection<AbsolutePoint>();
-                if (input == null)
-                    return output;
-                for (int i = 0; i < input.Count; i++)
-                {
-                    output.Add(RevertTransformation(input[i]));
-                }
-                return output;
-            }
-        
-            /// <summary>
-            /// Reverts the render coordinate transformation to all elements in a PointCollection
-            /// </summary>
-            /// <param name="points">PointCollection to revert the transformation on</param>
-            public static PointCollection RevertTransformation(PointCollection input)
-            {
-                PointCollection output = new PointCollection();
-                if (input == null)
-                    return output;
-                for (int i = 0; i < input.Count; i++)
-                {
-                    output.Add(RevertTransformation(input[i]));
-                }
-                return output;
-            }
-
-            /// <summary>
-            /// Converts a Point2D IList to a Point List
-            /// </summary>
-            public static ObservableCollection<Point> ToWindowsPoints2(IList<Point2D> list)
-            {
-                ObservableCollection<Point> output = new ObservableCollection<Point>();
-                for (int i = 0; i < list.Count; i++)
-                {
-                    output.Add(Point2D.ToWindowsPoint(list[i]));
-                }
-                return output;
-            }
-
-            /// <summary>
-            /// adds two Point2D objects together
-            /// </summary>
-            public static Point2D operator +(Point2D a, Point2D b)
-            {
-                return new Point2D(a.X + b.X, a.Y + b.Y);
-            }
-
-            /// <summary>
-            /// takes the difference of two Point2D objects
-            /// </summary>
-            public static Point2D operator -(Point2D a, Point2D b)
-            {
-                return new Point2D(a.X - b.X, a.Y - b.Y);
-            }
-
-            /// <summary>
-            /// multiplies a Point2D object by a scalar
-            /// </summary>
-            public static Point2D operator *(Point2D a, double s)
-            {
-                return new Point2D((long) (a.X * s), (long) (a.Y * s));
-            }
-
-            /// <summary>
-            /// multiplies a Point2D object by a scalar
-            /// </summary>
-            public static Point2D operator *(double s, Point2D a)
-            {
-                return new Point2D((long)(a.X * s), (long)(a.Y * s));
-            }
-
-            /// <summary>
-            /// divides a Point2D object by a scalar
-            /// </summary>
-            public static Point2D operator /(Point2D a, double s)
-            {
-                return new Point2D((long)(a.X / s), (long)(a.Y / s));
-            }
-
-            /// <summary>
-            /// divides a scalar by a Point2D object
-            /// </summary>
-            public static Point2D operator /(long s, Point2D a)
-            {
-                return new Point2D((long)(s / a.X), (long)(s / a.Y));
-            }
-
-            /// <summary>
-            /// checks equality between two Point2D objects
-            /// </summary>
-            public static bool operator ==(Point2D a, Point2D b)
-            {
-                if (((object)a) == null && ((object)b) == null)
-                    return true;
-                if (((object)a) == null ^ ((object)b) == null)
-                    return false;
-                return a.X == b.X && a.Y == b.Y;
-            }
-
-            /// <summary>
-            /// checks equality between two Point2D objects
-            /// </summary>
-            public override bool Equals(object that)
-            {
-                try
-                {
-                    return this.GetType() == that.GetType() && this == (Point2D)that;
-                }
-                catch (InvalidCastException)
-                {
-                    return false;
-                }
-            }
-
-            /// <summary>
-            /// Generates a possible hash value for any Point2D object
-            /// </summary>
-            public override int GetHashCode()
-            {
-                int sign = 1;
-                long hashl = this.X ^ this.Y;
-                if (hashl < 0)
-                    sign = -1;
-                return (int)Math.Sqrt(Math.Abs(hashl)) * sign;
-            }
-
-            /// <summary>
-            /// checks inequality between two Point2D objects
-            /// </summary>
-            public static bool operator !=(Point2D a, Point2D b)
-            {
-                if (((object)a) == null && ((object)b) == null)
-                    return false;
-                if (((object)a) == null ^ ((object)b) == null)
-                    return true;
-                return a.X != b.X || a.Y != b.Y;
-            }
-
-            /// <summary>
-            /// puts the Point2D object in a readable format
-            /// </summary>
-            public override string ToString()
-            {
-                return "(" + X.ToString() + "," + Y.ToString() + ")";
-            }
-
-            /// <summary>
-            /// Returns the "length" of a point
-            /// </summary>
-            public long Length()
-            {
-                return (long)Math.Sqrt(Math.Pow(X, 2) + Math.Pow(Y, 2));
-            }
-
-            /// <summary>
-            /// Compares to another Point2D object and returns true if this one is above the other
-            /// </summary>
-            public bool Above(Point2D o)
-            {
-                return this.Y > o.Y;
-            }
-
-            /// <summary>
-            /// Compares to another Point2D object and returns true if this one is below the other
-            /// </summary>
-            public bool Below(Point2D o)
-            {
-                return this.Y < o.Y;
-            }
-
-            /// <summary>
-            /// Compares to another Point2D object and returns true if this one is left of the other
-            /// </summary>
-            public bool Left(Point2D o)
-            {
-                return this.X < o.X;
-            }
-
-            /// <summary>
-            /// Compares to another Point2D object and returns true if this one is right of the other
-            /// </summary>
-            public bool Right(Point2D o)
-            {
-                return this.X > o.X;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(str));
             }
         }
+
+        private long _X;
+        public virtual long X
+        {
+            get
+            {
+                return _X;
+            }
+            set
+            {
+                _X = value;
+                RaisePropertyChanged("X");
+                RaisePropertyChanged("pointstr");
+            }
+        }
+        private long _Y;
+        public virtual long Y
+        {
+            get
+            {
+                return _Y;
+            }
+            set
+            {
+                _Y = value;
+                RaisePropertyChanged("Y");
+                RaisePropertyChanged("pointstr");
+            }
+        }
+        public virtual Point pointstr
+        {
+            get
+            {
+                return Point2D.ApplyTransformation(Point2D.ToWindowsPoint(this));
+            }
+        }
+
+        /// <summary>
+        /// creates a Point2D object
+        /// </summary>
+        public Point2D(long X, long Y)
+        {
+            this.X = X;
+            this.Y = Y;
+        }
+
+        /// <summary>
+        /// copy constructor
+        /// </summary>
+        public Point2D(Point2D o) : this(o.X, o.Y)
+        {
+            ;
+        }
+
+        /// <summary>
+        /// Converts a Windows Foundation Point into a Point2D
+        /// </summary>
+        public Point2D(Point o) : this((long)o.X, (long)o.Y)
+        {
+            ;
+        }
+        
+        /// <summary>
+        /// Converts an AbsolutePoint to a RenderedPoint
+        /// </summary>
+        public static RenderedPoint Convert(AbsolutePoint point)
+        {
+            return point.ToRenderedPoint();
+        }
+
+        /// <summary>
+        /// Converts a RenderedPoint to an AbsolutePoint
+        /// </summary>
+        public static AbsolutePoint Convert(RenderedPoint point)
+        {
+            return point.ToAbsolutePoint();
+        }
+
+        /// <summary>
+        /// Converts an ObservableCollection of AbsolutePoints to an ObservableCollection of RenderedPoints
+        /// </summary>
+        public static ObservableCollection<RenderedPoint> Convert(ObservableCollection<AbsolutePoint> list)
+        {
+            return AbsolutePoint.ToRenderedPoints(list);
+        }
+
+        /// <summary>
+        /// Converts an ObservableCollection of RenderedPoints to an ObservableCollection of AbsolutePoints
+        /// </summary>
+        public static ObservableCollection<AbsolutePoint> Convert(ObservableCollection<RenderedPoint> list)
+        {
+            return RenderedPoint.ToAbsolutePoints(list);
+        }
+
+        /// <summary>
+        /// Converts a Point2D into a Point
+        /// </summary>
+        public static Point ToWindowsPoint(Point2D point)
+        {
+            return new Point(point.X, point.Y);
+        }
+
+        /// <summary>
+        /// Converts a Point2D IList to a Point List
+        /// </summary>
+        public static PointCollection ToWindowsPoints(IList<Point2D> list)
+        {
+            PointCollection output = new PointCollection();
+            for (int i = 0; i < list.Count; i++)
+            {
+                output.Add(Point2D.ToWindowsPoint(list[i]));
+            }
+            return output;
+        }
+
+        /// <summary>
+        /// Uses Global.Zoom, Global.Center, and Global.RenderedCenter to output the render coordinates for the point
+        /// Produces coordinates by translating such that Global.Center becomes (0,0), then scaling by Global.Zoom, then translating such that (0,0) becomes Global.RenderedCenter
+        /// </summary>
+        /// <param name="point">Point2D object to transform</param>
+        public static RenderedPoint ApplyTransformation(AbsolutePoint input)
+        {
+            AbsolutePoint translated_input = input - Global.Center; //translated_input is set to the input translated such that Global.Center becomes (0,0)
+            RenderedPoint untraslated_output = new RenderedPoint((long)(translated_input.X * Global.Zoom), (long)(translated_input.Y * Global.Zoom)); //untraslated_output is set to a rescaling of translated_input based on Global.Zoom
+            return untraslated_output + Global.RenderedCenter; //The returned point is untraslated_output translated such that (0,0) becomes Global.RenderedCenter
+        }
+
+        /// <summary>
+        /// Uses Global.Zoom, Global.Center, and Global.RenderedCenter to output the render coordinates for the point
+        /// </summary>
+        /// <param name="point">Point object to transform</param>
+        public static Point ApplyTransformation(Point input)
+        {
+            return Point2D.ToWindowsPoint(Point2D.ApplyTransformation(new AbsolutePoint(input)));
+        }
+
+        /// <summary>
+        /// Applies the render coordinate transformation to all elements in an ObservableCollection<Point2D>
+        /// </summary>
+        /// <param name="points">PointCollection to perform the transformation on</param>
+        public static ObservableCollection<RenderedPoint> ApplyTransformation(ObservableCollection<AbsolutePoint> input)
+        {
+            ObservableCollection<RenderedPoint> output = new ObservableCollection<RenderedPoint>();
+            if (input == null)
+                return output;
+            for (int i = 0; i < input.Count; i++)
+            {
+                output.Add(ApplyTransformation(input[i]));
+            }
+            return output;
+        }
+
+        /// <summary>
+        /// Applies the render coordinate transformation to all elements in a PointCollection
+        /// </summary>
+        /// <param name="points">PointCollection to perform the transformation on</param>
+        public static PointCollection ApplyTransformation(PointCollection input)
+        {
+            PointCollection output = new PointCollection();
+            if (input == null)
+                return output;
+            for (int i = 0; i < input.Count; i++)
+            {
+                output.Add(ApplyTransformation(input[i]));
+            }
+            return output;
+        }
+
+        /// <summary>
+        /// Uses Global.Zoom, Global.Center, and Global.RenderedCenter to output the absolute coordinates for the point
+        /// /// Produces coordinates by translating such that Global.RenderedCenter becomes (0,0), then scaling by Global.Zoom, then translating such that (0,0) becomes Global.Center
+        /// </summary>
+        /// <param name="point">Point2D object to revert</param>
+        public static AbsolutePoint RevertTransformation(RenderedPoint input)
+        {
+            RenderedPoint translated_input = input - Global.RenderedCenter; //translated_input is set to the input translated such that Global.RenderedCenter becomes (0,0)
+            AbsolutePoint untraslated_output = new AbsolutePoint((long)(translated_input.X / Global.Zoom), (long)(translated_input.Y / Global.Zoom)); //untraslated_output is set to a rescaling of translated_input based on Global.Zoom
+            return untraslated_output + Global.Center; //The returned point is untraslated_output translated such that (0,0) becomes Global.Center
+        }
+
+        /// <summary>
+        /// Uses Global.Zoom, Global.Center, and Global.RenderedCenter to output the absolute coordinates for the point
+        /// </summary>
+        /// <param name="point">Point object to revert</param>
+        public static Point RevertTransformation(Point input)
+        {
+            return Point2D.ToWindowsPoint(Point2D.RevertTransformation(new RenderedPoint(input)));
+        }
+        
+        /// <summary>
+        /// Reverts the render coordinate transformation to all elements in an ObservableCollection<Point2D>
+        /// </summary>
+        /// <param name="points">PointCollection to perform the transformation on</param>
+        public static ObservableCollection<AbsolutePoint> RevertTransformation(ObservableCollection<RenderedPoint> input)
+        {
+            ObservableCollection<AbsolutePoint> output = new ObservableCollection<AbsolutePoint>();
+            if (input == null)
+                return output;
+            for (int i = 0; i < input.Count; i++)
+            {
+                output.Add(RevertTransformation(input[i]));
+            }
+            return output;
+        }
+        
+        /// <summary>
+        /// Reverts the render coordinate transformation to all elements in a PointCollection
+        /// </summary>
+        /// <param name="points">PointCollection to revert the transformation on</param>
+        public static PointCollection RevertTransformation(PointCollection input)
+        {
+            PointCollection output = new PointCollection();
+            if (input == null)
+                return output;
+            for (int i = 0; i < input.Count; i++)
+            {
+                output.Add(RevertTransformation(input[i]));
+            }
+            return output;
+        }
+
+        /// <summary>
+        /// Converts a Point2D IList to a Point List
+        /// </summary>
+        public static ObservableCollection<Point> ToWindowsPoints2(IList<Point2D> list)
+        {
+            ObservableCollection<Point> output = new ObservableCollection<Point>();
+            for (int i = 0; i < list.Count; i++)
+            {
+                output.Add(Point2D.ToWindowsPoint(list[i]));
+            }
+            return output;
+        }
+
+        /// <summary>
+        /// adds two Point2D objects together
+        /// </summary>
+        public static Point2D operator +(Point2D a, Point2D b)
+        {
+            return new Point2D(a.X + b.X, a.Y + b.Y);
+        }
+
+        /// <summary>
+        /// takes the difference of two Point2D objects
+        /// </summary>
+        public static Point2D operator -(Point2D a, Point2D b)
+        {
+            return new Point2D(a.X - b.X, a.Y - b.Y);
+        }
+
+        /// <summary>
+        /// multiplies a Point2D object by a scalar
+        /// </summary>
+        public static Point2D operator *(Point2D a, double s)
+        {
+            return new Point2D((long) (a.X * s), (long) (a.Y * s));
+        }
+
+        /// <summary>
+        /// multiplies a Point2D object by a scalar
+        /// </summary>
+        public static Point2D operator *(double s, Point2D a)
+        {
+            return new Point2D((long)(a.X * s), (long)(a.Y * s));
+        }
+
+        /// <summary>
+        /// divides a Point2D object by a scalar
+        /// </summary>
+        public static Point2D operator /(Point2D a, double s)
+        {
+            return new Point2D((long)(a.X / s), (long)(a.Y / s));
+        }
+
+        /// <summary>
+        /// divides a scalar by a Point2D object
+        /// </summary>
+        public static Point2D operator /(long s, Point2D a)
+        {
+            return new Point2D((long)(s / a.X), (long)(s / a.Y));
+        }
+
+        /// <summary>
+        /// checks equality between two Point2D objects
+        /// </summary>
+        public static bool operator ==(Point2D a, Point2D b)
+        {
+            if (((object)a) == null && ((object)b) == null)
+                return true;
+            if (((object)a) == null ^ ((object)b) == null)
+                return false;
+            return a.X == b.X && a.Y == b.Y;
+        }
+
+        /// <summary>
+        /// checks equality between two Point2D objects
+        /// </summary>
+        public override bool Equals(object that)
+        {
+            try
+            {
+                return this.GetType() == that.GetType() && this == (Point2D)that;
+            }
+            catch (InvalidCastException)
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Generates a possible hash value for any Point2D object
+        /// </summary>
+        public override int GetHashCode()
+        {
+            int sign = 1;
+            long hashl = this.X ^ this.Y;
+            if (hashl < 0)
+                sign = -1;
+            return (int)Math.Sqrt(Math.Abs(hashl)) * sign;
+        }
+
+        /// <summary>
+        /// checks inequality between two Point2D objects
+        /// </summary>
+        public static bool operator !=(Point2D a, Point2D b)
+        {
+            if (((object)a) == null && ((object)b) == null)
+                return false;
+            if (((object)a) == null ^ ((object)b) == null)
+                return true;
+            return a.X != b.X || a.Y != b.Y;
+        }
+
+        /// <summary>
+        /// puts the Point2D object in a readable format
+        /// </summary>
+        public override string ToString()
+        {
+            return "(" + X.ToString() + "," + Y.ToString() + ")";
+        }
+
+        /// <summary>
+        /// Returns the "length" of a point
+        /// </summary>
+        public long Length()
+        {
+            return (long)Math.Sqrt(Math.Pow(X, 2) + Math.Pow(Y, 2));
+        }
+
+        /// <summary>
+        /// Compares to another Point2D object and returns true if this one is above the other
+        /// </summary>
+        public bool Above(Point2D o)
+        {
+            return this.Y > o.Y;
+        }
+
+        /// <summary>
+        /// Compares to another Point2D object and returns true if this one is below the other
+        /// </summary>
+        public bool Below(Point2D o)
+        {
+            return this.Y < o.Y;
+        }
+
+        /// <summary>
+        /// Compares to another Point2D object and returns true if this one is left of the other
+        /// </summary>
+        public bool Left(Point2D o)
+        {
+            return this.X < o.X;
+        }
+
+        /// <summary>
+        /// Compares to another Point2D object and returns true if this one is right of the other
+        /// </summary>
+        public bool Right(Point2D o)
+        {
+            return this.X > o.X;
+        }
+    }
 
     /// <summary>
     /// Class for Point2D objects that are Rendered Points; their values represent the rendering values for objects they represent
@@ -473,6 +505,19 @@ namespace TFG_Worldbuilder_Application
             return new AbsolutePoint(this);
         }
 
+        /// <summary>
+        /// Converts an ObservableCollection of RenderedPoints to an ObservableCollection of AbsolutePoints
+        /// </summary>
+        public static ObservableCollection<AbsolutePoint> ToAbsolutePoints(ObservableCollection<RenderedPoint> list)
+        {
+            ObservableCollection<AbsolutePoint> output = new ObservableCollection<AbsolutePoint>();
+            for (int i = 0; i < list.Count; i++)
+            {
+                output.Add(list[i].ToAbsolutePoint());
+            }
+            return output;
+        }
+        
         public Point ToWindowsPoint()
         {
             return RenderedPoint.ToWindowsPoint(this);
@@ -653,6 +698,19 @@ namespace TFG_Worldbuilder_Application
         public RenderedPoint ToRenderedPoint()
         {
             return new RenderedPoint(this);
+        }
+
+        /// <summary>
+        /// Converts an ObservableCollection of AbsolutePoints to an ObservableCollection of RenderedPoints
+        /// </summary>
+        public static ObservableCollection<RenderedPoint> ToRenderedPoints(ObservableCollection<AbsolutePoint> list)
+        {
+            ObservableCollection<RenderedPoint> output = new ObservableCollection<RenderedPoint>();
+            for(int i=0; i<list.Count; i++)
+            {
+                output.Add(list[i].ToRenderedPoint());
+            }
+            return output;
         }
 
         public Point2D ToPoint2D()
@@ -1889,7 +1947,7 @@ namespace TFG_Worldbuilder_Application
         {
             get
             {
-                return Point2D.ApplyTransformation(_points);
+                return AbsolutePoint.ToRenderedPoints(_points);
             }
         }
 
