@@ -46,6 +46,35 @@ namespace TFG_Worldbuilder_Application
             }
         }
 
+        public string CenterX
+        {
+            get
+            {
+                return ((long)Global.CanvasSize.X / 2).ToString();
+            }
+        }
+        public string CenterY
+        {
+            get
+            {
+                return ((long)Global.CanvasSize.Y / 2).ToString();
+            }
+        }
+        public string MaxX
+        {
+            get
+            {
+                return Global.CanvasSize.X.ToString();
+            }
+        }
+        public string MaxY
+        {
+            get
+            {
+                return Global.CanvasSize.Y.ToString();
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
         public void RaisePropertyChanged(string str)
         {

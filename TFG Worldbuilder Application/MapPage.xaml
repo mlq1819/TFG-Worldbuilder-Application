@@ -128,6 +128,8 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
+                <Line x:Name="VerticalCenterLine" Stroke="Gray" StrokeThickness="1" X1="{x:Bind Path=Context.CenterX, Mode=OneWay}" Y1="0" X2="{x:Bind Path=Context.CenterX, Mode=OneWay}" Y2="{x:Bind Path=Context.MaxX, Mode=OneWay}"/>
+                <Line x:Name="HorizontalCenterLine" Stroke="Gray" StrokeThickness="1" X1="0" Y1="{x:Bind Path=Context.CenterY, Mode=OneWay}" X2="{x:Bind Path=Context.MaxX, Mode=OneWay}" Y2="{x:Bind Path=Context.CenterY, Mode=OneWay}"/>
             </Canvas>
         </Grid>
         <Grid x:Name="FileAndToolbarGrid" HorizontalAlignment="Stretch" Height="75" VerticalAlignment="Top">
@@ -148,7 +150,7 @@
                     <Button x:Name="Zoom_In_Button" Content="+" Background="LightGray" HorizontalAlignment="Right" Margin="10" VerticalAlignment="Top" Width="40" Click="Zoom_In_Button_Click"/>
                     <Grid HorizontalAlignment="Right" Margin="10" VerticalAlignment="Stretch" Width="40">
                         <Rectangle Fill="LightGray"/>
-                        <TextBlock x:Name="Zoom_Box" Text="{x:Bind Path=Context.ZoomStr, Mode=OneWay}"/>
+                        <TextBlock x:Name="Zoom_Box" Text="{x:Bind Path=Context.ZoomStr, Mode=OneWay}" TextAlignment="Center"/>
                     </Grid>
                     <Button x:Name="Zoom_Out_Button" Content="-" Background="LightGray" HorizontalAlignment="Right" Margin="10" VerticalAlignment="Top" Width="40" Click="Zoom_Out_Button_Click"/>
                 </StackPanel>

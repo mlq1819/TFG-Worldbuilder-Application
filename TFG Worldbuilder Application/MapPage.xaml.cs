@@ -51,7 +51,7 @@ public sealed partial class MapPage : Page
         private bool ForceClose = false;
         public ActiveContext Context;
         public ObservableCollection<Level1> Worlds;
-        
+
         public MapPage()
         {
             this.InitializeComponent();
@@ -65,6 +65,10 @@ public sealed partial class MapPage : Page
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
             this.MapCanvas = WorldCanvas;
+            Context.RaisePropertyChanged("CenterX");
+            Context.RaisePropertyChanged("CenterY");
+            Context.RaisePropertyChanged("MaxX");
+            Context.RaisePropertyChanged("MaxY");
             if (Worlds.Count > 0)
             {
                 Context.SetWorld(Worlds[0].name, Worlds[0].subtype);
