@@ -465,7 +465,75 @@ namespace TFG_Worldbuilder_Application
             return point;
         }
 
-        
+        /// <summary>
+        /// Creates and returns a list of elements in ExtraPoints that point can snap to
+        /// </summary>
+        public List<RenderedPoint> GetExtraPointsByPoint(RenderedPoint point)
+        {
+            List<RenderedPoint> output = new List<RenderedPoint>();
+            for(int i=0; i<ExtraPoints.points.Count; i++)
+            {
+                if (point.SnapsTo(ExtraPoints.points[i], snap_range))
+                    output.Add(ExtraPoints.points[i]);
+            }
+            return output;
+        }
+
+        /// <summary>
+        /// Creates and returns a list of elements in Vertices that point can snap to
+        /// </summary>
+        public List<RenderedPoint> GetVerticesByPoint(RenderedPoint point)
+        {
+            List<RenderedPoint> output = new List<RenderedPoint>();
+            for (int i = 0; i < Vertices.points.Count; i++)
+            {
+                if (point.SnapsTo(Vertices.points[i], snap_range))
+                    output.Add(Vertices.points[i]);
+            }
+            return output;
+        }
+
+        /// <summary>
+        /// Creates and returns a list of elements in Points that point can snap to
+        /// </summary>
+        public List<Level6> GetPointsByPoint(RenderedPoint point)
+        {
+            List<Level6> output = new List<Level6>();
+            for (int i = 0; i < Points.Count; i++)
+            {
+                if (point.SnapsTo(Points[i].center.ToRenderedPoint(), snap_range))
+                    output.Add(Points[i]);
+            }
+            return output;
+        }
+
+        /// <summary>
+        /// Creates and returns a list of elements in Circles that point can snap to
+        /// </summary>
+        public List<Level5> GetCirclesByPoint(RenderedPoint point)
+        {
+            List<Level5> output = new List<Level5>();
+            for (int i = 0; i < Circles.Count; i++)
+            {
+                if (Circles[i].PointInRadius(point.ToAbsolutePoint()))
+                    output.Add(Circles[i]);
+            }
+            return output;
+        }
+
+        /// <summary>
+        /// Creates and returns a list of elements in Shapes that point can snap to
+        /// </summary>
+        public List<BorderLevel> GetShapesByPoint(RenderedPoint point)
+        {
+            List<BorderLevel> output = new List<BorderLevel>();
+            for (int i = 0; i < Shapes.Count; i++)
+            {
+                if (Shapes[i].PointInPolygon(point.ToAbsolutePoint()))
+                    output.Add(Shapes[i]);
+            }
+            return output;
+        }
 
         /// <summary>
         /// Attempts to snap the given point to a point within range

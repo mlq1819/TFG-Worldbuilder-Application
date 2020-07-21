@@ -1742,11 +1742,21 @@ namespace TFG_Worldbuilder_Application
             return new Line2D(a._vertex1, a._vertex2 + b.Centered()._vertex2);
         }
 
+        public static Line2D operator+(Line2D a, AbsolutePoint b)
+        {
+            return new Line2D(a._vertex1 + b, a._vertex2 + b);
+        }
+
         public static Line2D operator-(Line2D a, Line2D b)
         {
             return new Line2D(a._vertex1, a._vertex2 - b.Centered()._vertex2);
         }
-        
+
+        public static Line2D operator-(Line2D a, AbsolutePoint b)
+        {
+            return new Line2D(a._vertex1 - b, a._vertex2 - b);
+        }
+
         /// <summary>
         /// Returns true if the line intersects the render frame
         /// </summary>
@@ -1936,6 +1946,65 @@ namespace TFG_Worldbuilder_Application
             return new AbsolutePoint((long)((line.B * this.C - this.B * line.C) / delta), (long)((this.A * line.C - line.A * this.C) / delta));
         }
 
+        /// <summary>
+        /// Creates a line perpendicular to and intersecting the current line, with the same length as the current line, if possible
+        /// </summary>
+        /// <param name="point"></param>
+        /// <returns></returns>
+        public Line2D CreatePerpendicularLine(AbsolutePoint v1)
+        {
+            if(On(v1))
+                return null;
+            if (!vertical) {
+                if(_vertex1.X > _vertex2.X)
+                    return (new Line2D(_vertex2, _vertex1)).CreatePerpendicularLine(v1);
+            } else if(_vertex1.Y > _vertex2.Y)
+                return (new Line2D(_vertex2, _vertex1)).CreatePerpendicularLine(v1);
+            AbsolutePoint v2 = new AbsolutePoint(v1);
+            if (vertical) //dx == 0; dy > 0
+            {
+                if (Left(v1))
+                {
+                    AbsolutePoint change = new AbsolutePoint(0, -dy);
+                    do
+                    {
+                        v2 += change;
+                    } while (!Right(v2));
+                } else
+                {
+                    AbsolutePoint change = new AbsolutePoint(0, dy);
+                    do
+                    {
+                        v2 += change;
+                    } while (!Left(v2));
+                }
+            } else //dx > 0, dy presumably exists
+            {
+                if(Above(v1))
+                {
+                    //output.dy < 0
+                    //If slope_x > 0 (dy > 0), then output.slope_x < 0 (output.dy * output.dx < 0 === output.dx > 0)
+                    //If slope_x < 0 (dy < 0), then output.slope_x > 0 (output.dy * output.dx > 0 === output.dx < 0)
+                    AbsolutePoint change = new AbsolutePoint(dy, -dx);
+                    do
+                    {
+                        v2 += change;
+                    } while (!Below(v2));
+
+                } else
+                {
+                    //output.dy > 0
+                    //If slope_x > 0 (dy > 0), then output.slope_x < 0 (output.dy * output.dx < 0 === output.dx < 0)
+                    //If slope_x < 0 (dy < 0), then output.slope_x > 0 (output.dy * output.dx > 0 === output.dx > 0)
+                    AbsolutePoint change = new AbsolutePoint(-dy, dx);
+                    do
+                    {
+                        v2 += change;
+                    } while (!Above(v2));
+                }
+            }
+            return new Line2D(v1, v2);
+        }
     }
 
     /// <summary>
