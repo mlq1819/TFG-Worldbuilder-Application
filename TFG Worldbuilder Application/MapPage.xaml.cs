@@ -579,9 +579,10 @@ public sealed partial class MapPage : Page
                 Line2D output = input.CreatePerpendicularLine(randPoint);
                 double slope_1 = input.slope_x;
                 double slope_2 = output.slope_x;
-                double slope_check = slope_1 / (-1 * (1 / slope_2));
-                bool goood_slope = Math.Abs(slope_check - 1) < 0.001;
-                ;
+                double slope_check = slope_1 / (-1 / slope_2);
+                bool goood_slope = Math.Abs(slope_check - 1) < 0.05;
+                if (!goood_slope)
+                    ;
             }
             catch
             {

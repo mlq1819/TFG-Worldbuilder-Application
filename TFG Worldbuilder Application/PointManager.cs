@@ -2035,7 +2035,7 @@ namespace TFG_Worldbuilder_Application
                 int i = 1;
                 do
                 {
-                    v2 = v1 + new AbsolutePoint(i*i * 100, (long)(i*i * -100 * slope));
+                    v2 = v1 + new AbsolutePoint(i*i * -100, (long)(i*i * -100 * slope));
                     i++;
                 } while (Below(v2));
             }
