@@ -1821,6 +1821,14 @@ namespace TFG_Worldbuilder_Application
         }
 
         /// <summary>
+        /// Creates a reversed version of the current line
+        /// </summary>
+        public Line2D Reverse()
+        {
+            return new Line2D(_vertex2, _vertex1);
+        }
+
+        /// <summary>
         /// Checks whether a point would fall on the line
         /// </summary>
         /// <param name="point">Point to check</param>
@@ -1947,6 +1955,14 @@ namespace TFG_Worldbuilder_Application
         }
 
         /// <summary>
+        /// Gets and returns the closest point on this line to the presented point
+        /// </summary>
+        public AbsolutePoint GetClosestPoint(AbsolutePoint point)
+        {
+
+        }
+
+        /// <summary>
         /// Creates a line perpendicular to and intersecting the current line, with the same length as the current line, if possible
         /// </summary>
         /// <param name="point"></param>
@@ -1957,22 +1973,22 @@ namespace TFG_Worldbuilder_Application
                 return null;
             if (!vertical) {
                 if(_vertex1.X > _vertex2.X)
-                    return (new Line2D(_vertex2, _vertex1)).CreatePerpendicularLine(v1);
+                    return this.Reverse().CreatePerpendicularLine(v1).Reverse();
             } else if(_vertex1.Y > _vertex2.Y)
-                return (new Line2D(_vertex2, _vertex1)).CreatePerpendicularLine(v1);
+                return this.Reverse().CreatePerpendicularLine(v1).Reverse();
             AbsolutePoint v2 = new AbsolutePoint(v1);
             if (vertical) //dx == 0; dy > 0
             {
                 if (Left(v1))
                 {
-                    AbsolutePoint change = new AbsolutePoint(0, -dy);
+                    AbsolutePoint change = new AbsolutePoint(dy, 0);
                     do
                     {
                         v2 += change;
                     } while (!Right(v2));
                 } else
                 {
-                    AbsolutePoint change = new AbsolutePoint(0, dy);
+                    AbsolutePoint change = new AbsolutePoint(-dy, 0);
                     do
                     {
                         v2 += change;
@@ -1985,7 +2001,7 @@ namespace TFG_Worldbuilder_Application
                     //output.dy < 0
                     //If slope_x > 0 (dy > 0), then output.slope_x < 0 (output.dy * output.dx < 0 === output.dx > 0)
                     //If slope_x < 0 (dy < 0), then output.slope_x > 0 (output.dy * output.dx > 0 === output.dx < 0)
-                    AbsolutePoint change = new AbsolutePoint(dy, -dx);
+                    AbsolutePoint change = new AbsolutePoint(dy, dx);
                     do
                     {
                         v2 += change;
@@ -1996,7 +2012,7 @@ namespace TFG_Worldbuilder_Application
                     //output.dy > 0
                     //If slope_x > 0 (dy > 0), then output.slope_x < 0 (output.dy * output.dx < 0 === output.dx < 0)
                     //If slope_x < 0 (dy < 0), then output.slope_x > 0 (output.dy * output.dx > 0 === output.dx > 0)
-                    AbsolutePoint change = new AbsolutePoint(-dy, dx);
+                    AbsolutePoint change = new AbsolutePoint(-dy, -dx);
                     do
                     {
                         v2 += change;
