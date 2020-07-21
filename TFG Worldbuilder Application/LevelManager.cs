@@ -709,7 +709,7 @@ namespace TFG_Worldbuilder_Application
             }
         }
         
-        private RenderedPoint _center
+        public RenderedPoint _center
         {
             get
             {

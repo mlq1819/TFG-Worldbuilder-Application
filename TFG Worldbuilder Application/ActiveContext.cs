@@ -373,6 +373,19 @@ namespace TFG_Worldbuilder_Application
         }
 
         /// <summary>
+        /// Checks whether the given point will snap to an element of Lines
+        /// </summary>
+        public bool SnapsToLine(RenderedPoint point)
+        {
+            for (int i = 0; i < Lines.Count; i++)
+            {
+                if ((point - Lines[i].GetClosestPoint(point.ToAbsolutePoint()).ToRenderedPoint()).Length() <= snap_range)
+                    return true;
+            }
+            return false;
+        }
+
+        /// <summary>
         /// Checks whether the given point will snap to an element of Shapes
         /// </summary>
         public bool SnapsToShape(RenderedPoint point)
@@ -464,6 +477,106 @@ namespace TFG_Worldbuilder_Application
             }
             return point;
         }
+        
+        /// <summary>
+        /// Gets the closest element of ExtraPoint in range
+        /// </summary>
+        public RenderedPoint GetExtraPoint(RenderedPoint point)
+        {
+            if (!SnapsToExtraPoint(point))
+                throw new ArgumentException("Point not within range of any elements of ExtraPoints");
+            return SnapToExtraPoint(point);
+        }
+
+        /// <summary>
+        /// Gets the closest element of Vertices in range
+        /// </summary>
+        public RenderedPoint GetVertex(RenderedPoint point)
+        {
+            if (!SnapsToVertices(point))
+                throw new ArgumentException("Point not within range of any elements of Vertices");
+            return SnapToVertices(point);
+        }
+
+        /// <summary>
+        /// Gets the closest element of Points in range
+        /// </summary>
+        public Level6 GetPoint(RenderedPoint point)
+        {
+            List<Level6> list = GetPointsByPoint(point);
+            if (list.Count == 0)
+                throw new ArgumentException("Point not within range of any elements of Points");
+            return list[0];
+        }
+
+        /// <summary>
+        /// Gets the closest element of Lines in range
+        /// </summary>
+        public Line2D GetLine(RenderedPoint point)
+        {
+            long min_distance = snap_range + 1;
+            for (int i=0; i<Lines.Count; i++)
+            {
+                min_distance = Math.Min(min_distance, (point - Lines[i].GetClosestPoint(point.ToAbsolutePoint()).ToRenderedPoint()).Length());
+            }
+            if(min_distance < snap_range)
+            {
+                for(int i=0; i<Lines.Count; i++)
+                {
+                    if ((point - Lines[i].GetClosestPoint(point.ToAbsolutePoint()).ToRenderedPoint()).Length() == min_distance)
+                        return Lines[i];
+                }
+            }
+            throw new ArgumentException("Point not within range of any elements of Lines");
+        }
+
+        /// <summary>
+        /// Gets the closest element of Circles in range
+        /// </summary>
+        public Level5 GetCirlce(RenderedPoint point)
+        {
+            if (SnapsToCircle(point))
+            {
+                long min_distance = long.MaxValue;
+                for (int i = 0; i < Circles.Count; i++)
+                {
+                    if (Circles[i].PointInRadius(point.ToAbsolutePoint()))
+                        min_distance = Math.Min(min_distance, (point - Circles[i].center.ToRenderedPoint()).Length());
+                }
+                for (int i = 0; i < Lines.Count; i++)
+                {
+                    if ((point - Circles[i].center.ToRenderedPoint()).Length() == min_distance)
+                        return Circles[i];
+                }
+            }
+            throw new ArgumentException("Point not within range of any elements of Circles");
+        }
+
+        /// <summary>
+        /// Gets the closest element of Shapes in range
+        /// </summary>
+        public BorderLevel GetShape(RenderedPoint point)
+        {
+            if (SnapsToShape(point))
+            {
+                long min_distance = long.MaxValue;
+                for (int i = 0; i < Shapes.Count; i++)
+                {
+                    if (Shapes[i].PointInPolygon(point.ToAbsolutePoint()))
+                    {
+                        min_distance = Math.Min(min_distance, (point - Shapes[i]._center).Length());
+                    }
+                }
+                for (int i = 0; i < Shapes.Count; i++)
+                {
+                    if (Shapes[i].PointInPolygon(point.ToAbsolutePoint()) && (point - Shapes[i]._center).Length() == min_distance)
+                    {
+                        return Shapes[i];
+                    }
+                }
+            }
+            throw new ArgumentException("Point not within range of any elements of Shapes");
+        }
 
         /// <summary>
         /// Creates and returns a list of elements in ExtraPoints that point can snap to
@@ -536,11 +649,25 @@ namespace TFG_Worldbuilder_Application
         }
 
         /// <summary>
+        /// Creates and returns a list of elements in Lines that point can snap to
+        /// </summary>
+        public List<Line2D> GetLinesByPoint(RenderedPoint point)
+        {
+            List<Line2D> output = new List<Line2D>();
+            for (int i = 0; i < Lines.Count; i++)
+            {
+                if ((point - Lines[i].GetClosestPoint(point.ToAbsolutePoint()).ToRenderedPoint()).Length() <= snap_range)
+                    output.Add(Lines[i]);
+            }
+            return output;
+        }
+
+        /// <summary>
         /// Attempts to snap the given point to a point within range
         /// </summary>
         /// <param name="point"></param>
         /// <returns></returns>
-        public RenderedPoint SnapsTo(RenderedPoint point)
+        public RenderedPoint SnapToAPoint(RenderedPoint point)
         {
             if (SnapsToExtraPoint(point))
                 return SnapToExtraPoint(point);
@@ -549,11 +676,47 @@ namespace TFG_Worldbuilder_Application
             return point;
         }
 
+        /// <summary>
+        /// Creates and returns the set of objects in the current ActiveContext that are close enough to the given point
+        /// </summary>
         public List<Object> GetObjectsContainingPoint(RenderedPoint point)
         {
             List<Object> output = new List<Object>();
-            
+            output.Concat<Object>(GetExtraPointsByPoint(point));
+            output.Concat<Object>(GetPointsByPoint(point));
+            output.Concat<Object>(GetCirclesByPoint(point));
+            output.Concat<Object>(GetVerticesByPoint(point));
+            output.Concat<Object>(GetLinesByPoint(point));
+            output.Concat<Object>(GetShapesByPoint(point));
             return output;
+        }
+
+        /// <summary>
+        /// Check whether the given point snaps to anything
+        /// </summary>
+        public bool SnapsToSomething(RenderedPoint point)
+        {
+            return SnapsToExtraPoint(point) || SnapsToPoints(point) || SnapsToCircle(point) || SnapsToVertices(point) || SnapsToLine(point) || SnapsToShape(point);
+        }
+
+        /// <summary>
+        /// Gets the object best suited for point
+        /// </summary>
+        public Object GetObjectContainingPoint(RenderedPoint point)
+        {
+            if (SnapsToExtraPoint(point))
+                return GetExtraPoint(point);
+            if (SnapsToPoints(point))
+                return GetPoint(point);
+            if (SnapsToCircle(point))
+                return GetCirlce(point);
+            if (SnapsToVertices(point))
+                return GetVertex(point);
+            if (SnapsToLine(point))
+                return GetLine(point);
+            if (SnapsToShape(point))
+                return GetShape(point);
+            return null;
         }
     }
 }
