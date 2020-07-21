@@ -286,7 +286,7 @@ namespace TFG_Worldbuilder_Application
         {
             return new Point2D(a.X - b.X, a.Y - b.Y);
         }
-
+        
         /// <summary>
         /// multiplies a Point2D object by a scalar
         /// </summary>
@@ -1955,70 +1955,94 @@ namespace TFG_Worldbuilder_Application
         }
 
         /// <summary>
+        /// Returns the slope of a perpendicular line, if possible
+        /// </summary>
+        public double PerpendicularSlope()
+        {
+            if (horizontal)
+                throw new DivideByZeroException("Slope does not exist for vertical lines");
+            if (vertical)
+                return 0;
+            return -1 / slope_x;
+        }
+
+        /// <summary>
         /// Gets and returns the closest point on this line to the presented point
         /// </summary>
         public AbsolutePoint GetClosestPoint(AbsolutePoint point)
         {
-
-            return point;
+            if (On(point))
+                return point;
+            if (vertical)
+            {
+                if (_vertex1.Y > _vertex2.Y)
+                    return this.Reverse().GetClosestPoint(point);
+                if (point.Y > _vertex2.Y)
+                    return _vertex2;
+                if (point.Y < _vertex1.Y)
+                    return _vertex1;
+                return new AbsolutePoint(_vertex1.X, point.Y);
+            }
+            if (horizontal)
+            {
+                if (_vertex1.X > _vertex2.X)
+                    return this.Reverse().GetClosestPoint(point);
+                if (point.X > _vertex2.X)
+                    return _vertex2;
+                if (point.X < _vertex1.X)
+                    return _vertex1;
+                return new AbsolutePoint(point.X, _vertex1.Y);
+            }
+            return Intersection(CreatePerpendicularLine(point));
         }
 
         /// <summary>
-        /// Creates a line perpendicular to and intersecting the current line, with the same length as the current line, if possible
+        /// Creates a line perpendicular to the current line, intersecting it if possible
         /// </summary>
         /// <param name="point"></param>
         /// <returns></returns>
         public Line2D CreatePerpendicularLine(AbsolutePoint v1)
         {
-            if(On(v1))
-                return null;
-            if (!vertical) {
-                if(_vertex1.X > _vertex2.X)
-                    return this.Reverse().CreatePerpendicularLine(v1).Reverse();
-            } else if(_vertex1.Y > _vertex2.Y)
-                return this.Reverse().CreatePerpendicularLine(v1).Reverse();
-            AbsolutePoint v2 = new AbsolutePoint(v1);
-            if (vertical) //dx == 0; dy > 0
+            if (On(v1))
+                throw new ArgumentException("Cannot create perpendicular line from a point on the current line");
+            AbsolutePoint v2;
+            if (vertical)
             {
-                if (Left(v1))
-                {
-                    AbsolutePoint change = new AbsolutePoint(dy, 0);
-                    do
-                    {
-                        v2 += change;
-                    } while (!Right(v2));
-                } else
-                {
-                    AbsolutePoint change = new AbsolutePoint(-dy, 0);
-                    do
-                    {
-                        v2 += change;
-                    } while (!Left(v2));
-                }
-            } else //dx > 0, dy presumably exists
+                v2 = new AbsolutePoint(2 * _vertex1.X - v1.X, v1.Y);
+                return new Line2D(v1, v2);
+            }
+            if (horizontal)
             {
-                if(Above(v1))
+                v2 = new AbsolutePoint(v1.X, 2 * _vertex1.Y - v1.Y);
+                return new Line2D(v1, v2);
+            }
+            v2 = new AbsolutePoint(v1);
+            double slope = PerpendicularSlope();
+            if(Above(v1) ^ slope > 0)
+            {
+                //Case 1: Above(v1) && slope < 0 ==> v2.Y + n*slope is Below (Opposite!)
+                //Case 2: Below(v1) && slope > 0 ==> v2.Y + n*slope is Above (Opposite!)
+                int i = 1;
+                do
                 {
-                    //output.dy < 0
-                    //If slope_x > 0 (dy > 0), then output.slope_x < 0 (output.dy * output.dx < 0 === output.dx > 0)
-                    //If slope_x < 0 (dy < 0), then output.slope_x > 0 (output.dy * output.dx > 0 === output.dx < 0)
-                    AbsolutePoint change = new AbsolutePoint(dy, dx);
-                    do
-                    {
-                        v2 += change;
-                    } while (!Below(v2));
-
-                } else
+                    v2 = v1 + new AbsolutePoint(i*i * 100, (long)(i*i * 100 * slope));
+                    i++;
+                } while (Above(v2));
+            } else
+            {
+                //Case 1: Above(v1) && slope > 0 ==> v2.Y - n*slope is Below (Opposite!)
+                //Case 2: Below(v1) && slope < 0 ==> v2.Y - n*slope is Above (Opposite!)
+                int i = 1;
+                do
                 {
-                    //output.dy > 0
-                    //If slope_x > 0 (dy > 0), then output.slope_x < 0 (output.dy * output.dx < 0 === output.dx < 0)
-                    //If slope_x < 0 (dy < 0), then output.slope_x > 0 (output.dy * output.dx > 0 === output.dx > 0)
-                    AbsolutePoint change = new AbsolutePoint(-dy, -dx);
-                    do
-                    {
-                        v2 += change;
-                    } while (!Above(v2));
-                }
+                    v2 = v1 + new AbsolutePoint(i*i * 100, (long)(i*i * -100 * slope));
+                    i++;
+                } while (Below(v2));
+            }
+            if (Intersects(new Line2D(v1, v2)))
+            {
+                v2 = Intersection(new Line2D(v1, v2));
+                v2 = 2 * v2 - v1;
             }
             return new Line2D(v1, v2);
         }

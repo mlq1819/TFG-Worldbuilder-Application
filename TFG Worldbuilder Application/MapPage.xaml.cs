@@ -575,17 +575,18 @@ public sealed partial class MapPage : Page
                 var bytes = new byte[6];
                 rand.NextBytes(bytes);
                 Line2D input = new Line2D(new AbsolutePoint(bytes[2], bytes[3]), new AbsolutePoint(bytes[4], bytes[5]));
-                AbsolutePoint randPoint = input._vertex1 + (new AbsolutePoint(bytes[0], bytes[1]))/2;
+                AbsolutePoint randPoint = input._vertex1 + (new AbsolutePoint(bytes[0], bytes[1])) / 2;
                 Line2D output = input.CreatePerpendicularLine(randPoint);
                 double slope_1 = input.slope_x;
                 double slope_2 = output.slope_x;
-                bool slope_check = slope_1 == -1 * (1 / slope_2);
+                double slope_check = slope_1 / (-1 * (1 / slope_2));
+                bool goood_slope = Math.Abs(slope_check - 1) < 0.001;
                 ;
-            } catch
+            }
+            catch
             {
                 ;
             }
-            
             Global.Center = new AbsolutePoint(Global.RenderedCenter.X, Global.RenderedCenter.Y);
             Global.Zoom = Global.DefaultZoom;
             Context.Zoom = Global.Zoom;
