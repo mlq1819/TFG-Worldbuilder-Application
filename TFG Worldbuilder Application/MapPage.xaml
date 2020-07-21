@@ -82,7 +82,7 @@
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid x:Name="MapDisplay" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,75,0,0">
-            <Canvas x:Name="WorldCanvas" Background="Azure" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" PointerPressed="WorldCanvas_PointerPressed">
+            <Canvas x:Name="WorldCanvas" Background="Azure" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Tapped="WorldCanvas_Tapped" DoubleTapped="WorldCanvas_DoubleTapped">
                 <ItemsControl x:Name="ShapesControl" ItemsSource="{x:Bind Path=Context.Shapes, Mode=OneWay}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="local:BorderLevel">

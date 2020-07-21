@@ -458,7 +458,6 @@ public sealed partial class MapPage : Page
         /// <param name="point">an AbsolutePoint object representing the translated click location</param>
         private void WorldCanvas_Add_Point(AbsolutePoint point)
         {
-            //point = Point2D.ApplyTransformation(point);
             if(LevelNum > 1 && LevelNum < 5)
             {
                 for(int i=0; i<vertices.Count; i++)
@@ -486,33 +485,37 @@ public sealed partial class MapPage : Page
             }
         }
         
-        private void WorldCanvas_PointerPressed(object sender, PointerRoutedEventArgs e)
+        /// <summary>
+        /// Performs the standard operations for a normal canvas click
+        /// </summary>
+        /// <param name="point">A RenderedPoint that will automatically snap to the nearest ExtraPoint or Vertex within range</param>
+        private void Canvas_Clicked(RenderedPoint point)
         {
-            RenderedPoint point = new RenderedPoint(e.GetCurrentPoint((Windows.UI.Xaml.UIElement)sender).Position);
-            long mindistance = 11;
-            for(int i=0; i<Context.Vertices.points.Count; i++)
+            point = Context.SnapToAPoint(point);
+            if (string.Equals(ActiveJob, "Create"))
             {
-                mindistance = Math.Min(mindistance, (point - Context.Vertices.points[i]).Length());
-            }
-            if(mindistance < 11)
-            {
-                for (int i = 0; i < Context.Vertices.points.Count; i++)
-                {
-                    if ((point - Context.Vertices.points[i]).Length() <= mindistance)
-                    {
-                        point = new RenderedPoint(Context.Vertices.points[i]);
-                        break;
-                    }
-                }
-            }
-
-            if(string.Equals(ActiveJob, "Create")){
                 WorldCanvas_Add_Point(point.ToAbsolutePoint());
-            } else
+            }
+            else if (Context.SnapsToSomething(point))
+            {
+                //TODO: Add something here that opens a flyout depending on what the thing is doing
+            }
+            else
             {
                 WorldCanvas_Refocus(point.ToAbsolutePoint());
             }
-            
+        }
+
+        private void WorldCanvas_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            RenderedPoint point = new RenderedPoint(e.GetPosition((Windows.UI.Xaml.UIElement)sender));
+            Canvas_Clicked(point);
+        }
+
+        private void WorldCanvas_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
+        {
+            RenderedPoint point = new RenderedPoint(e.GetPosition((Windows.UI.Xaml.UIElement)sender));
+            WorldCanvas_Refocus(point.ToAbsolutePoint());
         }
 
         private void Tap_Prompt_Cancel_Click(object sender, RoutedEventArgs e)
