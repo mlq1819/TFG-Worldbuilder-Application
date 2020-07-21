@@ -966,6 +966,14 @@ namespace TFG_Worldbuilder_Application
         }
 
         /// <summary>
+        /// Forces an update to all point objects
+        /// </summary>
+        public void ForceUpdatePoints()
+        {
+            RaisePropertyChanged("vertices");
+        }
+
+        /// <summary>
         /// Returns the number of vertices in the polygon
         /// </summary>
         public int Size()

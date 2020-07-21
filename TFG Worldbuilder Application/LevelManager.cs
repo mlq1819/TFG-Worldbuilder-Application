@@ -779,6 +779,7 @@ namespace TFG_Worldbuilder_Application
             RaisePropertyChanged("margin");
             RaisePropertyChanged("visibility");
             RaisePropertyChanged("name_visibility");
+            border.ForceUpdatePoints();
             base.ForceUpdatePoints();
         }
 
