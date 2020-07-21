@@ -1960,6 +1960,7 @@ namespace TFG_Worldbuilder_Application
         public AbsolutePoint GetClosestPoint(AbsolutePoint point)
         {
 
+            return point;
         }
 
         /// <summary>
