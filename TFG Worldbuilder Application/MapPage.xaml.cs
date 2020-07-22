@@ -443,6 +443,77 @@ public sealed partial class MapPage : Page
         }
 
         /// <summary>
+        /// Displays a flyout menu of options when a Point is clicked
+        /// </summary>
+        private void WorldCanvas_ClickPoint(RenderedPoint point)
+        {
+
+        }
+
+        /// <summary>
+        /// Displays a flyout menu of options when a Line is clicked
+        /// </summary>
+        private void WorldCanvas_ClickLine(Line2D line)
+        {
+
+        }
+
+        /// <summary>
+        /// Displays a flyout menu of options when a Level6 object is clicked
+        /// </summary>
+        private void WorldCanvas_ClickLevel6(Level6 level)
+        {
+
+        }
+
+        /// <summary>
+        /// Displays a flyout menu of options when a Level5 object is clicked
+        /// </summary>
+        private void WorldCanvas_ClickLevel5(Level5 level)
+        {
+
+        }
+
+        /// <summary>
+        /// Displays a flyout menu of options when a BorderLevel object is clicked
+        /// </summary>
+        private void WorldCanvas_ClickBorderLevel(BorderLevel level)
+        {
+            Context.SetSelected(level);
+        }
+
+        /// <summary>
+        /// Handles clicking on an object
+        /// </summary>
+        private void WorldCanvas_ClickObject(RenderedPoint point)
+        {
+            if (Context.SnapsToSomething(point))
+            {
+                Object obj = Context.GetObjectContainingPoint(point);
+                try
+                {
+                    if (obj.GetType() == typeof(RenderedPoint))
+                        WorldCanvas_ClickPoint((RenderedPoint)obj);
+                    else if (obj.GetType() == typeof(Level6))
+                        WorldCanvas_ClickLine((Line2D)obj);
+                    else if (obj.GetType() == typeof(Level6))
+                        WorldCanvas_ClickLevel6((Level6)obj);
+                    else if (obj.GetType() == typeof(Level5))
+                        WorldCanvas_ClickLevel5((Level5)obj);
+                    else
+                    {
+                        BorderLevel level = (BorderLevel)obj;
+                        WorldCanvas_ClickBorderLevel(level);
+                    }
+                }
+                catch (InvalidCastException)
+                {
+                    ;
+                }
+            }
+        }
+
+        /// <summary>
         /// Moves the focus to point
         /// </summary>
         /// <param name="point">an AbsolutePoint object representing the translated click location</param>
@@ -498,7 +569,7 @@ public sealed partial class MapPage : Page
             }
             else if (Context.SnapsToSomething(point))
             {
-                //TODO: Add something here that opens a flyout depending on what the thing is doing
+                WorldCanvas_ClickObject(point);
             }
             else
             {
@@ -525,16 +596,30 @@ public sealed partial class MapPage : Page
             Context.ClearPoints();
         }
 
-        private void Tap_Prompt_Confirm_Click(object sender, RoutedEventArgs e)
+        private bool Tap_Prompt_Confirm_Greater_Region()
         {
-            if(vertices.Size() < 3)
+            if (vertices.Size() < 3)
             {
                 OpenPopupAlert("Requires at least 3 points");
-            } else
+                return false;
+            }
+            LevelStep++;
+            TapPrompt.Visibility = Visibility.Collapsed;
+            OpenTextPrompt("What type of " + Enum.GetName(typeof(LevelType), type) + " region are you creating?\nEnter a subtype:");
+            return true;
+        }
+
+        private void Tap_Prompt_Confirm_Click(object sender, RoutedEventArgs e)
+        {
+            if(string.Equals(ActiveJob, "Create")){
+                if (LevelNum == 2)
+                {
+                    Tap_Prompt_Confirm_Greater_Region();
+                }
+            }
+            else if(string.Equals(ActiveJob, "Move"))
             {
-                LevelStep++;
-                TapPrompt.Visibility = Visibility.Collapsed;
-                OpenTextPrompt("What type of " + Enum.GetName(typeof(LevelType), type) + " region are you creating?\nEnter a subtype:");
+
             }
         }
 

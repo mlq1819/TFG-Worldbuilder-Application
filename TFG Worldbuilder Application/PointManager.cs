@@ -320,6 +320,14 @@ namespace TFG_Worldbuilder_Application
         }
 
         /// <summary>
+        /// Returns the distance between this point and the passed point
+        /// </summary>
+        public long Distance(Point2D o)
+        {
+            return (this - o).Length();
+        }
+
+        /// <summary>
         /// checks equality between two Point2D objects
         /// </summary>
         public static bool operator ==(Point2D a, Point2D b)
@@ -606,7 +614,15 @@ namespace TFG_Worldbuilder_Application
         {
             return new RenderedPoint((long)(s / a.X), (long)(s / a.Y));
         }
-
+        
+        /// <summary>
+        /// Returns the distance between this point and the passed point
+        /// </summary>
+        public long Distance(RenderedPoint o)
+        {
+            return (this - o).Length();
+        }
+        
         /// <summary>
         /// checks equality between two RenderedPoint objects
         /// </summary>
@@ -798,7 +814,15 @@ namespace TFG_Worldbuilder_Application
         {
             return new AbsolutePoint((long)(s / a.X), (long)(s / a.Y));
         }
-
+        
+        /// <summary>
+        /// Returns the distance between this point and the passed point
+        /// </summary>
+        public long Distance(AbsolutePoint o)
+        {
+            return (this - o).Length();
+        }
+        
         /// <summary>
         /// checks equality between two AbsolutePoint objects
         /// </summary>
@@ -861,9 +885,9 @@ namespace TFG_Worldbuilder_Application
             }
             if (string.Equals(str, "vertices"))
             {
+                update_edges = true;
                 RaisePropertyChanged("untrimmedvertices");
                 RaisePropertyChanged("verticesr");
-                update_edges = false;
                 RaisePropertyChanged("edges");
                 RaisePropertyChanged("visibility");
             }

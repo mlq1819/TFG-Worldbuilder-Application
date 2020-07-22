@@ -18,6 +18,7 @@ namespace TFG_Worldbuilder_Application
     {
         public ObservableCollection<Level1> Worlds;
         public SuperLevel ActiveLevel;
+        public SuperLevel SelectedLevel;
         public ObservableCollection<BorderLevel> Shapes;
         public ObservableCollection<Level5> Circles;
         public ObservableCollection<Level6> Points;
@@ -89,6 +90,7 @@ namespace TFG_Worldbuilder_Application
         {
             this.Worlds = new ObservableCollection<Level1>();
             this.ActiveLevel = null;
+            this.SelectedLevel = null;
             this.Shapes = new ObservableCollection<BorderLevel>();
             this.Circles = new ObservableCollection<Level5>();
             this.Points = new ObservableCollection<Level6>();
@@ -100,6 +102,15 @@ namespace TFG_Worldbuilder_Application
         public ActiveContext(ObservableCollection<Level1> Worlds) : this()
         {
             this.Worlds = Worlds;
+        }
+
+        public void SetSelected(SuperLevel level)
+        {
+            if(SelectedLevel != null)
+                SelectedLevel.color = "#F2F2F2";
+            SelectedLevel = level;
+            if (SelectedLevel != null)
+                SelectedLevel.color = "LightSkyBlue";
         }
 
         /// <summary>
