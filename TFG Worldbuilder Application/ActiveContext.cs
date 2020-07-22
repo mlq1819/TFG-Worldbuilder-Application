@@ -634,7 +634,7 @@ namespace TFG_Worldbuilder_Application
             {
                 min_distance = Math.Min(min_distance, Lines[i].Distance(point.ToAbsolutePoint()));
             }
-            if(min_distance < snap_range)
+            if(min_distance < (long)(snap_range / Global.Zoom) + 1)
             {
                 for(int i=0; i<Lines.Count; i++)
                 {

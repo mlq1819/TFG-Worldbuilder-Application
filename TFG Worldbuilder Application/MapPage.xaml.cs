@@ -72,10 +72,11 @@ public sealed partial class MapPage : Page
             if (Worlds.Count > 0)
             {
                 Context.SetWorld(Worlds[0].name, Worlds[0].subtype);
-                Context.UpdateAll();
+                //Context.UpdateAll();
             }
             UpdateSaveState();
             ResetZoom();
+            ForceUpdatePoints();
         }
 
 
@@ -87,6 +88,7 @@ public sealed partial class MapPage : Page
             Context.RaisePropertyChanged("MaxX");
             Context.RaisePropertyChanged("MaxY");
             ResetZoom();
+            ForceUpdatePoints();
         }
 
         /// <summary>
@@ -466,7 +468,7 @@ public sealed partial class MapPage : Page
         /// </summary>
         private void WorldCanvas_ClickLine(Line2D line)
         {
-
+            Context.SetSelected(line);
         }
 
         /// <summary>
@@ -585,9 +587,7 @@ public sealed partial class MapPage : Page
             }
             else
             {
-                if (!Context.HasActive)
-                    WorldCanvas_Refocus(point.ToAbsolutePoint());
-                else
+                if (Context.HasActive)
                     Context.NullSelected();
             }
         }
@@ -675,6 +675,8 @@ public sealed partial class MapPage : Page
             Global.Center = new AbsolutePoint(Global.RenderedCenter.X, Global.RenderedCenter.Y);
             Global.Zoom = Global.DefaultZoom;
             Context.Zoom = Global.Zoom;
+            Zoom_In_Button.IsEnabled = true;
+            Zoom_Out_Button.IsEnabled = true;
         }
 
         private void Reset_Zoom_Button_Click(object sender, RoutedEventArgs e)

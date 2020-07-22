@@ -2161,6 +2161,8 @@ namespace TFG_Worldbuilder_Application
             {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(str));
             }
+            if (string.Equals(str, "points"))
+                RaisePropertyChanged("_points");
         }
         private string _base_color = "#F2F2F2";
         public string base_color
@@ -2182,7 +2184,7 @@ namespace TFG_Worldbuilder_Application
         {
             get
             {
-                return AbsolutePoint.ToRenderedPoints(_points);
+                return Polygon2D.TrimVertices(AbsolutePoint.ToRenderedPoints(_points));
             }
         }
 
