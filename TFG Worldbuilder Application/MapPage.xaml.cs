@@ -78,6 +78,17 @@ public sealed partial class MapPage : Page
             ResetZoom();
         }
 
+
+        private void Page_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+
+            Context.RaisePropertyChanged("CenterX");
+            Context.RaisePropertyChanged("CenterY");
+            Context.RaisePropertyChanged("MaxX");
+            Context.RaisePropertyChanged("MaxY");
+            ResetZoom();
+        }
+
         /// <summary>
         /// Updates the current save status of the file
         /// </summary>
@@ -443,11 +454,11 @@ public sealed partial class MapPage : Page
         }
 
         /// <summary>
-        /// Displays a flyout menu of options when a Point is clicked
+        /// Displays a flyout menu of options when a Vertex is clicked
         /// </summary>
-        private void WorldCanvas_ClickPoint(RenderedPoint point)
+        private void WorldCanvas_ClickVertex(RenderedPoint point)
         {
-
+            Context.SetSelected(point);
         }
 
         /// <summary>
@@ -489,11 +500,12 @@ public sealed partial class MapPage : Page
         {
             if (Context.SnapsToSomething(point))
             {
+                Context.NullSelected();
                 Object obj = Context.GetObjectContainingPoint(point);
                 try
                 {
                     if (obj.GetType() == typeof(RenderedPoint))
-                        WorldCanvas_ClickPoint((RenderedPoint)obj);
+                        WorldCanvas_ClickVertex((RenderedPoint)obj);
                     else if (obj.GetType() == typeof(Level6))
                         WorldCanvas_ClickLine((Line2D)obj);
                     else if (obj.GetType() == typeof(Level6))
@@ -541,7 +553,7 @@ public sealed partial class MapPage : Page
                 }
                 if (Context.ActiveLevel != null)
                 {
-                    if (Context.ActiveLevel.CanFitPoint(point))
+                    if (Context.ActiveLevel.CanFitPoint(point) && (Context.SelectedLevel == null || Context.SelectedLevel.CanFitPoint(point)))
                     {
                         vertices.AppendPoint(point);
                         Context.ExtraPoints.AppendPoint(point);
@@ -573,7 +585,10 @@ public sealed partial class MapPage : Page
             }
             else
             {
-                WorldCanvas_Refocus(point.ToAbsolutePoint());
+                if (Context.SelectedLevel == null)
+                    WorldCanvas_Refocus(point.ToAbsolutePoint());
+                else
+                    Context.NullSelected();
             }
         }
 
@@ -693,5 +708,6 @@ public sealed partial class MapPage : Page
                 OpenPopupAlert("Unrecognized Click Event - Please recall original event");
             }
         }
+
     }
 }

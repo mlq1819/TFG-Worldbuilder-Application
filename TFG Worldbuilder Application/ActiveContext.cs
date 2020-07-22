@@ -19,6 +19,8 @@ namespace TFG_Worldbuilder_Application
         public ObservableCollection<Level1> Worlds;
         public SuperLevel ActiveLevel;
         public SuperLevel SelectedLevel;
+        public RenderedPoint SelectedPoint;
+        private string LastColor = "#F2F2F2";
         public ObservableCollection<BorderLevel> Shapes;
         public ObservableCollection<Level5> Circles;
         public ObservableCollection<Level6> Points;
@@ -104,13 +106,49 @@ namespace TFG_Worldbuilder_Application
             this.Worlds = Worlds;
         }
 
+        public void NullSelected()
+        {
+            if (SelectedLevel != null)
+            {
+                SelectedLevel.color = LastColor;
+                LastColor = "#F2F2F2";
+                SelectedLevel = null;
+            }
+            if(SelectedPoint != null)
+            {
+                SelectedPoint.color = LastColor;
+                LastColor = "LightCoral";
+                SelectedPoint = null;
+            }
+        }
+
         public void SetSelected(SuperLevel level)
         {
-            if(SelectedLevel != null)
-                SelectedLevel.color = "#F2F2F2";
+            NullSelected();
             SelectedLevel = level;
             if (SelectedLevel != null)
+            {
+                LastColor = SelectedLevel.color;
                 SelectedLevel.color = "LightSkyBlue";
+            }
+        }
+
+        public void SetSelected(RenderedPoint point)
+        {
+            NullSelected();
+            for(int i=0; i<Vertices.points.Count; i++)
+            {
+                if (Vertices.points[i] == point)
+                {
+                    SelectedPoint = point;
+                    if (SelectedPoint != null)
+                    {
+                        LastColor = SelectedPoint.color;
+                        SelectedPoint.color = "LightSkyBlue";
+                    }
+                    return;
+                }
+            }
         }
 
         /// <summary>
@@ -219,6 +257,7 @@ namespace TFG_Worldbuilder_Application
                         Vertices.AppendPoint(Shapes[i].border[j]);
                 }
             }
+            Vertices.base_color = "LightCoral";
             RaisePropertyChanged("Vertices");
         }
 
@@ -693,7 +732,6 @@ namespace TFG_Worldbuilder_Application
         public List<Object> GetObjectsContainingPoint(RenderedPoint point)
         {
             List<Object> output = new List<Object>();
-            output.Concat<Object>(GetExtraPointsByPoint(point));
             output.Concat<Object>(GetPointsByPoint(point));
             output.Concat<Object>(GetCirclesByPoint(point));
             output.Concat<Object>(GetVerticesByPoint(point));
@@ -707,7 +745,7 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         public bool SnapsToSomething(RenderedPoint point)
         {
-            return SnapsToExtraPoint(point) || SnapsToPoints(point) || SnapsToCircle(point) || SnapsToVertices(point) || SnapsToLine(point) || SnapsToShape(point);
+            return SnapsToPoints(point) || SnapsToCircle(point) || SnapsToVertices(point) || SnapsToLine(point) || SnapsToShape(point);
         }
 
         /// <summary>
@@ -715,8 +753,6 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         public Object GetObjectContainingPoint(RenderedPoint point)
         {
-            if (SnapsToExtraPoint(point))
-                return GetExtraPoint(point);
             if (SnapsToPoints(point))
                 return GetPoint(point);
             if (SnapsToCircle(point))

@@ -73,6 +73,19 @@ namespace TFG_Worldbuilder_Application
                 return Point2D.ApplyTransformation(Point2D.ToWindowsPoint(this));
             }
         }
+        private string _color;
+        public string color
+        {
+            get
+            {
+                return _color;
+            }
+            set
+            {
+                _color = value;
+                RaisePropertyChanged("color");
+            }
+        }
 
         /// <summary>
         /// creates a Point2D object
@@ -81,6 +94,7 @@ namespace TFG_Worldbuilder_Application
         {
             this.X = X;
             this.Y = Y;
+            color = "#F2F2F2";
         }
 
         /// <summary>
@@ -88,7 +102,7 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         public Point2D(Point2D o) : this(o.X, o.Y)
         {
-            ;
+            this.color = o.color;
         }
 
         /// <summary>
@@ -492,7 +506,7 @@ namespace TFG_Worldbuilder_Application
 
         public RenderedPoint(RenderedPoint o) : base((Point2D)o)
         {
-            ;
+            this.color = o.color;
         }
 
         public RenderedPoint(Point o) : base(o)
@@ -505,7 +519,7 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         public RenderedPoint(AbsolutePoint o) : base((Point2D) Point2D.ApplyTransformation(o))
         {
-            ;
+            this.color = o.color;
         }
         
         public static explicit operator AbsolutePoint(RenderedPoint point)
@@ -710,7 +724,7 @@ namespace TFG_Worldbuilder_Application
 
         public AbsolutePoint(AbsolutePoint o) : base((Point2D)o)
         {
-            ;
+            this.color = o.color;
         }
 
         public AbsolutePoint(Point o) : base(o)
@@ -723,7 +737,7 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         public AbsolutePoint(RenderedPoint o) : base((Point2D) Point2D.RevertTransformation(o))
         {
-            ;
+            this.color = o.color;
         }
 
         public static explicit operator RenderedPoint(AbsolutePoint point)
@@ -2133,6 +2147,22 @@ namespace TFG_Worldbuilder_Application
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(str));
             }
         }
+        private bool has_base_color = false;
+        private string _base_color = "#F2F2F2";
+        public string base_color
+        {
+            get
+            {
+                return _base_color;
+            }
+            set
+            {
+                ReplaceColors(value, _base_color);
+                _base_color = value;
+                has_base_color = true;
+                RaisePropertyChanged("base_color");
+            }
+        }
 
         private ObservableCollection<AbsolutePoint> _points;
         public ObservableCollection<RenderedPoint> points
@@ -2140,6 +2170,15 @@ namespace TFG_Worldbuilder_Application
             get
             {
                 return AbsolutePoint.ToRenderedPoints(_points);
+            }
+        }
+
+        private void ReplaceColors(string new_color, string old_color)
+        {
+            for(int i=0; i<_points.Count; i++)
+            {
+                if (string.Equals(_points[i].color, old_color))
+                    _points[i].color = new_color;
             }
         }
 

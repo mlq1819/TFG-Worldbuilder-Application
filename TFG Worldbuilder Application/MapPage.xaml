@@ -7,6 +7,7 @@
     xmlns:Maps="using:Windows.UI.Xaml.Controls.Maps"
     x:Class="TFG_Worldbuilder_Application.MapPage"
     Loaded="Page_Loaded"
+    SizeChanged="Page_SizeChanged"
     mc:Ignorable="d">
     <Page.Resources>
         <MenuFlyout x:Name = "FileMenu" x:Key="FileMenu">
@@ -106,7 +107,7 @@
                 <ItemsControl x:Name="ShapesVerticesControl" ItemsSource="{x:Bind Path=Context.Vertices.points, Mode=OneWay}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="local:RenderedPoint">
-                            <Path Fill="LightBlue" StrokeThickness="0" Visibility="{x:Bind Path=visibility, Mode=OneWay}">
+                            <Path Fill="{x:Bind Path=color, Mode=OneWay}" StrokeThickness="0" Visibility="{x:Bind Path=visibility, Mode=OneWay}">
                                 <Path.Data>
                                     <EllipseGeometry Center="{x:Bind Path=pointstr, Mode=OneWay}" RadiusX="10" RadiusY="10"/>
                                 </Path.Data>
