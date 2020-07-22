@@ -22,7 +22,7 @@ namespace TFG_Worldbuilder_Application
         {
             get
             {
-                return SelectedLevel != null || SelectedPoint >= 0;
+                return SelectedLevel != null || SelectedPoint >= 0 || SelectedLine >= 0;
             }
         }
         private SuperLevel _selectedlevel = null;
@@ -51,8 +51,22 @@ namespace TFG_Worldbuilder_Application
                 RaisePropertyChanged("SelectedPoint");
             }
         }
+        private int _selectedline = -1;
+        public int SelectedLine
+        {
+            get
+            {
+                return _selectedline;
+            }
+            set
+            {
+                _selectedline = value;
+                RaisePropertyChanged("SelectedLine");
+            }
+        }
         private string BaseLevelColor = "#F2F2F2";
         private string BasePointColor = "LightCoral";
+        private string BaseLineColor = "Black";
         public ObservableCollection<BorderLevel> Shapes;
         public ObservableCollection<Level5> Circles;
         public ObservableCollection<Level6> Points;
@@ -144,12 +158,19 @@ namespace TFG_Worldbuilder_Application
             {
                 SelectedLevel.color = BaseLevelColor;
                 SelectedLevel = null;
+                RaisePropertyChanged("Shapes");
             }
             if(SelectedPoint > -1)
             {
-                Vertices.points[SelectedPoint].color = BasePointColor;
+                Vertices._points[SelectedPoint].color = BasePointColor;
                 SelectedPoint = -1;
-                Vertices.ForceUpdatePoints();
+                RaisePropertyChanged("Vertices");
+            }
+            if(SelectedLine > -1)
+            {
+                Lines[SelectedLine].color = BaseLineColor;
+                SelectedLine = -1;
+                RaisePropertyChanged("Lines");
             }
         }
 
@@ -160,6 +181,7 @@ namespace TFG_Worldbuilder_Application
             if (SelectedLevel != null)
             {
                 SelectedLevel.color = "LightSkyBlue";
+                RaisePropertyChanged("Shapes");
             }
         }
 
@@ -172,7 +194,22 @@ namespace TFG_Worldbuilder_Application
                 {
                     SelectedPoint = i;
                     Vertices._points[SelectedPoint].color = "LightSkyBlue";
-                    Vertices.ForceUpdatePoints();
+                    RaisePropertyChanged("Vertices");
+                    return;
+                }
+            }
+        }
+
+        public void SetSelected(Line2D line)
+        {
+            NullSelected();
+            for (int i = 0; i < Lines.Count; i++)
+            {
+                if (Lines[i] == line)
+                {
+                    SelectedLine = i;
+                    Lines[SelectedLine].color = "Navy";
+                    RaisePropertyChanged("Lines");
                     return;
                 }
             }

@@ -1492,6 +1492,19 @@ namespace TFG_Worldbuilder_Application
                 RaisePropertyChanged("visibility");
             }
         }
+        private string _color = "Black";
+        public string color
+        {
+            get
+            {
+                return _color;
+            }
+            set
+            {
+                _color = value;
+                RaisePropertyChanged("color");
+            }
+        }
         private AbsolutePoint __vertex1;
         private AbsolutePoint __vertex2;
         public AbsolutePoint _vertex1
