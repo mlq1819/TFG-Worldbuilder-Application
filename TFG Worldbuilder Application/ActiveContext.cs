@@ -390,7 +390,7 @@ namespace TFG_Worldbuilder_Application
         {
             for (int i = 0; i < Lines.Count; i++)
             {
-                if ((point - Lines[i].GetClosestPoint(point.ToAbsolutePoint()).ToRenderedPoint()).Length() <= snap_range)
+                if (Lines[i].Distance(point.ToAbsolutePoint()) <= (long) (snap_range / Global.Zoom))
                     return true;
             }
             return false;
@@ -419,11 +419,11 @@ namespace TFG_Worldbuilder_Application
             long distance = snap_range;
             for(int i=0; i<ExtraPoints.points.Count; i++)
             {
-                distance = Math.Min(distance, (point - ExtraPoints.points[i]).Length());
+                distance = Math.Min(distance, point.Distance(ExtraPoints.points[i]));
             }
             for(int i=0; i<ExtraPoints.points.Count; i++)
             {
-                if ((point - ExtraPoints.points[i]).Length() == distance)
+                if (point.Distance(ExtraPoints.points[i]) == distance)
                     return ExtraPoints.points[i];
             }
             return point;
@@ -439,11 +439,11 @@ namespace TFG_Worldbuilder_Application
             long distance = snap_range;
             for (int i = 0; i < Vertices.points.Count; i++)
             {
-                distance = Math.Min(distance, (point - Vertices.points[i]).Length());
+                distance = Math.Min(distance, point.Distance(Vertices.points[i]));
             }
             for (int i = 0; i < Vertices.points.Count; i++)
             {
-                if ((point - Vertices.points[i]).Length() == distance)
+                if (point.Distance(Vertices.points[i]) == distance)
                     return Vertices.points[i];
             }
             return point;
@@ -459,11 +459,11 @@ namespace TFG_Worldbuilder_Application
             long distance = snap_range;
             for (int i = 0; i < Points.Count; i++)
             {
-                distance = Math.Min(distance, (point - Points[i].center.ToRenderedPoint()).Length());
+                distance = Math.Min(distance, point.Distance(Points[i].center.ToRenderedPoint()));
             }
             for (int i = 0; i < Points.Count; i++)
             {
-                if ((point - Points[i].center.ToRenderedPoint()).Length() == distance)
+                if (point.Distance(Points[i].center.ToRenderedPoint()) == distance)
                     return Points[i].center.ToRenderedPoint();
             }
             return point;
@@ -479,11 +479,11 @@ namespace TFG_Worldbuilder_Application
             long distance = long.MaxValue;
             for (int i = 0; i < Points.Count; i++)
             {
-                distance = Math.Min(distance, (point - Circles[i].center.ToRenderedPoint()).Length());
+                distance = Math.Min(distance, point.Distance(Circles[i].center.ToRenderedPoint()));
             }
             for (int i = 0; i < Points.Count; i++)
             {
-                if ((point - Circles[i].center.ToRenderedPoint()).Length() == distance)
+                if (point.Distance(Circles[i].center.ToRenderedPoint()) == distance)
                     return Circles[i].center.ToRenderedPoint();
             }
             return point;
@@ -525,16 +525,16 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         public Line2D GetLine(RenderedPoint point)
         {
-            long min_distance = snap_range + 1;
+            long min_distance = (long) (snap_range / Global.Zoom) + 1;
             for (int i=0; i<Lines.Count; i++)
             {
-                min_distance = Math.Min(min_distance, (point - Lines[i].GetClosestPoint(point.ToAbsolutePoint()).ToRenderedPoint()).Length());
+                min_distance = Math.Min(min_distance, Lines[i].Distance(point.ToAbsolutePoint()));
             }
             if(min_distance < snap_range)
             {
                 for(int i=0; i<Lines.Count; i++)
                 {
-                    if ((point - Lines[i].GetClosestPoint(point.ToAbsolutePoint()).ToRenderedPoint()).Length() == min_distance)
+                    if (Lines[i].Distance(point.ToAbsolutePoint()) == min_distance)
                         return Lines[i];
                 }
             }
@@ -552,11 +552,11 @@ namespace TFG_Worldbuilder_Application
                 for (int i = 0; i < Circles.Count; i++)
                 {
                     if (Circles[i].PointInRadius(point.ToAbsolutePoint()))
-                        min_distance = Math.Min(min_distance, (point - Circles[i].center.ToRenderedPoint()).Length());
+                        min_distance = Math.Min(min_distance, point.Distance(Circles[i].center.ToRenderedPoint()));
                 }
                 for (int i = 0; i < Lines.Count; i++)
                 {
-                    if ((point - Circles[i].center.ToRenderedPoint()).Length() == min_distance)
+                    if (point.Distance(Circles[i].center.ToRenderedPoint()) == min_distance)
                         return Circles[i];
                 }
             }
@@ -575,12 +575,12 @@ namespace TFG_Worldbuilder_Application
                 {
                     if (Shapes[i].PointInPolygon(point.ToAbsolutePoint()))
                     {
-                        min_distance = Math.Min(min_distance, (point - Shapes[i]._center).Length());
+                        min_distance = Math.Min(min_distance, point.Distance(Shapes[i]._center));
                     }
                 }
                 for (int i = 0; i < Shapes.Count; i++)
                 {
-                    if (Shapes[i].PointInPolygon(point.ToAbsolutePoint()) && (point - Shapes[i]._center).Length() == min_distance)
+                    if (Shapes[i].PointInPolygon(point.ToAbsolutePoint()) && point.Distance(Shapes[i]._center) == min_distance)
                     {
                         return Shapes[i];
                     }
@@ -667,7 +667,7 @@ namespace TFG_Worldbuilder_Application
             List<Line2D> output = new List<Line2D>();
             for (int i = 0; i < Lines.Count; i++)
             {
-                if ((point - Lines[i].GetClosestPoint(point.ToAbsolutePoint()).ToRenderedPoint()).Length() <= snap_range)
+                if (Lines[i].Distance(point.ToAbsolutePoint()) <= snap_range / Global.Zoom)
                     output.Add(Lines[i]);
             }
             return output;

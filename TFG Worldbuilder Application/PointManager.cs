@@ -328,6 +328,16 @@ namespace TFG_Worldbuilder_Application
         }
 
         /// <summary>
+        /// Returns the exact between this point and the passed point
+        /// </summary>
+        public double TrueDistance(Point2D o)
+        {
+            long dx = o.X - X;
+            long dy = o.Y - Y;
+            return Math.Sqrt(Math.Pow(dx, 2) + Math.Pow(dy, 2));
+        }
+
+        /// <summary>
         /// checks equality between two Point2D objects
         /// </summary>
         public static bool operator ==(Point2D a, Point2D b)
@@ -543,7 +553,7 @@ namespace TFG_Worldbuilder_Application
         /// <param name="snaprange">The range within which to snap</param>
         public bool SnapsTo(RenderedPoint o, long snaprange)
         {
-            return (this - o).Length() <= snaprange;
+            return this.Distance(o) <= snaprange;
         }
 
         /// <summary>
@@ -1541,7 +1551,7 @@ namespace TFG_Worldbuilder_Application
         {
             get
             {
-                return (_vertex1 - _vertex2).Length();
+                return _vertex1.TrueDistance(_vertex2);
             }
         }
         public bool vertical
@@ -1998,6 +2008,20 @@ namespace TFG_Worldbuilder_Application
             return -1 / slope_x;
         }
 
+        public double TrueDistance(AbsolutePoint point)
+        {
+            if (On(point))
+                return 0;
+            return point.TrueDistance(GetClosestPoint(point));
+        }
+
+        public long Distance(AbsolutePoint point)
+        {
+            if (On(point))
+                return 0;
+            return point.Distance(GetClosestPoint(point));
+        }
+
         /// <summary>
         /// Gets and returns the closest point on this line to the presented point
         /// </summary>
@@ -2025,6 +2049,22 @@ namespace TFG_Worldbuilder_Application
                     return _vertex1;
                 return new AbsolutePoint(point.X, _vertex1.Y);
             }
+            AbsolutePoint v1, v2;
+            if(_vertex1.X > _vertex2.X)
+            {
+                v1 = _vertex2;
+                v2 = _vertex1;
+            }else
+            {
+                v1 = _vertex1;
+                v2 = _vertex2;
+            }
+            AbsolutePoint v1_2 = new AbsolutePoint((long)(v1.X + .5 + Math.Abs(slope_y)), (long)(v1.Y + .5 + Math.Abs(slope_x)));
+            AbsolutePoint v2_2 = new AbsolutePoint((long)(v2.X + .5 - Math.Abs(slope_y)), (long)(v2.Y + .5 - Math.Abs(slope_x)));
+            if (point.TrueDistance(v1) < point.TrueDistance(v1_2))
+                return v1;
+            if (point.TrueDistance(v2) < point.TrueDistance(v2_2))
+                return v2;
             return Intersection(CreatePerpendicularLine(point));
         }
 
