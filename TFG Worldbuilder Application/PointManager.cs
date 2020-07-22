@@ -82,6 +82,8 @@ namespace TFG_Worldbuilder_Application
             }
             set
             {
+                if (!string.Equals(value, "#F2F2F2"))
+                    _color = value;
                 _color = value;
                 RaisePropertyChanged("color");
             }
@@ -2147,7 +2149,6 @@ namespace TFG_Worldbuilder_Application
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(str));
             }
         }
-        private bool has_base_color = false;
         private string _base_color = "#F2F2F2";
         public string base_color
         {
@@ -2159,12 +2160,11 @@ namespace TFG_Worldbuilder_Application
             {
                 ReplaceColors(value, _base_color);
                 _base_color = value;
-                has_base_color = true;
                 RaisePropertyChanged("base_color");
             }
         }
 
-        private ObservableCollection<AbsolutePoint> _points;
+        public ObservableCollection<AbsolutePoint> _points;
         public ObservableCollection<RenderedPoint> points
         {
             get

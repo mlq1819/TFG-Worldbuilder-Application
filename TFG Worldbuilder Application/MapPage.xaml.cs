@@ -585,7 +585,7 @@ public sealed partial class MapPage : Page
             }
             else
             {
-                if (Context.SelectedLevel == null)
+                if (!Context.HasActive)
                     WorldCanvas_Refocus(point.ToAbsolutePoint());
                 else
                     Context.NullSelected();

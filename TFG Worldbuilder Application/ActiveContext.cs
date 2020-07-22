@@ -18,9 +18,41 @@ namespace TFG_Worldbuilder_Application
     {
         public ObservableCollection<Level1> Worlds;
         public SuperLevel ActiveLevel;
-        public SuperLevel SelectedLevel;
-        public RenderedPoint SelectedPoint;
-        private string LastColor = "#F2F2F2";
+        public bool HasActive
+        {
+            get
+            {
+                return SelectedLevel != null || SelectedPoint >= 0;
+            }
+        }
+        private SuperLevel _selectedlevel = null;
+        public SuperLevel SelectedLevel
+        {
+            get
+            {
+                return _selectedlevel;
+            }
+            set
+            {
+                _selectedlevel = value;
+                RaisePropertyChanged("SelectedLevel");
+            }
+        }
+        private int _selectedpoint = -1;
+        public int SelectedPoint
+        {
+            get
+            {
+                return _selectedpoint;
+            }
+            set
+            {
+                _selectedpoint = value;
+                RaisePropertyChanged("SelectedPoint");
+            }
+        }
+        private string BaseLevelColor = "#F2F2F2";
+        private string BasePointColor = "LightCoral";
         public ObservableCollection<BorderLevel> Shapes;
         public ObservableCollection<Level5> Circles;
         public ObservableCollection<Level6> Points;
@@ -110,15 +142,14 @@ namespace TFG_Worldbuilder_Application
         {
             if (SelectedLevel != null)
             {
-                SelectedLevel.color = LastColor;
-                LastColor = "#F2F2F2";
+                SelectedLevel.color = BaseLevelColor;
                 SelectedLevel = null;
             }
-            if(SelectedPoint != null)
+            if(SelectedPoint > -1)
             {
-                SelectedPoint.color = LastColor;
-                LastColor = "LightCoral";
-                SelectedPoint = null;
+                Vertices.points[SelectedPoint].color = BasePointColor;
+                SelectedPoint = -1;
+                Vertices.ForceUpdatePoints();
             }
         }
 
@@ -128,7 +159,6 @@ namespace TFG_Worldbuilder_Application
             SelectedLevel = level;
             if (SelectedLevel != null)
             {
-                LastColor = SelectedLevel.color;
                 SelectedLevel.color = "LightSkyBlue";
             }
         }
@@ -140,12 +170,9 @@ namespace TFG_Worldbuilder_Application
             {
                 if (Vertices.points[i] == point)
                 {
-                    SelectedPoint = point;
-                    if (SelectedPoint != null)
-                    {
-                        LastColor = SelectedPoint.color;
-                        SelectedPoint.color = "LightSkyBlue";
-                    }
+                    SelectedPoint = i;
+                    Vertices._points[SelectedPoint].color = "LightSkyBlue";
+                    Vertices.ForceUpdatePoints();
                     return;
                 }
             }
@@ -283,6 +310,7 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         public void UpdateAll()
         {
+            NullSelected();
             UpdateShapes();
             UpdateCircles();
             UpdatePoints();
