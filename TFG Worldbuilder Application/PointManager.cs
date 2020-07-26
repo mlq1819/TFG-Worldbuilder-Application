@@ -1764,6 +1764,12 @@ namespace TFG_Worldbuilder_Application
             ;
         }
 
+        public void ForceUpdatePoints()
+        {
+            RaisePropertyChanged("vertex1");
+            RaisePropertyChanged("vertex2");
+        }
+
         /// <summary>
         /// Sets vertex1 to the passed point
         /// </summary>

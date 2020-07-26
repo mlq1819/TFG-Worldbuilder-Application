@@ -81,6 +81,7 @@ namespace TFG_Worldbuilder_Application
                 for (int i = 0; i < ExtraPoints.Count; i++)
                 {
                     ExtraLines.Add(new Line2D(ExtraPoints.points[i], ExtraPoints.points[(i + 1) % ExtraPoints.Count]));
+                    ExtraLines.Last().ForceUpdatePoints();
                 }
             }
             RaisePropertyChanged("ExtraLines");
@@ -353,7 +354,10 @@ namespace TFG_Worldbuilder_Application
                 for(int j=0; j<edges.Count; j++)
                 {
                     if (!Line2D.Contains(Lines, edges[j]))
+                    {
                         Lines.Add(new Line2D(edges[j]));
+                        Lines.Last().ForceUpdatePoints();
+                    }
                 }
             }
         }
@@ -388,6 +392,13 @@ namespace TFG_Worldbuilder_Application
             RaisePropertyChanged("Circles");
             RaisePropertyChanged("Points");
             RaisePropertyChanged("Vertices");
+            if(Lines != null)
+            {
+                for(int i=0; i<Lines.Count; i++)
+                {
+                    Lines[i].ForceUpdatePoints();
+                }
+            }
             RaisePropertyChanged("Lines");
             RaisePropertyChanged("ExtraPoints");
         }
