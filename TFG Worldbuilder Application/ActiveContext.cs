@@ -76,7 +76,7 @@ namespace TFG_Worldbuilder_Application
         private void SetExtraLines()
         {
             ExtraLines = new ObservableCollection<Line2D>();
-            if (ExtraPoints.Count > 1)
+            if (ExtraPoints.Count > 2)
             {
                 for (int i = 0; i < ExtraPoints.Count; i++)
                 {
@@ -510,7 +510,7 @@ namespace TFG_Worldbuilder_Application
         {
             for (int i = 0; i < Lines.Count; i++)
             {
-                if (Lines[i].Distance(point.ToAbsolutePoint()) <= (long) (snap_range / Global.Zoom))
+                if (Lines[i].Distance(point.ToAbsolutePoint()) <= (long) (snap_range * Global.Zoom))
                     return true;
             }
             return false;

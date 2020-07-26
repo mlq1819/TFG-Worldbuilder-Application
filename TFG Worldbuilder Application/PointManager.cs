@@ -1051,6 +1051,19 @@ namespace TFG_Worldbuilder_Application
         }
 
         /// <summary>
+        /// Removes the last point from the polygon's vertices and returns it
+        /// </summary>
+        public AbsolutePoint RemovePoint()
+        {
+            if (vertices.Count <= 0)
+                return null;
+            AbsolutePoint output = new AbsolutePoint(vertices.Last());
+            vertices.RemoveAt(vertices.Count - 1);
+            RaisePropertyChanged("vertices");
+            return output;
+        }
+
+        /// <summary>
         /// Creates a new point between two existing points
         /// </summary>
         public RenderedPoint NewPoint(RenderedPoint a, RenderedPoint b)

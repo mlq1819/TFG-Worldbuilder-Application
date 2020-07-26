@@ -219,8 +219,9 @@
             </Grid>
             <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,50,0,0">
                 <Rectangle Fill="#FFFFFFFF" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Stroke="Black"/>
-                <Button x:Name="Tap_Prompt_Cancel" Content="Cancel" HorizontalAlignment="Left" VerticalAlignment="Center" Height="30" Width="200" Margin="10" Click="Tap_Prompt_Cancel_Click"/>
-                <Button x:Name="Tap_Prompt_Confirm" Content="Confirm" HorizontalAlignment="Right" VerticalAlignment="Center" Height="30" Width="200" Margin="10" Click="Tap_Prompt_Confirm_Click"/>
+                <Button x:Name="Tap_Prompt_Cancel" Content="Cancel" HorizontalAlignment="Left" VerticalAlignment="Center" Height="30" Width="120" Margin="10" Click="Tap_Prompt_Cancel_Click"/>
+                <Button x:Name="Tap_Prompt_Back" Content="Back" IsEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center" Height="30" Width="120" Margin="10" Click="Tap_Prompt_Back_Click"/>
+                <Button x:Name="Tap_Prompt_Confirm" Content="Confirm" HorizontalAlignment="Right" VerticalAlignment="Center" Height="30" Width="120" Margin="10" Click="Tap_Prompt_Confirm_Click"/>
             </Grid>
         </Grid>
         <Grid HorizontalAlignment="Center" x:Name="UnsavedWorkAlert" Visibility="Collapsed" Height="100" Width="300" Margin="100,100,100,100" VerticalAlignment="Top">

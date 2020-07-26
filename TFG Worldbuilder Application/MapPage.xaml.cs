@@ -358,6 +358,10 @@ public sealed partial class MapPage : Page
             TapPromptTab.Text = label + ": " + vertices.Size() + " points";
             TapPrompt.Visibility = Visibility.Visible;
             Context.SetPoints(vertices.vertices);
+            if(vertices.Count > 0)
+                Tap_Prompt_Back.IsEnabled = true;
+            else
+                Tap_Prompt_Back.IsEnabled = false;
         }
 
         /// <summary>
@@ -567,6 +571,10 @@ public sealed partial class MapPage : Page
                     }
                 }
                 TapPromptTab.Text = label + ": " + vertices.Size() + " points";
+                if(vertices.Count > 0)
+                    Tap_Prompt_Back.IsEnabled = true;
+                else
+                    Tap_Prompt_Back.IsEnabled = false;
             }
         }
         
@@ -611,6 +619,17 @@ public sealed partial class MapPage : Page
             Context.ClearPoints();
         }
 
+        private void Tap_Prompt_Back_Click(object sender, RoutedEventArgs e)
+        {
+            if (vertices.Count > 0)
+            {
+                vertices.RemovePoint();
+            } else
+            {
+                Tap_Prompt_Back.IsEnabled = false;
+            }
+            TapPromptTab.Text = label + ": " + vertices.Size() + " points";
+        }
         private bool Tap_Prompt_Confirm_Greater_Region()
         {
             if (vertices.Size() < 3)
@@ -634,7 +653,7 @@ public sealed partial class MapPage : Page
             }
             else if(string.Equals(ActiveJob, "Move"))
             {
-
+                //TODO
             }
         }
 
