@@ -1192,7 +1192,7 @@ namespace TFG_Worldbuilder_Application
         }
 
         /// <summary>
-        /// Checks whether two polygons intersect
+        /// Checks whether two polygons intersect by checking their vertices and edges
         /// </summary>
         /// <param name="o"></param>
         /// <returns></returns>

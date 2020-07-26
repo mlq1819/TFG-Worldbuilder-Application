@@ -658,7 +658,7 @@ public sealed partial class MapPage : Page
             if(string.Equals(ActiveJob, "Create")){
                 if(Context.Intersects(vertices, LevelNum))
                 {
-                    OpenPopupAlert("Current polygon intersects with an existing object");
+                    OpenPopupAlert("Current object intersects with an existing object");
                 } else
                 {
                     if (LevelNum == 2)
