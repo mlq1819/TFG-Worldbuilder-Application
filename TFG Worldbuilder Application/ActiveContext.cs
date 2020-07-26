@@ -73,21 +73,19 @@ namespace TFG_Worldbuilder_Application
         public MyPointCollection Vertices;
         public ObservableCollection<Line2D> Lines;
         public MyPointCollection ExtraPoints;
-        public ObservableCollection<Line2D> ExtraLines
+        private void SetExtraLines()
         {
-            get
+            ExtraLines = new ObservableCollection<Line2D>();
+            if (ExtraPoints.Count > 1)
             {
-                ObservableCollection<Line2D> output = new ObservableCollection<Line2D>();
-                if(ExtraPoints.Count > 1)
+                for (int i = 0; i < ExtraPoints.Count; i++)
                 {
-                    for (int i = 0; i < ExtraPoints.Count; i++)
-                    {
-                        output.Add(new Line2D(ExtraPoints.points[i], ExtraPoints.points[(i + 1) % ExtraPoints.Count]));
-                    }
+                    ExtraLines.Add(new Line2D(ExtraPoints.points[i], ExtraPoints.points[(i + 1) % ExtraPoints.Count]));
                 }
-                return output;
             }
+            RaisePropertyChanged("ExtraLines");
         }
+        public ObservableCollection<Line2D> ExtraLines;
         private double _Zoom = 1;
         public string ZoomStr
         {
@@ -147,7 +145,7 @@ namespace TFG_Worldbuilder_Application
             {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(str));
                 if (string.Equals(str, "ExtraPoints"))
-                    RaisePropertyChanged("ExtraLines");
+                    SetExtraLines();
             }
         }
 
@@ -162,6 +160,7 @@ namespace TFG_Worldbuilder_Application
             this.Vertices = new MyPointCollection();
             this.Lines = new ObservableCollection<Line2D>();
             this.ExtraPoints = new MyPointCollection();
+            SetExtraLines();
         }
 
         public ActiveContext(ObservableCollection<Level1> Worlds) : this()
