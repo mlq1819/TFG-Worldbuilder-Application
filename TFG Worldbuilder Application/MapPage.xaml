@@ -97,7 +97,7 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="local:BorderLevel">
-                            <Polygon Fill="{x:Bind Path=color, Mode=OneWay}" Stroke="Black" Name="{x:Bind Path=name, Mode=OneWay}" Points="{x:Bind Path=points, Mode=OneWay}" Visibility="{x:Bind Path=visibility, Mode=OneWay}" FlyoutBase.AttachedFlyout="{StaticResource ShapesControlFlyout}"/>
+                            <Polygon Fill="{x:Bind Path=color, Mode=OneWay}" StrokeThickness="0" Name="{x:Bind Path=name, Mode=OneWay}" Points="{x:Bind Path=points, Mode=OneWay}" Visibility="{x:Bind Path=visibility, Mode=OneWay}" FlyoutBase.AttachedFlyout="{StaticResource ShapesControlFlyout}"/>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
@@ -123,7 +123,7 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="local:Line2D">
-                            <Line Fill="{x:Bind Path=color, Mode=OneWay}" StrokeThickness="1" X1="{x:Bind Path=X1, Mode=OneWay}" Y1="{x:Bind Path=Y1, Mode=OneWay}" X2="{x:Bind Path=X2, Mode=OneWay}" Y2="{x:Bind Path=Y2, Mode=OneWay}"/>
+                            <Line Stroke="{x:Bind Path=color, Mode=OneWay}" StrokeThickness="1" X1="{x:Bind Path=X1, Mode=OneWay}" Y1="{x:Bind Path=Y1, Mode=OneWay}" X2="{x:Bind Path=X2, Mode=OneWay}" Y2="{x:Bind Path=Y2, Mode=OneWay}"/>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
@@ -151,7 +151,7 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="local:Line2D">
-                            <Line Fill="{x:Bind Path=color, Mode=OneWay}" StrokeThickness="1" X1="{x:Bind Path=X1, Mode=OneWay}" Y1="{x:Bind Path=Y1, Mode=OneWay}" X2="{x:Bind Path=X2, Mode=OneWay}" Y2="{x:Bind Path=Y2, Mode=OneWay}"/>
+                            <Line Stroke="{x:Bind Path=color, Mode=OneWay}" StrokeThickness="1" X1="{x:Bind Path=X1, Mode=OneWay}" Y1="{x:Bind Path=Y1, Mode=OneWay}" X2="{x:Bind Path=X2, Mode=OneWay}" Y2="{x:Bind Path=Y2, Mode=OneWay}"/>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
