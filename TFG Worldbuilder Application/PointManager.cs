@@ -2057,6 +2057,8 @@ namespace TFG_Worldbuilder_Application
                 throw new DivideByZeroException("Slope does not exist for vertical lines");
             if (vertical)
                 return 0;
+            if (dy < 0 && dx < 0 && (slope_x < 0 || slope_y < 0))
+                ;
             return -1 / slope_x;
         }
 
@@ -2165,9 +2167,12 @@ namespace TFG_Worldbuilder_Application
                 int i = 1;
                 do
                 {
-                    v2 = v1 + new AbsolutePoint(i*i * 100, (long)(i*i * -100 * slope));
+                    if(Math.Abs(slope) > 20)
+                        v2 = v1 + new AbsolutePoint(i * i, (long)(i * i * -1 * slope));
+                    else
+                        v2 = v1 + new AbsolutePoint(i * i * 100, (long)(i * i * -100 * slope));
                     i++;
-                } while (Above(v2));
+                } while (Above(v1) == Above(v2));
             } else
             {
                 //Case 1: Above(v1) && slope > 0 ==> v2.Y + n*slope is Below (Opposite!)
@@ -2175,17 +2180,18 @@ namespace TFG_Worldbuilder_Application
                 int i = 1;
                 do
                 {
-                    v2 = v1 + new AbsolutePoint(i*i * -100, (long)(i*i * 100 * slope));
+                    if (Math.Abs(slope) > 20)
+                        v2 = v1 + new AbsolutePoint(i * i, (long)(i * i * slope));
+                    else
+                        v2 = v1 + new AbsolutePoint(i * i * 100, (long)(i * i * 100 * slope));
                     i++;
-                } while (Below(v2));
+                } while (Above(v1) == Above(v2));
             }
             if (Intersects(new Line2D(v1, v2)))
             {
                 v2 = Intersection(new Line2D(v1, v2));
                 v2 = 2 * v2 - v1;
             }
-            if ((new Line2D(v1, v2)).Length > 300)
-                ;
             return new Line2D(v1, v2);
         }
     }

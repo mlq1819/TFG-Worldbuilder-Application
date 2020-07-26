@@ -636,6 +636,7 @@ namespace TFG_Worldbuilder_Application
             }
             for(int i=0; i<Lines.Count; i++)
             {
+                long temp = Lines[i].RenderedDistance(point);
                 if (Lines[i].RenderedDistance(point) == distance)
                     return Lines[i].GetClosestPoint(point.ToAbsolutePoint()).ToRenderedPoint();
             }
