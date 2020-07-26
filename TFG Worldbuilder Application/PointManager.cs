@@ -1218,7 +1218,7 @@ namespace TFG_Worldbuilder_Application
                 if (PointInPolygon(o.edges[i].center_a) && !PointOnPolygon(o.edges[i].center_a))
                     return true;
             }
-            for (int i=0; i<edges.Count; i++)
+            /*for (int i=0; i<edges.Count; i++)
             {
                 for(int j=0; j<o.edges.Count; j++)
                 {
@@ -1228,7 +1228,7 @@ namespace TFG_Worldbuilder_Application
                             return true;
                     }
                 }
-            }
+            }*/
 
             return false;
         }
