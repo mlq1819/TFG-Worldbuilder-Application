@@ -624,12 +624,15 @@ public sealed partial class MapPage : Page
             if (vertices.Count > 0)
             {
                 vertices.RemovePoint();
+                Context.ExtraPoints.RemovePoint();
+                Context.RaisePropertyChanged("ExtraPoints");
             } else
             {
                 Tap_Prompt_Back.IsEnabled = false;
             }
             TapPromptTab.Text = label + ": " + vertices.Size() + " points";
         }
+
         private bool Tap_Prompt_Confirm_Greater_Region()
         {
             if (vertices.Size() < 3)

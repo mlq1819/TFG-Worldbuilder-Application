@@ -2227,6 +2227,11 @@ namespace TFG_Worldbuilder_Application
             this._points = new ObservableCollection<AbsolutePoint>();
         }
 
+        /// <summary>
+        /// Appends a point to the end of the list
+        /// </summary>
+        /// <param name="point">The point to add</param>
+        /// <returns>The added point</returns>
         public AbsolutePoint AppendPoint(AbsolutePoint point)
         {
             if (this._points == null)
@@ -2234,6 +2239,20 @@ namespace TFG_Worldbuilder_Application
             this._points.Add(new AbsolutePoint(point));
             RaisePropertyChanged("points");
             return point;
+        }
+
+        /// <summary>
+        /// Removes the last points in the list
+        /// </summary>
+        /// <returns>The removed points, or null</returns>
+        public AbsolutePoint RemovePoint()
+        {
+            if (this._points == null || this._points.Count <= 0)
+                return null;
+            AbsolutePoint output = new AbsolutePoint(this._points.Last());
+            this._points.RemoveAt(this._points.Count - 1);
+            RaisePropertyChanged("points");
+            return output;
         }
 
         public void ForceUpdatePoints()
