@@ -941,12 +941,21 @@ namespace TFG_Worldbuilder_Application
         }
 
         /// <summary>
+        /// Checks whether a given point is On any of the edges of the polygon
+        /// </summary>
+        public bool PointOnPolygon(AbsolutePoint point)
+        {
+            return border.PointOnPolygon(point);
+        }
+
+        /// <summary>
         /// Checks whether a given polygon is constrained by a polygon
         /// </summary>
         public bool PolygonInPolygon(Polygon2D polygon)
         {
             return border.PolygonInPolygon(polygon);
         }
+
 
         /// <summary>
         /// Sets the parent of the level, taking into account its borders and the parent's

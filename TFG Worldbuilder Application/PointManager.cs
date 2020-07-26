@@ -1153,6 +1153,19 @@ namespace TFG_Worldbuilder_Application
         }
 
         /// <summary>
+        /// Checks whether a given point is On any of the edges of the polygon
+        /// </summary>
+        public bool PointOnPolygon(AbsolutePoint point)
+        {
+            for(int i=0; i<edges.Count; i++)
+            {
+                if (edges[i].On(point))
+                    return true;
+            }
+            return false;
+        }
+
+        /// <summary>
         /// Checks whether a given polygon is constrained by a polygon
         /// </summary>
         public bool PolygonInPolygon(Polygon2D polygon)

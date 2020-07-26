@@ -374,6 +374,44 @@ namespace TFG_Worldbuilder_Application
         }
 
         /// <summary>
+        /// Checks whether a given point fits within any existing sublevels of the ActiveLevel
+        /// </summary>
+        /// <param name="point">The point to check against</param>
+        /// <param name="levelnum">The current level number to check for</param>
+        /// <returns></returns>
+        public bool Conflicts(AbsolutePoint point, int levelnum)
+        {
+            if (levelnum > 1 && levelnum < 6 && ActiveLevel != null)
+            {
+                for (int i = 0; i < ActiveLevel.sublevels.Count; i++)
+                {
+                    if(ActiveLevel.sublevels[i].level == levelnum)
+                    {
+                        try
+                        {
+                            if (ActiveLevel.sublevels[i].HasBorderProperty())
+                            {
+                                BorderLevel sublevel = (BorderLevel)ActiveLevel.sublevels[i];
+                                if (sublevel.PointInPolygon(point) && !sublevel.PointOnPolygon(point))
+                                    return true;
+
+                            } else if (ActiveLevel.sublevels[i].HasRadiusProperty())
+                            {
+                                Level5 sublevel = (Level5)ActiveLevel.sublevels[i];
+                                if (sublevel.CanFitPoint(point))
+                                    return true;
+                            }
+                        } catch (InvalidCastException)
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
         /// Forces all point-related objects to update
         /// </summary>
         public void ForceUpdatePoints()
@@ -636,9 +674,15 @@ namespace TFG_Worldbuilder_Application
             }
             for(int i=0; i<Lines.Count; i++)
             {
-                long temp = Lines[i].RenderedDistance(point);
                 if (Lines[i].RenderedDistance(point) == distance)
+                {
+                    RenderedPoint temp = Lines[i].GetClosestPoint(point.ToAbsolutePoint()).ToRenderedPoint();
+                    long temp2 = temp.Distance(point);
+                    bool temp3 = Lines[i].On(temp.ToAbsolutePoint());
+                    double temp4 = Lines[i].TrueDistance(temp.ToAbsolutePoint());
                     return Lines[i].GetClosestPoint(point.ToAbsolutePoint()).ToRenderedPoint();
+                }
+                    
             }
             return point;
         }

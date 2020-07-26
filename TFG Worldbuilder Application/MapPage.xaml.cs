@@ -563,11 +563,15 @@ public sealed partial class MapPage : Page
                 }
                 if (Context.ActiveLevel != null)
                 {
-                    if (Context.ActiveLevel.CanFitPoint(point) && (Context.SelectedLevel == null || Context.SelectedLevel.CanFitPoint(point)))
+                    if (Context.ActiveLevel.CanFitPoint(point) && !Context.Conflicts(point, LevelNum) && (Context.SelectedLevel == null || Context.SelectedLevel.CanFitPoint(point)))
                     {
                         vertices.AppendPoint(point);
                         Context.ExtraPoints.AppendPoint(point);
                         Context.RaisePropertyChanged("ExtraPoints");
+                    }
+                    else if(Context.Conflicts(point, LevelNum))
+                    {
+                        OpenPopupAlert("Point " + point.ToString() + " within invalid object");
                     }
                     else
                     {
