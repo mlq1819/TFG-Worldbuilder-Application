@@ -571,7 +571,7 @@ public sealed partial class MapPage : Page
                     }
                     else if(Context.Conflicts(point, LevelNum))
                     {
-                        OpenPopupAlert("Point " + point.ToString() + " within invalid object");
+                        OpenPopupAlert("Point " + point.ToString() + " within an existing object");
                     }
                     else
                     {

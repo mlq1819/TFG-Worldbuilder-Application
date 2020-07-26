@@ -1952,9 +1952,13 @@ namespace TFG_Worldbuilder_Application
         {
             if (vertical)
             {
-                return point.X == (long)(point.Y * slope_y);
+                return point.X == _vertex1.X;
             }
-            return point.Y == (long)(point.X * slope_x);
+            if (horizontal)
+            {
+                return point.Y == _vertex1.Y;
+            }
+            return Math.Abs((point.X * slope_x + y_intercept)-point.Y) < 1;
         }
 
         /// <summary>
