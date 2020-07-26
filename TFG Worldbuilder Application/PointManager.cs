@@ -1764,6 +1764,10 @@ namespace TFG_Worldbuilder_Application
             ;
         }
 
+        public override string ToString()
+        {
+            return '(' + vertex1.ToString() + ',' + vertex2.ToString() + ')';
+        }
         public void ForceUpdatePoints()
         {
             RaisePropertyChanged("vertex1");
@@ -2114,11 +2118,20 @@ namespace TFG_Worldbuilder_Application
                 v1 = _vertex1;
                 v2 = _vertex2;
             }
-            AbsolutePoint v1_2 = new AbsolutePoint((long)(v1.X + .5 + Math.Abs(slope_y)), (long)(v1.Y + .5 + Math.Abs(slope_x)));
-            AbsolutePoint v2_2 = new AbsolutePoint((long)(v2.X + .5 - Math.Abs(slope_y)), (long)(v2.Y + .5 - Math.Abs(slope_x)));
-            if (point.TrueDistance(v1) < point.TrueDistance(v1_2))
+            AbsolutePoint v1_2, v2_2;
+            if(Math.Abs(slope_x) > Math.Abs(slope_y)) //The line is more vertical than horizontal; change the y by 1, and the x by slope_y
+            {
+                v1_2 = new AbsolutePoint((long)(v1.X + .5 + Math.Abs(slope_y)), v1.Y + 1); //This should be just right of the leftmost point
+                v2_2 = new AbsolutePoint((long)(v2.X + .5 - Math.Abs(slope_y)), v2.Y - 1); //This should be just left of the rightmost point
+            }
+            else //The line is as or more horizontal than vertical; change the x by 1, and the y by slope_x
+            {
+                v1_2 = new AbsolutePoint(v1.X + 1, (long)(v1.Y + .5 + Math.Abs(slope_y))); //This should be just right of the leftmost point
+                v2_2 = new AbsolutePoint(v2.X - 1, (long)(v2.Y + .5 - Math.Abs(slope_y))); //This should be just left of the rightmost point
+            }
+            if (point.TrueDistance(v1) < point.TrueDistance(v1_2)) //This checks whether the leftmost point is closer than the next leftmost point
                 return v1;
-            if (point.TrueDistance(v2) < point.TrueDistance(v2_2))
+            if (point.TrueDistance(v2) < point.TrueDistance(v2_2)) //This checks whether the rightmost point is closer than the next rightmost point
                 return v2;
             return Intersection(CreatePerpendicularLine(point));
         }

@@ -521,6 +521,8 @@ namespace TFG_Worldbuilder_Application
         {
             for (int i = 0; i < Lines.Count; i++)
             {
+                long distance = Lines[i].RenderedDistance(point);
+                Line2D temp = Lines[i];
                 if (Lines[i].RenderedDistance(point) <= snap_range)
                     return true;
             }
