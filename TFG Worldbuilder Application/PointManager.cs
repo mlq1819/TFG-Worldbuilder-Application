@@ -2062,7 +2062,7 @@ namespace TFG_Worldbuilder_Application
             double delta = this.A * line.B - line.A * this.B;
             if (delta == 0)
                 throw new ArgumentException("Lines are parallel");
-            return new AbsolutePoint((long)((line.B * this.C - this.B * line.C) / delta), (long)((this.A * line.C - line.A * this.C) / delta));
+            return new AbsolutePoint((long)((line.B * this.C - this.B * line.C) / delta + .5), (long)((this.A * line.C - line.A * this.C) / delta + .5));
         }
 
         /// <summary>
