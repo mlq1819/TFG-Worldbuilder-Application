@@ -521,7 +521,7 @@ namespace TFG_Worldbuilder_Application
         {
             for (int i = 0; i < Lines.Count; i++)
             {
-                if (Lines[i].Distance(point.ToAbsolutePoint()) <= (long) (snap_range * Global.Zoom))
+                if (Lines[i].RenderedDistance(point) <= snap_range)
                     return true;
             }
             return false;
@@ -630,11 +630,11 @@ namespace TFG_Worldbuilder_Application
             long distance = snap_range + 1;
             for(int i=0; i<Lines.Count; i++)
             {
-                distance = Math.Min(distance, (long)(Lines[i].Distance(point.ToAbsolutePoint()) * Global.Zoom));
+                distance = Math.Min(distance, Lines[i].RenderedDistance(point));
             }
             for(int i=0; i<Lines.Count; i++)
             {
-                if (((long)(Lines[i].Distance(point.ToAbsolutePoint()) * Global.Zoom)) == distance)
+                if (Lines[i].RenderedDistance(point) == distance)
                     return Lines[i].GetClosestPoint(point.ToAbsolutePoint()).ToRenderedPoint();
             }
             return point;
@@ -676,16 +676,16 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         public Line2D GetLine(RenderedPoint point)
         {
-            long min_distance = (long) (snap_range / Global.Zoom) + 1;
+            long min_distance = snap_range + 1;
             for (int i=0; i<Lines.Count; i++)
             {
-                min_distance = Math.Min(min_distance, Lines[i].Distance(point.ToAbsolutePoint()));
+                min_distance = Math.Min(min_distance, Lines[i].RenderedDistance(point));
             }
-            if(min_distance < (long)(snap_range / Global.Zoom) + 1)
+            if(min_distance <= snap_range)
             {
                 for(int i=0; i<Lines.Count; i++)
                 {
-                    if (Lines[i].Distance(point.ToAbsolutePoint()) == min_distance)
+                    if (Lines[i].RenderedDistance(point) == min_distance)
                         return Lines[i];
                 }
             }
@@ -818,7 +818,7 @@ namespace TFG_Worldbuilder_Application
             List<Line2D> output = new List<Line2D>();
             for (int i = 0; i < Lines.Count; i++)
             {
-                if (Lines[i].Distance(point.ToAbsolutePoint()) <= snap_range / Global.Zoom)
+                if (Lines[i].RenderedDistance(point) <= snap_range)
                     output.Add(Lines[i]);
             }
             return output;

@@ -267,6 +267,10 @@ public sealed partial class MapPage : Page
         private void Text_Prompt_Cancel_Click(object sender, RoutedEventArgs e)
         {
             TextPrompt.Visibility = Visibility.Collapsed;
+            if(string.Equals(ActiveJob, "Create") && LevelNum > 1)
+            {
+                Context.ClearPoints();
+            }
             ActiveJob = "None";
         }
 

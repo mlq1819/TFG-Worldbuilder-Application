@@ -2063,6 +2063,13 @@ namespace TFG_Worldbuilder_Application
             return point.TrueDistance(GetClosestPoint(point));
         }
 
+        public long RenderedDistance(RenderedPoint point)
+        {
+            if (On(point.ToAbsolutePoint()))
+                return 0;
+            return point.Distance(GetClosestPoint(point.ToAbsolutePoint()).ToRenderedPoint());
+        }
+
         public long Distance(AbsolutePoint point)
         {
             if (On(point))
