@@ -1218,17 +1218,17 @@ namespace TFG_Worldbuilder_Application
                 if (PointInPolygon(o.edges[i].center_a) && !PointOnPolygon(o.edges[i].center_a))
                     return true;
             }
-            /*for (int i=0; i<edges.Count; i++)
+            for (int i=0; i<edges.Count; i++)
             {
                 for(int j=0; j<o.edges.Count; j++)
                 {
-                    if (!edges[i].SharesVertex(o.edges[j]))
+                    if (!edges[i].SharesVertex(o.edges[j]) && !edges[i].IsParallel(o.edges[j]))
                     {
                         if (edges[i].Intersects(o.edges[j]))
                             return true;
                     }
                 }
-            }*/
+            }
 
             return false;
         }
@@ -2086,8 +2086,9 @@ namespace TFG_Worldbuilder_Application
         /// <returns></returns>
         public bool IsParallel(Line2D line)
         {
-            double delta = this.A * line.B - line.A * this.B;
-            return delta == 0;
+            if (vertical)
+                return line.vertical;
+            return Math.Abs(slope_x - line.slope_x) < 0.01;
         }
 
         /// <summary>
@@ -2099,7 +2100,8 @@ namespace TFG_Worldbuilder_Application
         {
             if (IsParallel(line))
                 return false;
-            return On(Intersection(line));
+            AbsolutePoint intersection = Intersection(line);
+            return On(intersection) && line.On(intersection);
         }
 
         /// <summary>
