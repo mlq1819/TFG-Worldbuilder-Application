@@ -656,9 +656,15 @@ public sealed partial class MapPage : Page
         private void Tap_Prompt_Confirm_Click(object sender, RoutedEventArgs e)
         {
             if(string.Equals(ActiveJob, "Create")){
-                if (LevelNum == 2)
+                if(Context.Intersects(vertices, LevelNum))
                 {
-                    Tap_Prompt_Confirm_Greater_Region();
+                    OpenPopupAlert("Current polygon intersects with an existing object");
+                } else
+                {
+                    if (LevelNum == 2)
+                    {
+                        Tap_Prompt_Confirm_Greater_Region();
+                    }
                 }
             }
             else if(string.Equals(ActiveJob, "Move"))

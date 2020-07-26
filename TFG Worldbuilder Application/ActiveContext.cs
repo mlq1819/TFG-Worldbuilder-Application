@@ -412,6 +412,25 @@ namespace TFG_Worldbuilder_Application
         }
 
         /// <summary>
+        /// Checks whether a given polygon intersects with any existing sublevels of the current activelevel of the same level number
+        /// </summary>
+        /// <param name="polygon"></param>
+        /// <param name="levelnum"></param>
+        /// <returns></returns>
+        public bool Intersects(Polygon2D polygon, int levelnum)
+        {
+            for(int i=0; i<Shapes.Count; i++)
+            {
+                if(Shapes[i].level == levelnum)
+                {
+                    if (Shapes[i].border.IntersectsPolygon(polygon))
+                        return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
         /// Forces all point-related objects to update
         /// </summary>
         public void ForceUpdatePoints()

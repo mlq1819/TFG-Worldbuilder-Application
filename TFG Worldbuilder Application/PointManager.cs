@@ -1192,6 +1192,48 @@ namespace TFG_Worldbuilder_Application
         }
 
         /// <summary>
+        /// Checks whether two polygons intersect
+        /// </summary>
+        /// <param name="o"></param>
+        /// <returns></returns>
+        public bool IntersectsPolygon(Polygon2D o)
+        {
+            for(int i=0; i<vertices.Count; i++)
+            {
+                if (o.PointInPolygon(vertices[i]) && !o.PointOnPolygon(vertices[i]))
+                    return true;
+            }
+            for(int i=0; i<o.vertices.Count; i++)
+            {
+                if (PointInPolygon(o.vertices[i]) && !PointOnPolygon(o.vertices[i]))
+                    return true;
+            }
+            for(int i= 0; i<edges.Count; i++)
+            {
+                if (o.PointInPolygon(edges[i].center_a) && !o.PointOnPolygon(edges[i].center_a))
+                    return true;
+            }
+            for (int i = 0; i < o.edges.Count; i++)
+            {
+                if (PointInPolygon(o.edges[i].center_a) && !PointOnPolygon(o.edges[i].center_a))
+                    return true;
+            }
+            for (int i=0; i<edges.Count; i++)
+            {
+                for(int j=0; j<o.edges.Count; j++)
+                {
+                    if (!edges[i].SharesVertex(o.edges[j]))
+                    {
+                        if (edges[i].Intersects(o.edges[j]))
+                            return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
         /// Creates and returns a centerpoint for the polygon
         /// </summary>
         public AbsolutePoint GetCenter()
@@ -1824,6 +1866,15 @@ namespace TFG_Worldbuilder_Application
         protected Line2D Centered()
         {
             return new Line2D(_vertex1, _vertex2 - _vertex1);
+        }
+
+        public bool SharesVertex(Line2D o)
+        {
+            if (_vertex1 == o._vertex1 || _vertex1 == o._vertex2)
+                return true;
+            if (_vertex2 == o._vertex1 || _vertex2 == o._vertex2)
+                return true;
+            return false;
         }
 
         public static bool operator==(Line2D a, Line2D b)
