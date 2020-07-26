@@ -73,6 +73,21 @@ namespace TFG_Worldbuilder_Application
         public MyPointCollection Vertices;
         public ObservableCollection<Line2D> Lines;
         public MyPointCollection ExtraPoints;
+        public ObservableCollection<Line2D> ExtraLines
+        {
+            get
+            {
+                ObservableCollection<Line2D> output = new ObservableCollection<Line2D>();
+                if(ExtraPoints.Count > 1)
+                {
+                    for (int i = 0; i < ExtraPoints.Count; i++)
+                    {
+                        output.Add(new Line2D(ExtraPoints.points[i], ExtraPoints.points[(i + 1) % ExtraPoints.Count]));
+                    }
+                }
+                return output;
+            }
+        }
         private double _Zoom = 1;
         public string ZoomStr
         {
@@ -131,6 +146,8 @@ namespace TFG_Worldbuilder_Application
             if (PropertyChanged != null)
             {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(str));
+                if (string.Equals(str, "ExtraPoints"))
+                    RaisePropertyChanged("ExtraLines");
             }
         }
 
@@ -395,7 +412,7 @@ namespace TFG_Worldbuilder_Application
         public void ClearPoints()
         {
             this.ExtraPoints = new MyPointCollection();
-            ((MyPointCollection) this.ExtraPoints).RaisePropertyChanged("points");
+            this.ExtraPoints.ForceUpdatePoints();
             RaisePropertyChanged("ExtraPoints");
         }
 
@@ -592,7 +609,27 @@ namespace TFG_Worldbuilder_Application
             }
             return point;
         }
-        
+
+        /// <summary>
+        /// Snaps the point to the closest Circles element in range
+        /// </summary>
+        public RenderedPoint SnapToLines(RenderedPoint point)
+        {
+            if (!SnapsToLine(point))
+                return point;
+            long distance = snap_range + 1;
+            for(int i=0; i<Lines.Count; i++)
+            {
+                distance = Math.Min(distance, (long)(Lines[i].Distance(point.ToAbsolutePoint()) * Global.Zoom));
+            }
+            for(int i=0; i<Lines.Count; i++)
+            {
+                if (((long)(Lines[i].Distance(point.ToAbsolutePoint()) * Global.Zoom)) == distance)
+                    return Lines[i].GetClosestPoint(point.ToAbsolutePoint()).ToRenderedPoint();
+            }
+            return point;
+        }
+
         /// <summary>
         /// Gets the closest element of ExtraPoint in range
         /// </summary>
@@ -788,6 +825,8 @@ namespace TFG_Worldbuilder_Application
                 return SnapToExtraPoint(point);
             if (SnapsToVertices(point))
                 return SnapToVertices(point);
+            if (SnapsToLine(point))
+                return SnapToLines(point);
             return point;
         }
 

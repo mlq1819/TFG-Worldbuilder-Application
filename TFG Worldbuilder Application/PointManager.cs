@@ -2157,12 +2157,15 @@ namespace TFG_Worldbuilder_Application
         public event PropertyChangedEventHandler PropertyChanged;
         public void RaisePropertyChanged(string str)
         {
+
+            if (string.Equals(str, "points"))
+            {
+                RaisePropertyChanged("_points");
+            }
             if (PropertyChanged != null)
             {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(str));
             }
-            if (string.Equals(str, "points"))
-                RaisePropertyChanged("_points");
         }
         private string _base_color = "#F2F2F2";
         public string base_color
@@ -2179,7 +2182,16 @@ namespace TFG_Worldbuilder_Application
             }
         }
 
+        public int Count
+        {
+            get
+            {
+                return _points.Count;
+            }
+        }
+
         public ObservableCollection<AbsolutePoint> _points;
+
         public ObservableCollection<RenderedPoint> points
         {
             get
