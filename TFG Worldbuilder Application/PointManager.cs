@@ -2126,8 +2126,8 @@ namespace TFG_Worldbuilder_Application
             }
             else //The line is as or more horizontal than vertical; change the x by 1, and the y by slope_x
             {
-                v1_2 = new AbsolutePoint(v1.X + 1, (long)(v1.Y + .5 + Math.Abs(slope_y))); //This should be just right of the leftmost point
-                v2_2 = new AbsolutePoint(v2.X - 1, (long)(v2.Y + .5 - Math.Abs(slope_y))); //This should be just left of the rightmost point
+                v1_2 = new AbsolutePoint(v1.X + 1, (long)(v1.Y + .5 + Math.Abs(slope_x))); //This should be just right of the leftmost point
+                v2_2 = new AbsolutePoint(v2.X - 1, (long)(v2.Y + .5 - Math.Abs(slope_x))); //This should be just left of the rightmost point
             }
             if (point.TrueDistance(v1) < point.TrueDistance(v1_2)) //This checks whether the leftmost point is closer than the next leftmost point
                 return v1;
@@ -2160,22 +2160,22 @@ namespace TFG_Worldbuilder_Application
             double slope = PerpendicularSlope();
             if(Above(v1) ^ slope > 0)
             {
-                //Case 1: Above(v1) && slope < 0 ==> v2.Y + n*slope is Below (Opposite!)
-                //Case 2: Below(v1) && slope > 0 ==> v2.Y + n*slope is Above (Opposite!)
+                //Case 1: Above(v1) && slope < 0 ==> v2.Y - n*slope is Below (Opposite!)
+                //Case 2: Below(v1) && slope > 0 ==> v2.Y - n*slope is Above (Opposite!)
                 int i = 1;
                 do
                 {
-                    v2 = v1 + new AbsolutePoint(i*i * 100, (long)(i*i * 100 * slope));
+                    v2 = v1 + new AbsolutePoint(i*i * 100, (long)(i*i * -100 * slope));
                     i++;
                 } while (Above(v2));
             } else
             {
-                //Case 1: Above(v1) && slope > 0 ==> v2.Y - n*slope is Below (Opposite!)
-                //Case 2: Below(v1) && slope < 0 ==> v2.Y - n*slope is Above (Opposite!)
+                //Case 1: Above(v1) && slope > 0 ==> v2.Y + n*slope is Below (Opposite!)
+                //Case 2: Below(v1) && slope < 0 ==> v2.Y + n*slope is Above (Opposite!)
                 int i = 1;
                 do
                 {
-                    v2 = v1 + new AbsolutePoint(i*i * -100, (long)(i*i * -100 * slope));
+                    v2 = v1 + new AbsolutePoint(i*i * -100, (long)(i*i * 100 * slope));
                     i++;
                 } while (Below(v2));
             }
@@ -2184,6 +2184,8 @@ namespace TFG_Worldbuilder_Application
                 v2 = Intersection(new Line2D(v1, v2));
                 v2 = 2 * v2 - v1;
             }
+            if ((new Line2D(v1, v2)).Length > 300)
+                ;
             return new Line2D(v1, v2);
         }
     }
