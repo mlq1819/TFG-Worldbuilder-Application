@@ -102,6 +102,11 @@
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
                 <ItemsControl x:Name="ShapeNamesControl" ItemsSource="{x:Bind Path=Context.Shapes, Mode=OneWay}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="local:BorderLevel">
                             <Grid VerticalAlignment="Center" HorizontalAlignment="Center" Margin="{x:Bind Path=margin, Mode=OneWay}" Visibility="{x:Bind Path=name_visibility, Mode=OneWay}">
@@ -127,6 +132,11 @@
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
                 <ItemsControl x:Name="ShapesEdgesControl" ItemsSource="{x:Bind Path=Context.Lines, Mode=OneWay}"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="local:Line2D">
                             <Line Fill="{x:Bind Path=color, Mode=OneWay}" StrokeThickness="1" X1="{x:Bind Path=X1, Mode=OneWay}" Y1="{x:Bind Path=Y1, Mode=OneWay}" X2="{x:Bind Path=X2, Mode=OneWay}" Y2="{x:Bind Path=Y2, Mode=OneWay}"/>
@@ -134,6 +144,11 @@
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
                 <ItemsControl x:Name="ExtraPointsControl" ItemsSource="{x:Bind Path=Context.ExtraPoints.points, Mode=OneWay}"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="local:RenderedPoint">
                             <Path Fill="LightCoral" StrokeThickness="0">
