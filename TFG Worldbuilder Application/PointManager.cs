@@ -2129,8 +2129,6 @@ namespace TFG_Worldbuilder_Application
                 throw new DivideByZeroException("Slope does not exist for vertical lines");
             if (vertical)
                 return 0;
-            if (dy < 0 && dx < 0 && (slope_x < 0 || slope_y < 0))
-                ;
             return -1 / slope_x;
         }
 
