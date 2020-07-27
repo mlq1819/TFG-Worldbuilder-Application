@@ -94,7 +94,6 @@ namespace TFG_Worldbuilder_Application
             ForceUpdatePoints();
         }
 
-
         private void Page_SizeChanged(object sender, SizeChangedEventArgs e)
         {
 
@@ -344,6 +343,8 @@ namespace TFG_Worldbuilder_Application
                     {
                         Context.SelectedLevel.name = prompt_text;
                         TextPrompt.Visibility = Visibility.Collapsed;
+                        Context.NullSelected();
+                        UpdateSaveState();
                     } catch (ArgumentException rename_exception)
                     {
                         OpenPopupAlert(rename_exception.Message);
