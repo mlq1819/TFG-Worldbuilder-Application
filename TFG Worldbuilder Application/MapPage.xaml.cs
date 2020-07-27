@@ -676,7 +676,7 @@ namespace TFG_Worldbuilder_Application
         }
 
         /// <summary>
-        /// Changes the moving point
+        /// Changes the moving point for the tap prompt
         /// </summary>
         /// <param name="point"></param>
         private void WorldCanvas_Move_Point(AbsolutePoint point)
@@ -686,10 +686,12 @@ namespace TFG_Worldbuilder_Application
                 vertices.AppendPoint(point);
             else
                 vertices.vertices[0] = new AbsolutePoint(point);
+            TapPromptTab.Text = label + ": " + vertices.Size() + " points";
             if (vertices.Count > 0)
                 Tap_Prompt_Back.IsEnabled = true;
             else
                 Tap_Prompt_Back.IsEnabled = false;
+
         }
         
         /// <summary>
@@ -780,7 +782,14 @@ namespace TFG_Worldbuilder_Application
             }
             else if(ActiveJob == Job.Move)
             {
-                //TODO
+                if(vertices.Count > 0)
+                {
+                    Context.SetVertex(vertices[0]);
+                    TapPrompt.Visibility = Visibility.Collapsed;
+                } else
+                {
+                    OpenPopupAlert("No new position mapped to move to");
+                }
             }
         }
 

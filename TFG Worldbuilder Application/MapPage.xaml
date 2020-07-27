@@ -86,7 +86,7 @@
             <MenuFlyoutItem Text="Delete" x:Name="Shapes_Control_Delete" Click="Shapes_Control_Delete_Click"/>
         </MenuFlyout>
         <MenuFlyout x:Name="VerticesControlFlyout" x:Key="VerticesControlFlyout">
-            <MenuFlyoutItem Text="{x:Bind Path=Context.Vertices.points[Context.SelectedPoint].ToString(), Mode=OneWay}" IsEnabled="False"/>
+            <MenuFlyoutItem Text="{x:Bind Path=Context.CurrentPoint.pointstr, Mode=OneWay}" IsEnabled="False"/>
             <MenuFlyoutItem Text="Move" x:Name="Vertices_Control_Move" Click="Vertices_Control_Move_Click"/>
             <MenuFlyoutItem Text="Delete" x:Name="Vertices_Control_Delete" Click="Vertices_Control_Delete_Click"/>
         </MenuFlyout>

@@ -355,7 +355,7 @@ namespace TFG_Worldbuilder_Application
             }
             foreach(int i in updatedvalues)
             {
-                if (Intersects(TestShapes[i].border, TestShapes[i].level, TestShapes)
+                if (Intersects(TestShapes[i].border, TestShapes[i].level, TestShapes))
                     return false;
             }
             return true;
