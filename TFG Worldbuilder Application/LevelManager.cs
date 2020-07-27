@@ -1053,10 +1053,10 @@ namespace TFG_Worldbuilder_Application
             double width_percent, height_percent;
             width_percent = ((double)(MaxX - MinX)) / Global.CanvasSize.X;
             height_percent = ((double)(MaxY - MinY)) / Global.CanvasSize.Y;
-            myZoom = Math.Max(width_percent, height_percent);
+            myZoom = 1 / Math.Max(width_percent, height_percent);
             if (parent == null)
                 return myZoom;
-            return Math.Min(myZoom, parent.GetMedZoom());
+            return Math.Max(myZoom, parent.GetMedZoom());
         }
     }
 
