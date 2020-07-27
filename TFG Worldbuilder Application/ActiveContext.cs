@@ -259,6 +259,71 @@ namespace TFG_Worldbuilder_Application
         }
 
         /// <summary>
+        /// Sets the SelectedPoint to new_pos
+        /// </summary>
+        /// <param name="new_pos">The position the vertex is to be changed to</param>
+        /// <returns>true if there is a SelectedPoint, false otherwise</returns>
+        public bool SetVertex(RenderedPoint new_pos)
+        {
+            return SetVertex(new_pos.ToAbsolutePoint());
+        }
+
+        /// <summary>
+        /// Sets the SelectedPoint to new_pos
+        /// </summary>
+        /// <param name="new_pos">The position the vertex is to be changed to</param>
+        /// <returns>true if there is a SelectedPoint, false otherwise</returns>
+        public bool SetVertex(AbsolutePoint new_pos)
+        {
+            if(SelectedPoint >= 0)
+            {
+                for(int i=0; i<Shapes.Count; i++)
+                {
+                    Shapes[i].MovePoint(Vertices._points[SelectedPoint], new_pos);
+                }
+                RaisePropertyChanged("Shapes");
+                UpdateVertices();
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Sets the vertex at old_pos to be at new_pos
+        /// </summary>
+        /// <param name="old_post">The current position of the vertex to be changed</param>
+        /// <param name="new_pos">The position the vertex is to be changed to</param>
+        /// <returns>true if the vertex exists, false otherwise</returns>
+        public bool SetVertex(RenderedPoint old_pos, RenderedPoint new_pos)
+        {
+            return SetVertex(old_pos.ToAbsolutePoint(), new_pos.ToAbsolutePoint());
+        }
+
+        /// <summary>
+        /// Sets the vertex at old_pos to be at new_pos
+        /// </summary>
+        /// <param name="old_post">The current position of the vertex to be changed</param>
+        /// <param name="new_pos">The position the vertex is to be changed to</param>
+        /// <returns>true if the vertex exists, false otherwise</returns>
+        public bool SetVertex(AbsolutePoint old_pos, AbsolutePoint new_pos)
+        {
+            for(int i=0; i<Vertices.Count; i++)
+            {
+                if (Vertices._points[i] == old_pos)
+                {
+                    for(int j=0; j<Shapes.Count; j++)
+                    {
+                        Shapes[i].MovePoint(old_pos, new_pos);
+                    }
+                    RaisePropertyChanged("Shapes");
+                    UpdateVertices();
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
         /// Updates the Shapes to match those in ActiveLevel
         /// </summary>
         public void UpdateShapes()

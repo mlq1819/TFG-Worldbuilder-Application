@@ -491,12 +491,53 @@ namespace TFG_Worldbuilder_Application
             Create_Greater_Region();
         }
 
+
+        private childItem FindVisualChild<childItem>(DependencyObject obj) where childItem : DependencyObject
+        {
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(obj); i++)
+            {
+                DependencyObject child = VisualTreeHelper.GetChild(obj, i);
+                if (child != null && child is childItem)
+                    return (childItem)child;
+                else
+                {
+                    childItem childOfChild = FindVisualChild<childItem>(child);
+                    if (childOfChild != null)
+                        return childOfChild;
+                }
+            }
+            return null;
+        }
+
+
         /// <summary>
         /// Displays a flyout menu of options when a Vertex is clicked
         /// </summary>
         private void WorldCanvas_ClickVertex(RenderedPoint point)
         {
-            Context.SetSelected(point);
+            foreach (object child in ShapesControl.Items)
+            {
+                try
+                {
+                    Windows.UI.Xaml.Shapes.Path vertex = FindVisualChild<Windows.UI.Xaml.Shapes.Path>(ShapesControl.ContainerFromItem(child) as DependencyObject);
+                    if (vertex != null)
+                    {
+                        FlyoutBase flyout = FlyoutBase.GetAttachedFlyout(vertex as FrameworkElement);
+                        if (flyout != null)
+                        {
+                            FlyoutShowOptions show_options = new FlyoutShowOptions();
+                            show_options.Position = point.ToWindowsPoint();
+                            flyout.ShowAt(vertex, show_options);
+                            Context.SetSelected(point);
+                            return;
+                        }
+                    }
+                }
+                catch (InvalidCastException)
+                {
+                    ;
+                }
+            }
         }
 
         /// <summary>
@@ -522,24 +563,6 @@ namespace TFG_Worldbuilder_Application
         {
 
         }
-
-        private childItem FindVisualChild<childItem>(DependencyObject obj) where childItem : DependencyObject
-        {
-            for(int i=0; i<VisualTreeHelper.GetChildrenCount(obj); i++)
-            {
-                DependencyObject child = VisualTreeHelper.GetChild(obj, i);
-                if (child != null && child is childItem)
-                    return (childItem)child;
-                else
-                {
-                    childItem childOfChild = FindVisualChild<childItem>(child);
-                    if (childOfChild != null)
-                        return childOfChild;
-                }
-            }
-            return null;
-        }
-
         /// <summary>
         /// Displays a flyout menu of options when a BorderLevel object is clicked
         /// </summary>

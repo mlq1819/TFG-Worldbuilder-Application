@@ -84,7 +84,9 @@
             <MenuFlyoutItem Text="Rename" x:Name="Shapes_Control_Rename" Click="Shapes_Control_Rename_Click"/>
             <MenuFlyoutItem Text="Delete" x:Name="Shapes_Control_Delete" Click="Shapes_Control_Delete_Click"/>
             <MenuFlyoutItem Text="Focus" x:Name="Shapes_Control_Focus" Click="Shapes_Control_Focus_Click"/>
-            <MenuFlyoutItem Text="Test"/>
+        </MenuFlyout>
+        <MenuFlyout x:Name="VerticesControlFlyout" x:Key="VerticesControlFlyout">
+            <MenuFlyoutItem Text="{x:Bind Path=Context.Vertices.points[Context.SelectedPoint].ToString(), Mode=OneWay}" IsEnabled="False"/>
         </MenuFlyout>
     </Page.Resources>
 
@@ -137,7 +139,7 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="local:RenderedPoint">
-                            <Path Fill="{x:Bind Path=color, Mode=OneWay}" StrokeThickness="0" Visibility="{x:Bind Path=visibility, Mode=OneWay}">
+                            <Path Fill="{x:Bind Path=color, Mode=OneWay}" StrokeThickness="0" Visibility="{x:Bind Path=visibility, Mode=OneWay}" FlyoutBase.AttachedFlyout="{StaticResource VerticesControlFlyout}">
                                 <Path.Data>
                                     <EllipseGeometry Center="{x:Bind Path=pointstr, Mode=OneWay}" RadiusX="10" RadiusY="10"/>
                                 </Path.Data>
