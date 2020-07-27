@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.UI.Xaml.Media;
 using Windows.Foundation;
+using Windows.ApplicationModel.Contacts;
 
 namespace TFG_Worldbuilder_Application
 {
@@ -52,6 +53,17 @@ namespace TFG_Worldbuilder_Application
             }
         }
         private int _selectedline = -1;
+        public RenderedPoint CurrentPoint
+        {
+            get
+            {
+                if(SelectedPoint >= 0)
+                {
+                    return Vertices.points[SelectedPoint];
+                }
+                return null;
+            }
+        }
         public int SelectedLine
         {
             get
@@ -324,6 +336,32 @@ namespace TFG_Worldbuilder_Application
         }
 
         /// <summary>
+        /// Checks if the SelectedPoint would work if moved to new_pos
+        /// </summary>
+        public bool TestMovePoint(AbsolutePoint new_pos)
+        {
+            if (SelectedPoint < 0)
+                return false;
+            ObservableCollection<BorderLevel> TestShapes = new ObservableCollection<BorderLevel>();
+            List<int> updatedvalues = new List<int>();
+            for(int i=0; i<Shapes.Count; i++)
+            {
+                TestShapes.Add(new BorderLevel(Shapes[i]));
+                if (TestShapes[i].HasPoint(CurrentPoint.ToAbsolutePoint()))
+                {
+                    TestShapes[i].MovePoint(CurrentPoint.ToAbsolutePoint(), new_pos);
+                    updatedvalues.Add(i);
+                }
+            }
+            foreach(int i in updatedvalues)
+            {
+                if (Intersects(TestShapes[i].border, TestShapes[i].level, TestShapes)
+                    return false;
+            }
+            return true;
+        }
+
+        /// <summary>
         /// Updates the Shapes to match those in ActiveLevel
         /// </summary>
         public void UpdateShapes()
@@ -439,6 +477,47 @@ namespace TFG_Worldbuilder_Application
         }
 
         /// <summary>
+        /// Checks whether a given point fits within any existing sublevels of the activelevel
+        /// </summary>
+        /// <param name="point">The point to check against</param>
+        /// <param name="levelnum">The current level number to check for</param>
+        /// <param name="activelevel">The activelevel to check the sublevels of</param>
+        /// <returns></returns>
+        private static bool Conflicts(AbsolutePoint point, int levelnum, SuperLevel activelevel)
+        {
+            if (levelnum > 1 && levelnum < 6 && activelevel != null)
+            {
+                for (int i = 0; i < activelevel.sublevels.Count; i++)
+                {
+                    if (activelevel.sublevels[i].level == levelnum)
+                    {
+                        try
+                        {
+                            if (activelevel.sublevels[i].HasBorderProperty())
+                            {
+                                BorderLevel sublevel = (BorderLevel)activelevel.sublevels[i];
+                                if (sublevel.PointInPolygon(point) && !sublevel.PointOnPolygon(point))
+                                    return true;
+
+                            }
+                            else if (activelevel.sublevels[i].HasRadiusProperty())
+                            {
+                                Level5 sublevel = (Level5)activelevel.sublevels[i];
+                                if (sublevel.CanFitPoint(point))
+                                    return true;
+                            }
+                        }
+                        catch (InvalidCastException)
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
         /// Checks whether a given point fits within any existing sublevels of the ActiveLevel
         /// </summary>
         /// <param name="point">The point to check against</param>
@@ -446,31 +525,24 @@ namespace TFG_Worldbuilder_Application
         /// <returns></returns>
         public bool Conflicts(AbsolutePoint point, int levelnum)
         {
-            if (levelnum > 1 && levelnum < 6 && ActiveLevel != null)
-            {
-                for (int i = 0; i < ActiveLevel.sublevels.Count; i++)
-                {
-                    if(ActiveLevel.sublevels[i].level == levelnum)
-                    {
-                        try
-                        {
-                            if (ActiveLevel.sublevels[i].HasBorderProperty())
-                            {
-                                BorderLevel sublevel = (BorderLevel)ActiveLevel.sublevels[i];
-                                if (sublevel.PointInPolygon(point) && !sublevel.PointOnPolygon(point))
-                                    return true;
+            return Conflicts(point, levelnum, ActiveLevel);
+        }
 
-                            } else if (ActiveLevel.sublevels[i].HasRadiusProperty())
-                            {
-                                Level5 sublevel = (Level5)ActiveLevel.sublevels[i];
-                                if (sublevel.CanFitPoint(point))
-                                    return true;
-                            }
-                        } catch (InvalidCastException)
-                        {
-                            return true;
-                        }
-                    }
+        /// <summary>
+        /// Checks whether a given polygon intersects with any existing shapes of the same level number
+        /// </summary>
+        /// <param name="polygon"></param>
+        /// <param name="levelnum"></param>
+        /// <param name="shapes"></param>
+        /// <returns></returns>
+        private static bool Intersects(Polygon2D polygon, int levelnum, IList<BorderLevel> shapes)
+        {
+            for (int i = 0; i < shapes.Count; i++)
+            {
+                if (shapes[i].level == levelnum)
+                {
+                    if (shapes[i].border.IntersectsPolygon(polygon))
+                        return true;
                 }
             }
             return false;
@@ -484,15 +556,7 @@ namespace TFG_Worldbuilder_Application
         /// <returns></returns>
         public bool Intersects(Polygon2D polygon, int levelnum)
         {
-            for(int i=0; i<Shapes.Count; i++)
-            {
-                if(Shapes[i].level == levelnum)
-                {
-                    if (Shapes[i].border.IntersectsPolygon(polygon))
-                        return true;
-                }
-            }
-            return false;
+            return Intersects(polygon, levelnum, Shapes);
         }
 
         /// <summary>

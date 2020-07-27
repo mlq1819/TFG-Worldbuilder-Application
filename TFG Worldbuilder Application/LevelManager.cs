@@ -166,6 +166,25 @@ namespace TFG_Worldbuilder_Application
         }
 
         /// <summary>
+        /// Copy constructor
+        /// </summary>
+        public SuperLevel(SuperLevel o) : this(o.name, o.level, o.leveltype, o.subtype, o.parent){
+            for(int i=0; i<o.sublevels.Count; i++)
+            {
+                AddSublevel(o.sublevels[i].Copy());
+            }
+            for(int i=0; i<o.leveldata.Count; i++)
+            {
+                this.leveldata.Add(o.leveldata[i]);
+            }
+            this.color = o.color;
+        }
+        public virtual SuperLevel Copy()
+        {
+            return new SuperLevel(this);
+        }
+
+        /// <summary>
         /// basic destructor
         /// </summary>
         ~SuperLevel()
@@ -825,7 +844,23 @@ namespace TFG_Worldbuilder_Application
             if (this.border.Count > 0 && this.border.Count < 3)
                 this.border = new Polygon2D();
         }
-        
+
+        /// <summary>
+        /// Copy constructor
+        /// </summary>
+        public BorderLevel(BorderLevel o) : base(o)
+        {
+            this.border = new Polygon2D();
+            for (int i = 0; i < border.Count; i++)
+            {
+                border.AppendPoint(o.border.vertices[i]);
+            }
+        }
+        public override SuperLevel Copy()
+        {
+            return new BorderLevel(this);
+        }
+
         /// <summary>
         /// Returns true if the passed point fits within the boundaries and level
         /// </summary>
@@ -958,7 +993,6 @@ namespace TFG_Worldbuilder_Application
             return border.PolygonInPolygon(polygon);
         }
 
-
         /// <summary>
         /// Sets the parent of the level, taking into account its borders and the parent's
         /// </summary>
@@ -1085,7 +1119,20 @@ namespace TFG_Worldbuilder_Application
                 this.center = null;
             }
         }
-        
+
+        /// <summary>
+        /// Copy constructor
+        /// </summary>
+        public PointLevel(PointLevel o) : base(o)
+        {
+            this.center = o.center;
+        }
+
+        public override SuperLevel Copy()
+        {
+            return new PointLevel(this);
+        }
+
         /// <summary>
         /// Sets the parent of the level, taking into account its borders and the parent's
         /// </summary>
@@ -1342,7 +1389,20 @@ namespace TFG_Worldbuilder_Application
                 this.radius = 0;
             }
         }
-        
+
+        /// <summary>
+        /// Copy constructor
+        /// </summary>
+        public Level5(Level5 o) : base(o)
+        {
+            this.radius = o.radius;
+        }
+
+        public override SuperLevel Copy()
+        {
+            return new Level5(this);
+        }
+
         /// <summary>
         /// Returns true if the point is within the radius of the center
         /// </summary>

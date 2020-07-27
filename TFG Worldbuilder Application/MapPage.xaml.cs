@@ -674,6 +674,23 @@ namespace TFG_Worldbuilder_Application
                     Tap_Prompt_Back.IsEnabled = false;
             }
         }
+
+        /// <summary>
+        /// Changes the moving point
+        /// </summary>
+        /// <param name="point"></param>
+        private void WorldCanvas_Move_Point(AbsolutePoint point)
+        {
+
+            if (vertices.Count < 1)
+                vertices.AppendPoint(point);
+            else
+                vertices.vertices[0] = new AbsolutePoint(point);
+            if (vertices.Count > 0)
+                Tap_Prompt_Back.IsEnabled = true;
+            else
+                Tap_Prompt_Back.IsEnabled = false;
+        }
         
         /// <summary>
         /// Performs the standard operations for a normal canvas click
@@ -856,6 +873,17 @@ namespace TFG_Worldbuilder_Application
             Context.SetActive(Context.SelectedLevel);
             Context.NullSelected();
             ResetZoom();
+        }
+
+        private void Vertices_Control_Delete_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Vertices_Control_Move_Click(object sender, RoutedEventArgs e)
+        {
+            ActiveJob = Job.Move;
+            OpenTapPrompt("Click new position for " + Context.CurrentPoint.ToString());
         }
     }
 }
