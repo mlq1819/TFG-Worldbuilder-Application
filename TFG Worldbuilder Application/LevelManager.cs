@@ -713,6 +713,11 @@ namespace TFG_Worldbuilder_Application
                 return 1.0f;
             return Math.Min(1.0f, parent.GetMedZoom());
         }
+
+        public virtual AbsolutePoint GetCenter()
+        {
+            return new AbsolutePoint(Global.CanvasSize.X / 2, Global.CanvasSize.Y / 2);
+        }
     };
 
     /// <summary>
@@ -1057,6 +1062,11 @@ namespace TFG_Worldbuilder_Application
             if (parent == null)
                 return myZoom;
             return Math.Max(myZoom, parent.GetMedZoom());
+        }
+
+        public override AbsolutePoint GetCenter()
+        {
+            return border.GetCenter();
         }
     }
 
