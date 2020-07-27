@@ -28,6 +28,20 @@ namespace TFG_Worldbuilder_Application
     public sealed partial class MapPage : Page
     {
 
+        public enum Job : int
+        {
+            None = 0,
+            NewFile = 1,
+            OpenFile = 2,
+            CloseFile = 3,
+            Exit = 4,
+            Create = 5,
+            Move = 6,
+            Rename = 7,
+            Open = 8
+
+        }
+
         private Canvas _mapcanvas;
         public Canvas MapCanvas
         {
@@ -48,7 +62,7 @@ namespace TFG_Worldbuilder_Application
         private Polygon2D vertices = new Polygon2D();
         private LevelType type = LevelType.Invalid;
         private string subtype = "";
-        private string ActiveJob = "";
+        private Job ActiveJob = Job.None;
         private bool ForceClose = false;
         public ActiveContext Context;
         public ObservableCollection<Level1> Worlds;
@@ -130,7 +144,7 @@ namespace TFG_Worldbuilder_Application
             }
             else
             {
-                ActiveJob = "New File";
+                ActiveJob = Job.NewFile;
                 OpenUnsavedWorkAlert();
             }
         }
@@ -180,7 +194,7 @@ namespace TFG_Worldbuilder_Application
             }
             else
             {
-                ActiveJob = "Open File";
+                ActiveJob = Job.OpenFile;
                 OpenUnsavedWorkAlert();
             }
         }
@@ -227,7 +241,7 @@ namespace TFG_Worldbuilder_Application
                 this.Frame.Navigate(typeof(MainPage));
             } else
             {
-                ActiveJob = "Close File";
+                ActiveJob = Job.CloseFile;
                 OpenUnsavedWorkAlert();
             }
         }
@@ -241,7 +255,7 @@ namespace TFG_Worldbuilder_Application
             {
                 CoreApplication.Exit();
             } else {
-                ActiveJob = "Exit";
+                ActiveJob = Job.Exit;
                 OpenUnsavedWorkAlert();
             }
         }
@@ -268,11 +282,11 @@ namespace TFG_Worldbuilder_Application
         private void Text_Prompt_Cancel_Click(object sender, RoutedEventArgs e)
         {
             TextPrompt.Visibility = Visibility.Collapsed;
-            if (string.Equals(ActiveJob, "Create") && LevelNum > 1)
+            if ((ActiveJob == Job.Create) && LevelNum > 1)
             {
                 Context.ClearPoints();
             }
-            ActiveJob = "None";
+            ActiveJob = Job.None;
         }
 
         private void Text_Prompt_Confirm_Click(object sender, RoutedEventArgs e)
@@ -290,7 +304,7 @@ namespace TFG_Worldbuilder_Application
             }
             else
             {
-                if (string.Equals(ActiveJob, "Create"))
+                if (ActiveJob == Job.Create)
                 {
                     switch (this.LevelStep) // Control for level step
                     {
@@ -315,7 +329,7 @@ namespace TFG_Worldbuilder_Application
                             break;
                     }
                 }
-                else if (string.Equals(ActiveJob, "Open"))
+                else if (ActiveJob == Job.Open)
                 {
                     TextPrompt.Visibility = Visibility.Collapsed;
                     switch (this.LevelNum) //Control for level type
@@ -324,7 +338,7 @@ namespace TFG_Worldbuilder_Application
                             Context.SetWorld(prompt_text);
                             break;
                     }
-                } else if (string.Equals(ActiveJob, "Rename") && Context.SelectedLevel != null)
+                } else if ((ActiveJob == Job.Rename) && Context.SelectedLevel != null)
                 {
                     try
                     {
@@ -346,7 +360,7 @@ namespace TFG_Worldbuilder_Application
             LevelNum = 1;
             LevelStep = 2;
             type = LevelType.World;
-            ActiveJob = "Create";
+            ActiveJob = Job.Create;
             OpenTextPrompt("What type of world are you creating?\nEnter a subtype:");
         }
 
@@ -357,7 +371,7 @@ namespace TFG_Worldbuilder_Application
         {
             LevelNum = 2;
             LevelStep = 1;
-            ActiveJob = "Create";
+            ActiveJob = Job.Create;
             vertices = new Polygon2D();
             Context.ClearPoints();
             OpenTapPrompt("Enter at least 3 points for Greater Region");
@@ -393,7 +407,7 @@ namespace TFG_Worldbuilder_Application
                 Context.SetActive(new Level1(name, subtype));
                 Global.ActiveFile.Worlds.Add((Level1)Context.ActiveLevel);
             }
-            ActiveJob = "None";
+            ActiveJob = Job.None;
             UpdateSaveState();
         }
 
@@ -416,7 +430,7 @@ namespace TFG_Worldbuilder_Application
                     Context.UpdateAll();
                 }
             }
-            ActiveJob = "None";
+            ActiveJob = Job.None;
             UpdateSaveState();
         }
 
@@ -643,14 +657,14 @@ namespace TFG_Worldbuilder_Application
         private void Canvas_Clicked(RenderedPoint point)
         {
             point = Context.SnapToAPoint(point);
-            if (string.Equals(ActiveJob, "Create"))
+            if (ActiveJob == Job.Create)
             {
                 WorldCanvas_Add_Point(point.ToAbsolutePoint());
-            } else if(string.Equals(ActiveJob, "Move"))
+            } else if(ActiveJob == Job.Move)
             {
-
+                //TODO
             }
-            else if (string.Equals(ActiveJob, "None")){
+            else if (ActiveJob == Job.None){
                 if (Context.SnapsToSomething(point))
                 {
                     WorldCanvas_ClickObject(point);
@@ -678,7 +692,7 @@ namespace TFG_Worldbuilder_Application
         private void Tap_Prompt_Cancel_Click(object sender, RoutedEventArgs e)
         {
             TapPrompt.Visibility = Visibility.Collapsed;
-            ActiveJob = "None";
+            ActiveJob = Job.None;
             Context.ClearPoints();
         }
 
@@ -710,7 +724,7 @@ namespace TFG_Worldbuilder_Application
 
         private void Tap_Prompt_Confirm_Click(object sender, RoutedEventArgs e)
         {
-            if(string.Equals(ActiveJob, "Create")){
+            if(ActiveJob == Job.Create){
                 if(Context.Intersects(vertices, LevelNum))
                 {
                     OpenPopupAlert("Current object intersects with an existing object");
@@ -722,7 +736,7 @@ namespace TFG_Worldbuilder_Application
                     }
                 }
             }
-            else if(string.Equals(ActiveJob, "Move"))
+            else if(ActiveJob == Job.Move)
             {
                 //TODO
             }
@@ -784,15 +798,15 @@ namespace TFG_Worldbuilder_Application
         {
             UnsavedWorkAlert.Visibility = Visibility.Collapsed;
             ForceClose = true;
-            if(string.Equals(ActiveJob, "New File")){
+            if(ActiveJob == Job.NewFile){
                 File_New_Click(sender, e);
-            } else if(string.Equals(ActiveJob, "Open File"))
+            } else if(ActiveJob == Job.OpenFile)
             {
                 File_Open_Click(sender, e);
-            } else if(string.Equals(ActiveJob, "Close File"))
+            } else if(ActiveJob == Job.CloseFile)
             {
                 File_Close_Click(sender, e);
-            } else if(string.Equals(ActiveJob, "Exit"))
+            } else if(ActiveJob == Job.Exit)
             {
                 File_Exit_Click(sender, e);
             } else
@@ -803,7 +817,7 @@ namespace TFG_Worldbuilder_Application
 
         private void Shapes_Control_Rename_Click(object sender, RoutedEventArgs e)
         {
-            ActiveJob = "Rename";
+            ActiveJob = Job.Rename;
             OpenTextPrompt("Enter new name for " + Context.SelectedLevel.name + ':');
         }
 
