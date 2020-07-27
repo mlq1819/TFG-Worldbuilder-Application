@@ -15,8 +15,8 @@
             <MenuFlyoutItem Text="New" Click="File_New_Click"/>
             <MenuFlyoutItem Text="Open" Click="File_Open_Click"/>
             <MenuFlyoutSeparator/>
-            <MenuFlyoutItem Text="Save" Click="File_Save_Click"/>
-            <MenuFlyoutItem Text="Save As" Click="File_SaveAs_Click"/>
+            <MenuFlyoutItem Text="Save" Icon="Save" Click="File_Save_Click"/>
+            <MenuFlyoutItem Text="Save As" Icon="Copy" Click="File_SaveAs_Click"/>
             <MenuFlyoutItem Text="Close" Click="File_Close_Click"/>
             <MenuFlyoutSeparator/>
             <MenuFlyoutItem Text="Exit" Click="File_Exit_Click"/>
@@ -80,9 +80,11 @@
             </ListView>
         </Flyout>
         <MenuFlyout x:Name="ShapesControlFlyout" x:Key="ShapesControlFlyout">
-            <MenuFlyoutItem Text="Test">
-                
-            </MenuFlyoutItem>
+            <MenuFlyoutItem Text="{x:Bind Path=Context.SelectedLevel.name, Mode=OneWay}" IsEnabled="False"/>
+            <MenuFlyoutItem Text="Test"/>
+            <MenuFlyoutItem Text="Test"/>
+            <MenuFlyoutItem Text="Test"/>
+            <MenuFlyoutItem Text="Test"/>
         </MenuFlyout>
     </Page.Resources>
 
@@ -97,7 +99,7 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="local:BorderLevel">
-                            <Polygon Fill="{x:Bind Path=color, Mode=OneWay}" StrokeThickness="0" Name="{x:Bind Path=name, Mode=OneWay}" Points="{x:Bind Path=points, Mode=OneWay}" Visibility="{x:Bind Path=visibility, Mode=OneWay}"/>
+                            <Polygon Fill="{x:Bind Path=color, Mode=OneWay}" StrokeThickness="0" Name="{x:Bind Path=name, Mode=OneWay}" Points="{x:Bind Path=points, Mode=OneWay}" Visibility="{x:Bind Path=visibility, Mode=OneWay}" FlyoutBase.AttachedFlyout="{StaticResource ShapesControlFlyout}"/>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>

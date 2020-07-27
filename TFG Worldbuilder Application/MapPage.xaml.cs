@@ -22,10 +22,10 @@ using Windows.UI.Xaml.Shapes;
 
 namespace TFG_Worldbuilder_Application
 {
-/// <summary>
-/// An empty page that can be used on its own or navigated to within a Frame.
-/// </summary>
-public sealed partial class MapPage : Page
+    /// <summary>
+    /// An empty page that can be used on its own or navigated to within a Frame.
+    /// </summary>
+    public sealed partial class MapPage : Page
     {
 
         private Canvas _mapcanvas;
@@ -158,7 +158,7 @@ public sealed partial class MapPage : Page
         /// </summary>
         private async void File_Open_Click(object sender, RoutedEventArgs e)
         {
-            if(Global.ActiveFile.MatchesSave() || ForceClose)
+            if (Global.ActiveFile.MatchesSave() || ForceClose)
             {
                 var picker = new Windows.Storage.Pickers.FileOpenPicker();
                 picker.ViewMode = Windows.Storage.Pickers.PickerViewMode.Thumbnail;
@@ -245,7 +245,7 @@ public sealed partial class MapPage : Page
                 OpenUnsavedWorkAlert();
             }
         }
-        
+
         /// <summary>
         /// Closes the popup
         /// </summary>
@@ -268,7 +268,7 @@ public sealed partial class MapPage : Page
         private void Text_Prompt_Cancel_Click(object sender, RoutedEventArgs e)
         {
             TextPrompt.Visibility = Visibility.Collapsed;
-            if(string.Equals(ActiveJob, "Create") && LevelNum > 1)
+            if (string.Equals(ActiveJob, "Create") && LevelNum > 1)
             {
                 Context.ClearPoints();
             }
@@ -280,7 +280,7 @@ public sealed partial class MapPage : Page
             string prompt_text = TextPromptBox.Text.Trim();
             if (prompt_text.Length > 255)
                 prompt_text = prompt_text.Substring(0, 255).Trim();
-            if(prompt_text.Length == 0)
+            if (prompt_text.Length == 0)
             {
                 OpenPopupAlert("Text must contain at least one (1) character");
             }
@@ -363,7 +363,7 @@ public sealed partial class MapPage : Page
             TapPromptTab.Text = label + ": " + vertices.Size() + " points";
             TapPrompt.Visibility = Visibility.Visible;
             Context.SetPoints(vertices.vertices);
-            if(vertices.Count > 0)
+            if (vertices.Count > 0)
                 Tap_Prompt_Back.IsEnabled = true;
             else
                 Tap_Prompt_Back.IsEnabled = false;
@@ -374,13 +374,13 @@ public sealed partial class MapPage : Page
         /// </summary>
         private void NewWorld(string name, string subtype)
         {
-            if(Global.ActiveFile.HasWorld(name, subtype))
+            if (Global.ActiveFile.HasWorld(name, subtype))
             {
                 OpenPopupAlert("Error: " + Enum.GetName(typeof(LevelType), type) + " with name \"" + name + "\" already exists");
             } else
             {
                 Context.SetActive(new Level1(name, subtype));
-                Global.ActiveFile.Worlds.Add((Level1) Context.ActiveLevel);
+                Global.ActiveFile.Worlds.Add((Level1)Context.ActiveLevel);
             }
             ActiveJob = "None";
             UpdateSaveState();
@@ -424,7 +424,7 @@ public sealed partial class MapPage : Page
         /// </summary>
         private void CreateMenu_Closed(object sender, object e)
         {
-            if(TextPrompt.Visibility == Visibility.Visible)
+            if (TextPrompt.Visibility == Visibility.Visible)
                 TextPromptBox.Focus(FocusState.Programmatic);
         }
 
@@ -475,7 +475,7 @@ public sealed partial class MapPage : Page
         /// <summary>
         /// Displays a flyout menu of options when a Line is clicked
         /// </summary>
-        private void WorldCanvas_ClickLine(Line2D line)
+        private void WorldCanvas_ClickLine(Line2D line, RenderedPoint point)
         {
             Context.SetSelected(line);
         }
@@ -483,7 +483,7 @@ public sealed partial class MapPage : Page
         /// <summary>
         /// Displays a flyout menu of options when a Level6 object is clicked
         /// </summary>
-        private void WorldCanvas_ClickLevel6(Level6 level)
+        private void WorldCanvas_ClickLevel6(Level6 level, RenderedPoint point)
         {
 
         }
@@ -491,27 +491,46 @@ public sealed partial class MapPage : Page
         /// <summary>
         /// Displays a flyout menu of options when a Level5 object is clicked
         /// </summary>
-        private void WorldCanvas_ClickLevel5(Level5 level)
+        private void WorldCanvas_ClickLevel5(Level5 level, RenderedPoint point)
         {
 
+        }
+
+        private childItem FindVisualChild<childItem>(DependencyObject obj) where childItem : DependencyObject
+        {
+            for(int i=0; i<VisualTreeHelper.GetChildrenCount(obj); i++)
+            {
+                DependencyObject child = VisualTreeHelper.GetChild(obj, i);
+                if (child != null && child is childItem)
+                    return (childItem)child;
+                else
+                {
+                    childItem childOfChild = FindVisualChild<childItem>(child);
+                    if (childOfChild != null)
+                        return childOfChild;
+                }
+            }
+            return null;
         }
 
         /// <summary>
         /// Displays a flyout menu of options when a BorderLevel object is clicked
         /// </summary>
-        private void WorldCanvas_ClickBorderLevel(BorderLevel level)
+        private void WorldCanvas_ClickBorderLevel(BorderLevel level, RenderedPoint point)
         {
             foreach(object child in ShapesControl.Items)
             {
                 try
                 {
-                    UIElement shape = ShapesControl.ContainerFromItem(child) as UIElement as Polygon;
+                    Polygon shape = FindVisualChild<Polygon>(ShapesControl.ContainerFromItem(child) as DependencyObject);
                     if (shape != null)
                     {
                         FlyoutBase flyout = FlyoutBase.GetAttachedFlyout(shape as FrameworkElement);
                         if (flyout != null)
                         {
-                            flyout.ShowAt(shape);
+                            FlyoutShowOptions show_options = new FlyoutShowOptions();
+                            show_options.Position = point.ToWindowsPoint();
+                            flyout.ShowAt(shape, show_options);
                             Context.SetSelected(level);
                             return;
                         }
@@ -537,15 +556,15 @@ public sealed partial class MapPage : Page
                     if (obj.GetType() == typeof(RenderedPoint))
                         WorldCanvas_ClickVertex((RenderedPoint)obj);
                     else if (obj.GetType() == typeof(Level6))
-                        WorldCanvas_ClickLine((Line2D)obj);
+                        WorldCanvas_ClickLine((Line2D)obj, point);
                     else if (obj.GetType() == typeof(Level6))
-                        WorldCanvas_ClickLevel6((Level6)obj);
+                        WorldCanvas_ClickLevel6((Level6)obj, point);
                     else if (obj.GetType() == typeof(Level5))
-                        WorldCanvas_ClickLevel5((Level5)obj);
+                        WorldCanvas_ClickLevel5((Level5)obj, point);
                     else
                     {
                         BorderLevel level = (BorderLevel)obj;
-                        WorldCanvas_ClickBorderLevel(level);
+                        WorldCanvas_ClickBorderLevel(level, point);
                     }
                 }
                 catch (InvalidCastException)
