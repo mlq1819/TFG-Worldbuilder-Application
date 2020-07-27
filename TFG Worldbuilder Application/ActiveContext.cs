@@ -129,7 +129,7 @@ namespace TFG_Worldbuilder_Application
         {
             get
             {
-                return ((int)(Zoom * 100)).ToString() + '%';
+                return ((int)(Zoom * 100 / Global.DefaultZoom)).ToString() + '%';
             }
         }
         public double Zoom
@@ -291,16 +291,16 @@ namespace TFG_Worldbuilder_Application
                 }
                 ActiveLevel.color = "LightSkyBlue";
                 Global.DefaultZoom = ActiveLevel.GetMedZoom();
-                Global.RenderedCenter = ActiveLevel.GetCenter();
+                Global.DefaultCenter = ActiveLevel.GetCenter();
                 ForceUpdatePoints();
                 UpdateAll();
             } else //If ActiveLevel *is* null
             {
                 ActiveShape = null;
+                Global.DefaultCenter = new AbsolutePoint(Global.RenderedCenter.X, Global.RenderedCenter.Y);
                 Shapes = new ObservableCollection<BorderLevel>();
                 Circles = new ObservableCollection<Level5>();
                 Points = new ObservableCollection<Level6>();
-                Global.RenderedCenter = new AbsolutePoint(Global.CanvasSize.X / 2, Global.CanvasSize.Y / 2);
                 RaisePropertyChanged("Shapes");
                 RaisePropertyChanged("Circles");
                 RaisePropertyChanged("Points");

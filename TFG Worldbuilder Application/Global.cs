@@ -31,7 +31,7 @@ namespace TFG_Worldbuilder_Application
                 {
                     _rendercanvas = value;
                     _hascanvas = true;
-                    RenderedCenter = new AbsolutePoint(CanvasSize.X / 2, CanvasSize.Y / 2);
+                    DefaultCenter = new AbsolutePoint(RenderedCenter.X, RenderedCenter.Y);
                 } else
                 {
                     _rendercanvas = null;
@@ -82,9 +82,15 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// The centerpoint of the rendered canvas, primarily used to aid in correctly transforming and reverting AbsolutePoints and RenderedPoints
         /// </summary>
-        
-        public static AbsolutePoint RenderedCenter = new AbsolutePoint(CanvasSize.X / 2, CanvasSize.Y / 2);
+        public static RenderedPoint RenderedCenter
+        {
+            get
+            {
+                return CanvasSize / 2;
+            }
+        }//Again, always in Rendered coordinates
         private static AbsolutePoint _center = new AbsolutePoint(0, 0);//Must always be in absolute coordinates
+        public static AbsolutePoint DefaultCenter = new AbsolutePoint(0, 0);
         /// <summary>
         /// The point around which zooming will take place; should be recorded in absolute coordinates.
         /// Any objects at this point will be rendered at RenderedCenter

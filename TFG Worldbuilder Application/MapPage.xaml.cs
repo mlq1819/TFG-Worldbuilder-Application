@@ -831,7 +831,7 @@ namespace TFG_Worldbuilder_Application
 
         private void ResetZoom()
         {
-            Global.Center = new AbsolutePoint(Global.RenderedCenter.X, Global.RenderedCenter.Y);
+            Global.Center = new AbsolutePoint(Global.DefaultCenter);
             Global.Zoom = Global.DefaultZoom;
             Context.Zoom = Global.Zoom;
             Zoom_In_Button.IsEnabled = true;
