@@ -79,6 +79,31 @@ namespace TFG_Worldbuilder_Application
         private string BaseLevelColor = "#F2F2F2";
         private string BasePointColor = "LightCoral";
         private string BaseLineColor = "Black";
+        public string ActiveShapeVisibility
+        {
+            get
+            {
+                if(ActiveShape == null)
+                {
+                    return "Collapsed";
+                }
+                return "Visible";
+            }
+        }
+        private BorderLevel activeshape = null;
+        public BorderLevel ActiveShape
+        {
+            get
+            {
+                return activeshape;
+            }
+            set
+            {
+                activeshape = value;
+                RaisePropertyChanged("ActiveShape");
+                RaisePropertyChanged("ActiveShapeVisibility");
+            }
+        }
         public ObservableCollection<BorderLevel> Shapes;
         public ObservableCollection<Level5> Circles;
         public ObservableCollection<Level6> Points;
@@ -254,12 +279,23 @@ namespace TFG_Worldbuilder_Application
             ActiveLevel = level;
             if (ActiveLevel != null)
             {
+                if (ActiveLevel.HasBorderProperty())
+                {
+                    try
+                    {
+                        ActiveShape = (BorderLevel)ActiveLevel;
+                    } catch (InvalidCastException)
+                    {
+                        ActiveShape = null;
+                    }
+                }
                 ActiveLevel.color = "LightSkyBlue";
                 Global.DefaultZoom = ActiveLevel.GetMedZoom();
                 ForceUpdatePoints();
                 UpdateAll();
             } else //If ActiveLevel *is* null
             {
+                ActiveShape = null;
                 Shapes = new ObservableCollection<BorderLevel>();
                 Circles = new ObservableCollection<Level5>();
                 Points = new ObservableCollection<Level6>();

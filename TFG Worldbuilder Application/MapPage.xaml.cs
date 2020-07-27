@@ -444,6 +444,8 @@ namespace TFG_Worldbuilder_Application
             WorldsMenu.Hide();
             string name = ((MenuFlyoutItem)sender).Text.Trim();
             Context.SetWorld(name);
+            ResetZoom();
+            ForceUpdatePoints();
         }
 
         /// <summary>
@@ -494,6 +496,8 @@ namespace TFG_Worldbuilder_Application
 
         private childItem FindVisualChild<childItem>(DependencyObject obj) where childItem : DependencyObject
         {
+            if (obj == null)
+                return null;
             for (int i = 0; i < VisualTreeHelper.GetChildrenCount(obj); i++)
             {
                 DependencyObject child = VisualTreeHelper.GetChild(obj, i);
@@ -515,11 +519,11 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         private void WorldCanvas_ClickVertex(RenderedPoint point)
         {
-            foreach (object child in ShapesControl.Items)
+            foreach (object child in ShapesVerticesControl.Items)
             {
                 try
                 {
-                    Windows.UI.Xaml.Shapes.Path vertex = FindVisualChild<Windows.UI.Xaml.Shapes.Path>(ShapesControl.ContainerFromItem(child) as DependencyObject);
+                    Windows.UI.Xaml.Shapes.Path vertex = FindVisualChild<Windows.UI.Xaml.Shapes.Path>(ShapesVerticesControl.ContainerFromItem(child) as DependencyObject);
                     if (vertex != null)
                     {
                         FlyoutBase flyout = FlyoutBase.GetAttachedFlyout(vertex as FrameworkElement);
@@ -882,6 +886,7 @@ namespace TFG_Worldbuilder_Application
             Context.SetActive(Context.SelectedLevel);
             Context.NullSelected();
             ResetZoom();
+            ForceUpdatePoints();
         }
 
         private void Vertices_Control_Delete_Click(object sender, RoutedEventArgs e)
