@@ -345,6 +345,7 @@ namespace TFG_Worldbuilder_Application
                         TextPrompt.Visibility = Visibility.Collapsed;
                         Context.NullSelected();
                         UpdateSaveState();
+                        ActiveJob = Job.None;
                     } catch (ArgumentException rename_exception)
                     {
                         OpenPopupAlert(rename_exception.Message);
