@@ -290,7 +290,6 @@ namespace TFG_Worldbuilder_Application
             }
             else
             {
-                TextPrompt.Visibility = Visibility.Collapsed;
                 if (string.Equals(ActiveJob, "Create"))
                 {
                     switch (this.LevelStep) // Control for level step
@@ -302,6 +301,7 @@ namespace TFG_Worldbuilder_Application
                             break;
                         case 3:
                             this.name = prompt_text;
+                            TextPrompt.Visibility = Visibility.Collapsed;
                             switch (this.LevelNum)
                             {
                                 case 1:
@@ -317,11 +317,22 @@ namespace TFG_Worldbuilder_Application
                 }
                 else if (string.Equals(ActiveJob, "Open"))
                 {
+                    TextPrompt.Visibility = Visibility.Collapsed;
                     switch (this.LevelNum) //Control for level type
                     {
                         case 1:
                             Context.SetWorld(prompt_text);
                             break;
+                    }
+                } else if (string.Equals(ActiveJob, "Rename") && Context.SelectedLevel != null)
+                {
+                    try
+                    {
+                        Context.SelectedLevel.name = prompt_text;
+                        TextPrompt.Visibility = Visibility.Collapsed;
+                    } catch (ArgumentException rename_exception)
+                    {
+                        OpenPopupAlert(rename_exception.Message);
                     }
                 }
             }
@@ -635,15 +646,20 @@ namespace TFG_Worldbuilder_Application
             if (string.Equals(ActiveJob, "Create"))
             {
                 WorldCanvas_Add_Point(point.ToAbsolutePoint());
-            }
-            else if (Context.SnapsToSomething(point))
+            } else if(string.Equals(ActiveJob, "Move"))
             {
-                WorldCanvas_ClickObject(point);
+
             }
-            else
-            {
-                if (Context.HasActive)
-                    Context.NullSelected();
+            else if (string.Equals(ActiveJob, "None")){
+                if (Context.SnapsToSomething(point))
+                {
+                    WorldCanvas_ClickObject(point);
+                }
+                else
+                {
+                    if (Context.HasActive)
+                        Context.NullSelected();
+                }
             }
         }
 
@@ -787,7 +803,8 @@ namespace TFG_Worldbuilder_Application
 
         private void Shapes_Control_Rename_Click(object sender, RoutedEventArgs e)
         {
-            
+            ActiveJob = "Rename";
+            OpenTextPrompt("Enter new name for " + Context.SelectedLevel.name + ':');
         }
 
         private void Shapes_Control_Delete_Click(object sender, RoutedEventArgs e)

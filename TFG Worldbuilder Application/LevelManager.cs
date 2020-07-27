@@ -49,6 +49,8 @@ namespace TFG_Worldbuilder_Application
             }
             set
             {
+                if(parent != null && parent.HasSublevelWithName(value))
+                    throw new ArgumentException("Name Conflict - sibling level already has name");
                 _name = value;
                 RaisePropertyChanged("name");
             }
