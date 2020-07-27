@@ -50,6 +50,7 @@ namespace TFG_Worldbuilder_Application
             {
                 _selectedpoint = value;
                 RaisePropertyChanged("SelectedPoint");
+                RaisePropertyChanged("CurrentPoint");
             }
         }
         private int _selectedline = -1;

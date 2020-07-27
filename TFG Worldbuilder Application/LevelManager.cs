@@ -727,6 +727,14 @@ namespace TFG_Worldbuilder_Application
     {
         public Polygon2D border;
         
+        public PointCollection truepoints
+        {
+            get
+            {
+                return RenderedPoint.ToWindowsPoints(border.untrimmedvertices);
+            }
+        }
+
         public PointCollection points
         {
             get
@@ -801,6 +809,7 @@ namespace TFG_Worldbuilder_Application
         public override void ForceUpdatePoints()
         {
             RaisePropertyChanged("points");
+            RaisePropertyChanged("truepoints");
             RaisePropertyChanged("center");
             RaisePropertyChanged("margin");
             RaisePropertyChanged("visibility");
@@ -934,6 +943,7 @@ namespace TFG_Worldbuilder_Application
         {
             AbsolutePoint output = this.border.AppendPoint(point);
             RaisePropertyChanged("points");
+            RaisePropertyChanged("truepoints");
             RaisePropertyChanged("center");
             RaisePropertyChanged("margin");
             RaisePropertyChanged("visibility");
@@ -948,6 +958,7 @@ namespace TFG_Worldbuilder_Application
         {
             AbsolutePoint output = border.NewPoint(a, b);
             RaisePropertyChanged("points");
+            RaisePropertyChanged("truepoints");
             RaisePropertyChanged("visibility");
             RaisePropertyChanged("name_visibility");
             return output;
@@ -964,6 +975,7 @@ namespace TFG_Worldbuilder_Application
                 if (output != null)
                 {
                     RaisePropertyChanged("points");
+                    RaisePropertyChanged("truepoints");
                     RaisePropertyChanged("center");
                     RaisePropertyChanged("margin");
                     RaisePropertyChanged("visibility");

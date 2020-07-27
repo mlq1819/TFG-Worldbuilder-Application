@@ -57,6 +57,8 @@ namespace TFG_Worldbuilder_Application
         {
             get
             {
+                if (DefaultZoom > 1.0f)
+                    return DefaultZoom * 10;
                 return DefaultZoom * 5;
             }
         }
@@ -64,6 +66,8 @@ namespace TFG_Worldbuilder_Application
         {
             get
             {
+                if (DefaultZoom > 1.0f)
+                    return DefaultZoom / 2;
                 return DefaultZoom / 5;
             }
         }

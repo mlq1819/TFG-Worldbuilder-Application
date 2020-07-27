@@ -62,7 +62,20 @@ namespace TFG_Worldbuilder_Application
         private Polygon2D vertices = new Polygon2D();
         private LevelType type = LevelType.Invalid;
         private string subtype = "";
-        private Job ActiveJob = Job.None;
+        private Job activejob = Job.None;
+        private Job ActiveJob
+        {
+            get
+            {
+                return activejob;
+            }
+            set
+            {
+                if (activejob != Job.None && value == Job.None)
+                    Context.NullSelected();
+                activejob = value;
+            }
+        }
         private bool ForceClose = false;
         public ActiveContext Context;
         public ObservableCollection<Level1> Worlds;
@@ -529,10 +542,10 @@ namespace TFG_Worldbuilder_Application
                         FlyoutBase flyout = FlyoutBase.GetAttachedFlyout(vertex as FrameworkElement);
                         if (flyout != null)
                         {
+                            Context.SetSelected(point);
                             FlyoutShowOptions show_options = new FlyoutShowOptions();
                             show_options.Position = point.ToWindowsPoint();
-                            flyout.ShowAt(vertex, show_options);
-                            Context.SetSelected(point);
+                            flyout.ShowAt(ShapesVerticesControl, show_options);
                             return;
                         }
                     }
@@ -840,6 +853,7 @@ namespace TFG_Worldbuilder_Application
 
         private void Reset_Zoom_Button_Click(object sender, RoutedEventArgs e)
         {
+            Context.NullSelected();
             ResetZoom();
             ForceUpdatePoints();
         }
@@ -898,6 +912,18 @@ namespace TFG_Worldbuilder_Application
         {
             ActiveJob = Job.Move;
             OpenTapPrompt("Click new position for " + Context.CurrentPoint.ToString());
+        }
+
+        private void ShapesControlFlyout_Closed(object sender, object e)
+        {
+            if(ActiveJob == Job.None)
+                Context.NullSelected();
+        }
+
+        private void VerticesControlFlyout_Closed(object sender, object e)
+        {
+            if (ActiveJob == Job.None)
+                Context.NullSelected();
         }
     }
 }

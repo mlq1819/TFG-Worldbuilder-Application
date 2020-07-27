@@ -73,6 +73,13 @@ namespace TFG_Worldbuilder_Application
                 return Point2D.ApplyTransformation(Point2D.ToWindowsPoint(this));
             }
         }
+        public string str
+        {
+            get
+            {
+                return this.ToString();
+            }
+        }
         private string _color;
         public string color
         {
@@ -490,7 +497,6 @@ namespace TFG_Worldbuilder_Application
                 return Point2D.ToWindowsPoint(this);
             }
         }
-        
         public string visibility
         {
             get
