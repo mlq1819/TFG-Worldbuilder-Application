@@ -723,7 +723,7 @@ namespace TFG_Worldbuilder_Application
                 WorldCanvas_Add_Point(point.ToAbsolutePoint());
             } else if(ActiveJob == Job.Move)
             {
-                //TODO
+                WorldCanvas_Move_Point(point.ToAbsolutePoint());
             }
             else if (ActiveJob == Job.None){
                 if (Context.SnapsToSomething(point))
@@ -803,6 +803,7 @@ namespace TFG_Worldbuilder_Application
                 {
                     Context.SetVertex(vertices[0]);
                     TapPrompt.Visibility = Visibility.Collapsed;
+                    UpdateSaveState();
                 } else
                 {
                     OpenPopupAlert("No new position mapped to move to");
