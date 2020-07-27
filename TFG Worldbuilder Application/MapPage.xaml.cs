@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Toolkit.Uwp.UI.Extensions;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -500,7 +501,26 @@ public sealed partial class MapPage : Page
         /// </summary>
         private void WorldCanvas_ClickBorderLevel(BorderLevel level)
         {
-            Context.SetSelected(level);
+            foreach(object child in ShapesControl.Items)
+            {
+                try
+                {
+                    UIElement shape = ShapesControl.ContainerFromItem(child) as UIElement as Polygon;
+                    if (shape != null)
+                    {
+                        FlyoutBase flyout = FlyoutBase.GetAttachedFlyout(shape as FrameworkElement);
+                        if (flyout != null)
+                        {
+                            flyout.ShowAt(shape);
+                            Context.SetSelected(level);
+                            return;
+                        }
+                    }
+                } catch (InvalidCastException)
+                {
+                    ;
+                }
+            }
         }
 
         /// <summary>
