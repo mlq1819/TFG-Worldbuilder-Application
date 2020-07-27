@@ -332,9 +332,7 @@ namespace TFG_Worldbuilder_Application
                 {
                     Shapes[i].MovePoint(Vertices._points[SelectedPoint], new_pos);
                 }
-                RaisePropertyChanged("Shapes");
-                UpdateVertices();
-                UpdateLines();
+                UpdateAll();
                 return true;
             }
             return false;
@@ -367,9 +365,7 @@ namespace TFG_Worldbuilder_Application
                     {
                         Shapes[i].MovePoint(old_pos, new_pos);
                     }
-                    RaisePropertyChanged("Shapes");
-                    UpdateVertices();
-                    UpdateLines();
+                    UpdateAll();
                     return true;
                 }
             }
@@ -504,6 +500,7 @@ namespace TFG_Worldbuilder_Application
                     }
                 }
             }
+            RaisePropertyChanged("Lines");
         }
 
         /// <summary>

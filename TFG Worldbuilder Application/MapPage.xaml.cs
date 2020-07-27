@@ -807,7 +807,9 @@ namespace TFG_Worldbuilder_Application
                 if(vertices.Count > 0)
                 {
                     Context.SetVertex(vertices[0]);
+                    Context.ClearPoints();
                     TapPrompt.Visibility = Visibility.Collapsed;
+                    ActiveJob = Job.None;
                     UpdateSaveState();
                 } else
                 {
