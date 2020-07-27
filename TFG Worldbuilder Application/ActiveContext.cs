@@ -334,6 +334,7 @@ namespace TFG_Worldbuilder_Application
                 }
                 RaisePropertyChanged("Shapes");
                 UpdateVertices();
+                UpdateLines();
                 return true;
             }
             return false;
@@ -368,6 +369,7 @@ namespace TFG_Worldbuilder_Application
                     }
                     RaisePropertyChanged("Shapes");
                     UpdateVertices();
+                    UpdateLines();
                     return true;
                 }
             }

@@ -703,6 +703,11 @@ namespace TFG_Worldbuilder_Application
                 vertices.AppendPoint(point);
             else
                 vertices.vertices[0] = new AbsolutePoint(point);
+            if (Context.ExtraPoints.Count < 1)
+                Context.ExtraPoints.AppendPoint(point);
+            else
+                Context.ExtraPoints._points[0] = point;
+            Context.RaisePropertyChanged("ExtraPoints");
             TapPromptTab.Text = label + ": " + vertices.Size() + " points";
             if (vertices.Count > 0)
                 Tap_Prompt_Back.IsEnabled = true;
