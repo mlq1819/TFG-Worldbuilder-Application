@@ -33,12 +33,13 @@ namespace TFG_Worldbuilder_Application
             None = 0,
             NewFile = 1,
             OpenFile = 2,
-            CloseFile = 3,
-            Exit = 4,
-            Create = 5,
-            Move = 6,
-            Rename = 7,
-            Open = 8
+            ReloadFile = 3,
+            CloseFile = 4,
+            Exit = 5,
+            Create = 6,
+            Move = 7,
+            Rename = 8,
+            Open = 9
 
         }
 
@@ -179,6 +180,25 @@ namespace TFG_Worldbuilder_Application
             UnsavedWorkAlert.Visibility = Visibility.Visible;
         }
 
+        private async void OpenFile(FileManager file)
+        {
+            if(file != null)
+            {
+                Global.ActiveFile = file;
+                await Global.ActiveFile.ReadyFile();
+                if (Global.ActiveFile.Valid())
+                    this.Frame.Navigate(typeof(MapPage));
+                else
+                {
+                    OpenPopupAlert("File not formatted for Worldbuilding - Invalid File");
+                }
+            }
+            else
+            {
+                OpenPopupAlert("Invalid File");
+            }
+        }
+
         /// <summary>
         /// Checks if the current project has unsaved work, then opens the requested file
         /// </summary>
@@ -191,22 +211,27 @@ namespace TFG_Worldbuilder_Application
                 picker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.DocumentsLibrary;
                 picker.FileTypeFilter.Add(".prm_world");
                 Windows.Storage.StorageFile file = await picker.PickSingleFileAsync();
-                if (file != null)
-                {
-                    // Application now has read/write access to the picked file
-                    Global.ActiveFile = new FileManager(file, false);
-                    await Global.ActiveFile.ReadyFile();
-                    if (Global.ActiveFile.Valid())
-                        this.Frame.Navigate(typeof(MapPage));
-                    else
-                    {
-                        OpenPopupAlert("File not formatted for Worldbuilding - Invalid File");
-                    }
-                }
+                OpenFile(new FileManager(file, false));
             }
             else
             {
                 ActiveJob = Job.OpenFile;
+                OpenUnsavedWorkAlert();
+            }
+        }
+
+        /// <summary>
+        /// Checks if the current project has unsaved work, then reloads the current file
+        /// </summary>
+        private void File_Reload_Click(object sender, RoutedEventArgs e)
+        {
+            if (Global.ActiveFile.MatchesSave() || ForceClose)
+            {
+                OpenFile(Global.ActiveFile.Reload());
+            }
+            else
+            {
+                ActiveJob = Job.ReloadFile;
                 OpenUnsavedWorkAlert();
             }
         }
@@ -886,7 +911,11 @@ namespace TFG_Worldbuilder_Application
             } else if(ActiveJob == Job.Exit)
             {
                 File_Exit_Click(sender, e);
-            } else
+            } else if(ActiveJob == Job.ReloadFile)
+            {
+                File_Reload_Click(sender, e);
+            }
+            else
             {
                 OpenPopupAlert("Unrecognized Click Event - Please recall original event");
             }
@@ -933,5 +962,6 @@ namespace TFG_Worldbuilder_Application
             if (ActiveJob == Job.None)
                 Context.NullSelected();
         }
+
     }
 }

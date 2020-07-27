@@ -84,6 +84,11 @@ namespace TFG_Worldbuilder_Application
             return WorldList;
         }
 
+        public FileManager Reload()
+        {
+            return new FileManager(this.ActiveFile, false);
+        }
+
         public FileManager(Windows.Storage.StorageFile file, bool newfile)
         {
             this.NewFile = newfile;

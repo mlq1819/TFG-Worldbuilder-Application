@@ -12,14 +12,15 @@
     mc:Ignorable="d">
     <Page.Resources>
         <MenuFlyout x:Name = "FileMenu" x:Key="FileMenu">
-            <MenuFlyoutItem Text="New" Click="File_New_Click"/>
-            <MenuFlyoutItem Text="Open" Click="File_Open_Click"/>
+            <MenuFlyoutItem Text="New" x:Name="File_New" Click="File_New_Click"/>
+            <MenuFlyoutItem Text="Open" x:Name="File_Open" Click="File_Open_Click"/>
+            <MenuFlyoutItem Text="Reload" x:Name="File_Reload" Click="File_Reload_Click"/>
             <MenuFlyoutSeparator/>
-            <MenuFlyoutItem Text="Save" Icon="Save" Click="File_Save_Click"/>
-            <MenuFlyoutItem Text="Save As" Icon="Copy" Click="File_SaveAs_Click"/>
-            <MenuFlyoutItem Text="Close" Click="File_Close_Click"/>
+            <MenuFlyoutItem Text="Save" Icon="Save" x:Name="File_Save" Click="File_Save_Click"/>
+            <MenuFlyoutItem Text="Save As" Icon="Copy" x:Name="File_SaveAs" Click="File_SaveAs_Click"/>
+            <MenuFlyoutItem Text="Close" x:Name="File_Close" Click="File_Close_Click"/>
             <MenuFlyoutSeparator/>
-            <MenuFlyoutItem Text="Exit" Click="File_Exit_Click"/>
+            <MenuFlyoutItem Text="Exit" x:Name="File_Exit" Click="File_Exit_Click"/>
         </MenuFlyout>
         <MenuFlyout x:Name= "ViewMenu" x:Key="ViewMenu">
             <MenuFlyoutSubItem Text="National">
