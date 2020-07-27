@@ -785,5 +785,21 @@ namespace TFG_Worldbuilder_Application
             }
         }
 
+        private void Shapes_Control_Rename_Click(object sender, RoutedEventArgs e)
+        {
+            
+        }
+
+        private void Shapes_Control_Delete_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Shapes_Control_Focus_Click(object sender, RoutedEventArgs e)
+        {
+            Context.SetActive(Context.SelectedLevel);
+            Context.NullSelected();
+            ResetZoom();
+        }
     }
 }

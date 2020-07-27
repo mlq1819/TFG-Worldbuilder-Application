@@ -81,9 +81,9 @@
         </Flyout>
         <MenuFlyout x:Name="ShapesControlFlyout" x:Key="ShapesControlFlyout">
             <MenuFlyoutItem Text="{x:Bind Path=Context.SelectedLevel.name, Mode=OneWay}" IsEnabled="False"/>
-            <MenuFlyoutItem Text="Test"/>
-            <MenuFlyoutItem Text="Test"/>
-            <MenuFlyoutItem Text="Test"/>
+            <MenuFlyoutItem Text="Rename" x:Name="Shapes_Control_Rename" Click="Shapes_Control_Rename_Click"/>
+            <MenuFlyoutItem Text="Delete" x:Name="Shapes_Control_Delete" Click="Shapes_Control_Delete_Click"/>
+            <MenuFlyoutItem Text="Focus" x:Name="Shapes_Control_Focus" Click="Shapes_Control_Focus_Click"/>
             <MenuFlyoutItem Text="Test"/>
         </MenuFlyout>
     </Page.Resources>
