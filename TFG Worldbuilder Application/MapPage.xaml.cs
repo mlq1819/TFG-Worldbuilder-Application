@@ -1036,7 +1036,7 @@ namespace TFG_Worldbuilder_Application
         private void Canvas_Clicked(RenderedPoint point)
         {
             point = Context.SnapToAPoint(point);
-            if (ActiveJob == Job.Create)
+            if (ActiveJob == Job.CreatePolygon || ActiveJob == Job.CreatePoint)
             {
                 WorldCanvas_Add_Point(point.ToAbsolutePoint());
             } else if(ActiveJob == Job.Move)
