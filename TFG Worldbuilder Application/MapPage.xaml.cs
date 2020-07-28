@@ -358,26 +358,30 @@ namespace TFG_Worldbuilder_Application
                             break;
                         case 3:
                             this.name = prompt_text;
-                            TextPrompt.Visibility = Visibility.Collapsed;
+                            this.LevelStep++;
                             switch (this.LevelNum)
                             {
                                 case 1:
+                                    TextPrompt.Visibility = Visibility.Collapsed;
                                     NewWorld(this.name, this.subtype);
                                     break;
                                 case 2:
+                                    TextPrompt.Visibility = Visibility.Collapsed;
                                     NewGreaterRegion(this.name, this.type, this.subtype, this.vertices);
                                     break;
                                 case 3:
+                                    TextPrompt.Visibility = Visibility.Collapsed;
                                     NewRegion(this.name, this.type, this.subtype, this.vertices);
                                     break;
                                 case 4:
+                                    TextPrompt.Visibility = Visibility.Collapsed;
                                     NewSubregion(this.name, this.type, this.subtype, this.vertices);
                                     break;
                                 case 5:
-                                    this.LevelStep++;
                                     OpenTextPrompt("Enter a radius:");
                                     break;
                                 case 6:
+                                    TextPrompt.Visibility = Visibility.Collapsed;
                                     NewStructure(this.name, this.type, this.subtype, center);
                                     break;
                             }
@@ -390,6 +394,7 @@ namespace TFG_Worldbuilder_Application
                                     radius = Int64.Parse(prompt_text);
                                     if(radius >= 0)
                                     {
+                                        this.LevelStep++;
                                         TextPrompt.Visibility = Visibility.Collapsed;
                                         NewLocation(this.name, this.type, this.subtype, center, radius);
                                     } else
@@ -1132,6 +1137,7 @@ namespace TFG_Worldbuilder_Application
                         }
                         if(LevelNum >= 2 && LevelNum <= 6)
                         {
+                            ActiveJob = Job.Create;
                             OpenTextPrompt("What type of " + Enum.GetName(typeof(LevelType), type) + " " + level_type_name + " are you creating?\nEnter a subtype:");
                         }
                     }
@@ -1249,7 +1255,22 @@ namespace TFG_Worldbuilder_Application
                 Create_Greater_Region_Flyout.IsEnabled = false; 
             else
                 Create_Greater_Region_Flyout.IsEnabled = true;
-
+            if (level.level >= 3)
+                Create_Region_Flyout.IsEnabled = false;
+            else
+                Create_Region_Flyout.IsEnabled = true;
+            if (level.level >= 4)
+                Create_Subregion_Flyout.IsEnabled = false;
+            else
+                Create_Subregion_Flyout.IsEnabled = true;
+            if (level.level >= 5)
+                Create_Location_Flyout.IsEnabled = false;
+            else
+                Create_Location_Flyout.IsEnabled = true;
+            if (level.level >= 6)
+                Create_Structure_Flyout.IsEnabled = false;
+            else
+                Create_Structure_Flyout.IsEnabled = true;
             Context.SetActive(level);
         }
 

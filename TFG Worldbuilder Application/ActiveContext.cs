@@ -466,14 +466,17 @@ namespace TFG_Worldbuilder_Application
             Shapes = new ObservableCollection<BorderLevel>();
             for (int i = 0; i < temp.Count; i++)
             {
-                try
+                if (temp[i].HasBorderProperty())
                 {
-                    if(((BorderLevel)temp[i]).border.verticesr.Count > 0)
-                        Shapes.Add((BorderLevel)temp[i]);
-                }
-                catch (InvalidCastException)
-                {
-                    ;
+                    try
+                    {
+                        if (((BorderLevel)temp[i]).border.verticesr.Count > 0)
+                            Shapes.Add((BorderLevel)temp[i]);
+                    }
+                    catch (InvalidCastException)
+                    {
+                        ;
+                    }
                 }
             }
             RaisePropertyChanged("Shapes");
