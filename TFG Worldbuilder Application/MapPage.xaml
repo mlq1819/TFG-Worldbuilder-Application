@@ -68,19 +68,20 @@
             <MenuFlyoutItem x:Name="Create_Location_Flyout" Text="New Location" Click="Create_Location_Click"/>
             <MenuFlyoutItem x:Name="Create_Structure_Flyout" Text="New Structure" Click="Create_Structure_Click"/>
         </MenuFlyout>
-        <Flyout x:Name="WorldsMenu" x:Key="WorldsMenu">
-            <ListView ItemsSource="{x:Bind Context.Worlds, Mode=OneWay}">
-                <ListView.ItemTemplate>
-                    <DataTemplate x:DataType="local:Level1">
-                        <MenuFlyoutItem Text="{x:Bind name, Mode=OneWay}" Background="{x:Bind color, Mode=OneWay}" Click="Open_World_Click" Width="80"/>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-        </Flyout>
-        <Flyout x:Name="SublevelsMenu" x:Key="SublevelsMenu">
+        <Flyout x:Name="NavigationMenu" x:Key="NavigationMenu">
             <StackPanel>
                 <MenuFlyoutItem x:Name="Level_Back" Text="Back" Click="Level_Back_Click"/>
                 <MenuFlyoutSeparator/>
+                <MenuFlyoutItem Text="Worlds" IsEnabled="False"/>
+                <ListView ItemsSource="{x:Bind Context.Worlds, Mode=OneWay}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="local:Level1">
+                            <MenuFlyoutItem Text="{x:Bind name, Mode=OneWay}" Background="{x:Bind color, Mode=OneWay}" Click="Open_World_Click" Width="160"/>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+                <MenuFlyoutSeparator/>
+                <MenuFlyoutItem Text="Sublevels" IsEnabled="False"/>
                 <ListView ItemsSource="{x:Bind Context.ActiveLevel.sublevels, Mode=OneWay}" Width="160">
                     <ListView.ItemTemplate>
                         <DataTemplate x:DataType="local:SuperLevel">
@@ -207,8 +208,7 @@
                 <StackPanel x:Name="MenuBarPanel" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Orientation="Horizontal">
                     <Button x:Name="FileButton" Content="File" HorizontalAlignment="Left" Margin="10" VerticalAlignment="Top" Width="80" Flyout="{StaticResource FileMenu}"/>
                     <Button x:Name="ViewButton" Content="View" HorizontalAlignment="Left" Margin="10" VerticalAlignment="Top" Width="80" Flyout="{StaticResource ViewMenu}"/>
-                    <Button x:Name="WorldsButton" Content="Worlds" HorizontalAlignment="Left" Margin="10" VerticalAlignment="Top" Width="80" Flyout="{StaticResource WorldsMenu}"/>
-                    <Button x:Name="SublevelsButton" Content="Navigate" HorizontalAlignment="Left" Margin="10" VerticalAlignment="Top" Width="80" Flyout="{StaticResource SublevelsMenu}"/>
+                    <Button x:Name="NavigationButton" Content="Navigate" HorizontalAlignment="Left" Margin="10" VerticalAlignment="Top" Width="80" Flyout="{StaticResource NavigationMenu}"/>
                     <Button x:Name="CreateButton" Content="Create" HorizontalAlignment="Left" Margin="10" VerticalAlignment="Top" Width="80" Flyout="{StaticResource CreateMenu}"/>
                 </StackPanel>
                 <StackPanel x:Name="ZoomPanel" HorizontalAlignment="Right" Height="50" Orientation="Horizontal">

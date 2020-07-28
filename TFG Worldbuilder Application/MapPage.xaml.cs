@@ -110,8 +110,6 @@ namespace TFG_Worldbuilder_Application
                 //Context.UpdateAll();
             }
             UpdateSaveState();
-            ResetZoom();
-            ForceUpdatePoints();
         }
 
         private void Page_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -617,13 +615,11 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         private void Open_World_Click(object sender, RoutedEventArgs e)
         {
-            WorldsMenu.Hide();
+            NavigationMenu.Hide();
             string name = ((MenuFlyoutItem)sender).Text.Trim();
             SuperLevel world = Context.GetWorld(name);
             if (world != null)
                 SetActive(world);
-            ResetZoom();
-            ForceUpdatePoints();
         }
 
         /// <summary>
@@ -631,13 +627,11 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         private void Open_Sublevel_Click(object sender, RoutedEventArgs e)
         {
-            SublevelsMenu.Hide();
+            NavigationMenu.Hide();
             string name = ((MenuFlyoutItem)sender).Text.Trim();
             SuperLevel sublevel = Context.ActiveLevel.GetLevel(name);
             if (sublevel != null)
                 SetActive(sublevel);
-            ResetZoom();
-            ForceUpdatePoints();
         }
 
         /// <summary>
@@ -962,7 +956,7 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Moves the focus to point
         /// </summary>
-        /// <param name="point">an AbsolutePoint object representing the translated click location</param>
+        /// <param name="point">an AbsolutePoint object representing the translated click location</param>g 
         private void WorldCanvas_Refocus(AbsolutePoint point)
         {
             Global.Center = point; //Sets the center to the abolute coordinates of the point
@@ -1289,14 +1283,14 @@ namespace TFG_Worldbuilder_Application
                 Level_Back.IsEnabled = true;
             else
                 Level_Back.IsEnabled = false;
+            ResetZoom();
+            ForceUpdatePoints();
         }
 
         private void Shapes_Control_Focus_Click(object sender, RoutedEventArgs e)
         {
             SetActive(Context.SelectedLevel);
             Context.NullSelected();
-            ResetZoom();
-            ForceUpdatePoints();
         }
 
         private void Vertices_Control_Delete_Click(object sender, RoutedEventArgs e)
