@@ -61,7 +61,8 @@
             <MenuFlyoutSubItem Text="Biological"/>
         </MenuFlyout>
         <MenuFlyout x:Name="CreateMenu" x:Key="CreateMenu" Closed="CreateMenu_Closed">
-            <MenuFlyoutItem x:Name="Create_World" Text="New World" Click="Create_World_Click"/>
+            <MenuFlyoutItem x:Name="Create_World_Flyout" Text="New World" Click="Create_World_Click"/>
+            <MenuFlyoutItem x:Name="Create_Greater_Region_Flyout" Text="New Greater Region" Click="Create_Greater_Region_Click"/>
             <MenuFlyoutSubItem x:Name="Create_Greater_Region_Menu" Text="New Greater Region">
                 <MenuFlyoutItem x:Name="Create_Greater_Region_National" Text="National" Click="Create_Greater_Region_National_Click"/>
                 <MenuFlyoutItem x:Name="Create_Greater_Region_Geographical" Text="Geographical" Click="Create_Greater_Region_Geographical_Click"/>
@@ -234,6 +235,28 @@
                 <Button x:Name="Tap_Prompt_Cancel" Content="Cancel" HorizontalAlignment="Left" VerticalAlignment="Center" Height="30" Width="120" Margin="10" Click="Tap_Prompt_Cancel_Click"/>
                 <Button x:Name="Tap_Prompt_Back" Content="Back" IsEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center" Height="30" Width="120" Margin="10" Click="Tap_Prompt_Back_Click"/>
                 <Button x:Name="Tap_Prompt_Confirm" Content="Confirm" HorizontalAlignment="Right" VerticalAlignment="Center" Height="30" Width="120" Margin="10" Click="Tap_Prompt_Confirm_Click"/>
+            </Grid>
+        </Grid>
+        <Grid x:Name="TypePrompt" HorizontalAlignment="Center" VerticalAlignment="Top" Width="500" Height="200" Visibility="Collapsed">
+            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="50">
+                <Rectangle Fill="#FFF4F4F5" HorizontalAlignment="Stretch" Margin="0,0,0,0" Stroke="Black" VerticalAlignment="Stretch"/>
+                <TextBlock x:Name="TypePromptTab" Text="Name Me!" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" Margin="10,5,10,5"/>
+            </Grid>
+            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,50,0,0">
+                <Rectangle Fill="#FFFFFFFF" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Stroke="Black"/>
+                <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="10,10,10,60">
+                    <controls:UniformGrid Columns="3" Rows="2">
+                        <Button x:Name="Type_Prompt_National" Content="National" HorizontalAlignment="Center" MinWidth="50" Click="Type_Prompt_National_Click"/>
+                        <Button x:Name="Type_Prompt_Geographical" Content="Geographical" HorizontalAlignment="Center" MinWidth="50" Click="Type_Prompt_Geographical_Click"/>
+                        <Button x:Name="Type_Prompt_Climate" Content="Climate" HorizontalAlignment="Center" MinWidth="50" Click="Type_Prompt_Climate_Click"/>
+                        <Button x:Name="Type_Prompt_Factional" Content="Factional" HorizontalAlignment="Center" MinWidth="50" Click="Type_Prompt_Factional_Click"/>
+                        <Button x:Name="Type_Prompt_Cultural" Content="Cultural" HorizontalAlignment="Center" MinWidth="50" Click="Type_Prompt_Cultural_Click"/>
+                        <Button x:Name="Type_Prompt_Biological" Content="Biological" HorizontalAlignment="Center" MinWidth="50" Click="Type_Prompt_Biological_Click"/>
+                    </controls:UniformGrid>
+                </Grid>
+                <Grid HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Height="50" Margin="10">
+                    <Button x:Name="Type_Prompt_Cancel" Content="Cancel" HorizontalAlignment="Center" VerticalAlignment="Center" Width="250" Click="Type_Prompt_Cancel_Click"/>
+                </Grid>
             </Grid>
         </Grid>
         <Grid HorizontalAlignment="Center" x:Name="UnsavedWorkAlert" Visibility="Collapsed" Height="100" Width="300" Margin="100,100,100,100" VerticalAlignment="Top">

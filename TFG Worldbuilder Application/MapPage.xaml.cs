@@ -500,6 +500,21 @@ namespace TFG_Worldbuilder_Application
                 TextPromptBox.Focus(FocusState.Programmatic);
         }
 
+
+        private void Create_Greater_Region_Click(object sender, RoutedEventArgs e)
+        {
+            LevelNum = 2;
+            ActiveJob = Job.Create;
+            if(Context.ActiveLevel != null && Context.ActiveLevel.leveltype != LevelType.Invalid && Context.ActiveLevel.leveltype != LevelType.World)
+            {
+                type = Context.ActiveLevel.leveltype;
+                Create_Greater_Region();
+            } else
+            {
+                OpenTypePrompt("Define Greater Region Type");
+            }
+        }
+
         private void Create_Greater_Region_National_Click(object sender, RoutedEventArgs e)
         {
             type = LevelType.National;
@@ -1019,6 +1034,66 @@ namespace TFG_Worldbuilder_Application
         {
             Context.SplitLine();
             UpdateSaveState();
+        }
+
+        /// <summary>
+        /// Opens the Popup Alert with the given message
+        /// </summary>
+        private void OpenTypePrompt(string text)
+        {
+            TypePromptTab.Text = text;
+            TypePrompt.Visibility = Visibility.Visible;
+        }
+
+        private void Type_Prompt_Confirm()
+        {
+            TypePrompt.Visibility = Visibility.Collapsed;
+            if(LevelNum == 2)
+            {
+                Create_Greater_Region();
+            }
+        }
+
+        private void Type_Prompt_National_Click(object sender, RoutedEventArgs e)
+        {
+            type = LevelType.National;
+            Type_Prompt_Confirm();
+        }
+
+        private void Type_Prompt_Geographical_Click(object sender, RoutedEventArgs e)
+        {
+            type = LevelType.Geographical;
+            Type_Prompt_Confirm();
+        }
+
+        private void Type_Prompt_Climate_Click(object sender, RoutedEventArgs e)
+        {
+            type = LevelType.Climate;
+            Type_Prompt_Confirm();
+        }
+
+        private void Type_Prompt_Factional_Click(object sender, RoutedEventArgs e)
+        {
+            type = LevelType.Factional;
+            Type_Prompt_Confirm();
+        }
+
+        private void Type_Prompt_Cultural_Click(object sender, RoutedEventArgs e)
+        {
+            type = LevelType.Cultural;
+            Type_Prompt_Confirm();
+        }
+
+        private void Type_Prompt_Biological_Click(object sender, RoutedEventArgs e)
+        {
+            type = LevelType.Biological;
+            Type_Prompt_Confirm();
+        }
+
+        private void Type_Prompt_Cancel_Click(object sender, RoutedEventArgs e)
+        {
+            ActiveJob = Job.None;
+            TypePrompt.Visibility = Visibility.Collapsed;
         }
     }
 }
