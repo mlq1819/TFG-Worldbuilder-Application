@@ -363,6 +363,12 @@ namespace TFG_Worldbuilder_Application
                                 case 2:
                                     NewGreaterRegion(this.name, this.type, this.subtype, this.vertices);
                                     break;
+                                case 3:
+                                    NewRegion(this.name, this.type, this.subtype, this.vertices);
+                                    break;
+                                case 4:
+                                    NewSubregion(this.name, this.type, this.subtype, this.vertices);
+                                    break;
                                     //ToDo: add more cases for other levels
                             }
                             break;
@@ -406,22 +412,6 @@ namespace TFG_Worldbuilder_Application
             type = LevelType.World;
             ActiveJob = Job.Create;
             OpenTextPrompt("What type of world are you creating?\nEnter a subtype:");
-        }
-
-        /// <summary>
-        /// Opens the popup and prepares to create a new greater region
-        /// </summary>
-        private void Create_Greater_Region()
-        {
-            if(Context.ActiveLevel != null && Context.ActiveLevel.level < 2)
-            {
-                LevelNum = 2;
-                LevelStep = 1;
-                ActiveJob = Job.Create;
-                vertices = new Polygon2D();
-                Context.ClearPoints();
-                OpenTapPrompt("Enter at least 3 points for Greater Region");
-            }
         }
 
         /// <summary>
@@ -482,6 +472,58 @@ namespace TFG_Worldbuilder_Application
         }
 
         /// <summary>
+        /// Creates a new region object with the given name, type, subtype, and border
+        /// </summary>
+        private void NewRegion(string name, LevelType type, string subtype, Polygon2D border)
+        {
+            Context.ClearPoints();
+            if (Context.ActiveLevel.HasSublevelWithName(name))
+            {
+                OpenPopupAlert("Error: " + Enum.GetName(typeof(LevelType), type) + " sublevel with name \"" + name + "\" already exists");
+            }
+            else
+            {
+                Level3 new_level = new Level3(name, type, subtype, Context.ActiveLevel, border);
+                if (!Context.ActiveLevel.AddSublevel(new_level))
+                {
+                    OpenPopupAlert("Error: unknown error adding level");
+                }
+                else
+                {
+                    Context.UpdateAll();
+                }
+            }
+            ActiveJob = Job.None;
+            UpdateSaveState();
+        }
+
+        /// <summary>
+        /// Creates a new subregion object with the given name, type, subtype, and border
+        /// </summary>
+        private void NewSubregion(string name, LevelType type, string subtype, Polygon2D border)
+        {
+            Context.ClearPoints();
+            if (Context.ActiveLevel.HasSublevelWithName(name))
+            {
+                OpenPopupAlert("Error: " + Enum.GetName(typeof(LevelType), type) + " sublevel with name \"" + name + "\" already exists");
+            }
+            else
+            {
+                Level4 new_level = new Level4(name, type, subtype, Context.ActiveLevel, border);
+                if (!Context.ActiveLevel.AddSublevel(new_level))
+                {
+                    OpenPopupAlert("Error: unknown error adding level");
+                }
+                else
+                {
+                    Context.UpdateAll();
+                }
+            }
+            ActiveJob = Job.None;
+            UpdateSaveState();
+        }
+
+        /// <summary>
         /// Sets the ActiveWorld to the saved world defined by the sender event
         /// </summary>
         private void Open_World_Click(object sender, RoutedEventArgs e)
@@ -518,6 +560,116 @@ namespace TFG_Worldbuilder_Application
                 OpenTypePrompt("Define Greater Region Type");
             }
         }
+
+        private void Create_Region_Click(object sender, RoutedEventArgs e)
+        {
+            LevelNum = 3;
+            if (Context.ActiveLevel != null && Context.ActiveLevel.leveltype != LevelType.Invalid && Context.ActiveLevel.leveltype != LevelType.World)
+            {
+                type = Context.ActiveLevel.leveltype;
+                Create_Region();
+            }
+            else
+            {
+                ActiveJob = Job.Type;
+                OpenTypePrompt("Define Region Type");
+            }
+        }
+
+        private void Create_Subregion_Click(object sender, RoutedEventArgs e)
+        {
+            LevelNum = 4;
+            if (Context.ActiveLevel != null && Context.ActiveLevel.leveltype != LevelType.Invalid && Context.ActiveLevel.leveltype != LevelType.World)
+            {
+                type = Context.ActiveLevel.leveltype;
+                Create_Subregion();
+            }
+            else
+            {
+                ActiveJob = Job.Type;
+                OpenTypePrompt("Define Subregion Type");
+            }
+        }
+
+        private void Create_Location_Click(object sender, RoutedEventArgs e)
+        {
+            LevelNum = 5;
+            if (Context.ActiveLevel != null && Context.ActiveLevel.leveltype != LevelType.Invalid && Context.ActiveLevel.leveltype != LevelType.World)
+            {
+                type = Context.ActiveLevel.leveltype;
+                Create_Location();
+            }
+            else
+            {
+                ActiveJob = Job.Type;
+                OpenTypePrompt("Define Location Type");
+            }
+        }
+
+        private void Create_Structure_Click(object sender, RoutedEventArgs e)
+        {
+            LevelNum = 6;
+            if (Context.ActiveLevel != null && Context.ActiveLevel.leveltype != LevelType.Invalid && Context.ActiveLevel.leveltype != LevelType.World)
+            {
+                type = Context.ActiveLevel.leveltype;
+                Create_Structure();
+            }
+            else
+            {
+                ActiveJob = Job.Type;
+                OpenTypePrompt("Define Structure Type");
+            }
+        }
+
+
+        /// <summary>
+        /// Opens the popup and prepares to create a new greater region
+        /// </summary>
+        private void Create_Greater_Region()
+        {
+            if (Context.ActiveLevel != null && Context.ActiveLevel.level < 2)
+            {
+                LevelNum = 2;
+                LevelStep = 1;
+                ActiveJob = Job.Create;
+                vertices = new Polygon2D();
+                Context.ClearPoints();
+                OpenTapPrompt("Enter at least 3 points for Greater Region");
+            }
+        }
+
+        /// <summary>
+        /// Opens the popup and prepares to create a new region
+        /// </summary>
+        private void Create_Region()
+        {
+            if (Context.ActiveLevel != null && Context.ActiveLevel.level < 3)
+            {
+                LevelNum = 3;
+                LevelStep = 1;
+                ActiveJob = Job.Create;
+                vertices = new Polygon2D();
+                Context.ClearPoints();
+                OpenTapPrompt("Enter at least 3 points for Region");
+            }
+        }
+
+        /// <summary>
+        /// Opens the popup and prepares to create a new subregion
+        /// </summary>
+        private void Create_Subregion()
+        {
+            if (Context.ActiveLevel != null && Context.ActiveLevel.level < 4)
+            {
+                LevelNum = 4;
+                LevelStep = 1;
+                ActiveJob = Job.Create;
+                vertices = new Polygon2D();
+                Context.ClearPoints();
+                OpenTapPrompt("Enter at least 3 points for Subregion");
+            }
+        }
+
         private childItem FindVisualChild<childItem>(DependencyObject obj) where childItem : DependencyObject
         {
             if (obj == null)
@@ -825,7 +977,33 @@ namespace TFG_Worldbuilder_Application
             }
             LevelStep++;
             TapPrompt.Visibility = Visibility.Collapsed;
+            OpenTextPrompt("What type of " + Enum.GetName(typeof(LevelType), type) + " greater region are you creating?\nEnter a subtype:");
+            return true;
+        }
+
+        private bool Tap_Prompt_Confirm_Region()
+        {
+            if (vertices.Size() < 3)
+            {
+                OpenPopupAlert("Requires at least 3 points");
+                return false;
+            }
+            LevelStep++;
+            TapPrompt.Visibility = Visibility.Collapsed;
             OpenTextPrompt("What type of " + Enum.GetName(typeof(LevelType), type) + " region are you creating?\nEnter a subtype:");
+            return true;
+        }
+
+        private bool Tap_Prompt_Confirm_Subregion()
+        {
+            if (vertices.Size() < 3)
+            {
+                OpenPopupAlert("Requires at least 3 points");
+                return false;
+            }
+            LevelStep++;
+            TapPrompt.Visibility = Visibility.Collapsed;
+            OpenTextPrompt("What type of " + Enum.GetName(typeof(LevelType), type) + " subregion are you creating?\nEnter a subtype:");
             return true;
         }
 
@@ -837,9 +1015,19 @@ namespace TFG_Worldbuilder_Application
                     OpenPopupAlert("Current object intersects with an existing object");
                 } else
                 {
-                    if (LevelNum == 2)
+                    switch (LevelNum)
                     {
-                        Tap_Prompt_Confirm_Greater_Region();
+                        case 2:
+                            Tap_Prompt_Confirm_Greater_Region();
+                            break;
+                        case 3:
+                            Tap_Prompt_Confirm_Region();
+                            break;
+                        case 4:
+                            Tap_Prompt_Confirm_Subregion();
+                            break;
+                        default:
+                            break;
                     }
                 }
             }
@@ -1015,9 +1203,25 @@ namespace TFG_Worldbuilder_Application
         private void Type_Prompt_Confirm()
         {
             TypePrompt.Visibility = Visibility.Collapsed;
-            if(LevelNum == 2)
+            switch (LevelNum)
             {
-                Create_Greater_Region();
+                case 2:
+                    Create_Greater_Region();
+                    break;
+                case 3:
+                    Create_Region();
+                    break;
+                case 4:
+                    Create_Subregion();
+                    break;
+                case 5:
+                    Create_Location();
+                    break;
+                case 6:
+                    Create_Structure();
+                    break;
+                default:
+                    break;
             }
         }
 
@@ -1062,6 +1266,5 @@ namespace TFG_Worldbuilder_Application
             ActiveJob = Job.None;
             TypePrompt.Visibility = Visibility.Collapsed;
         }
-
     }
 }

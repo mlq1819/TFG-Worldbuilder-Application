@@ -63,6 +63,10 @@
         <MenuFlyout x:Name="CreateMenu" x:Key="CreateMenu" Closed="CreateMenu_Closed">
             <MenuFlyoutItem x:Name="Create_World_Flyout" Text="New World" Click="Create_World_Click"/>
             <MenuFlyoutItem x:Name="Create_Greater_Region_Flyout" Text="New Greater Region" Click="Create_Greater_Region_Click"/>
+            <MenuFlyoutItem x:Name="Create_Region_Flyout" Text="New Region" Click="Create_Region_Click"/>
+            <MenuFlyoutItem x:Name="Create_Subregion_Flyout" Text="New Subregion" Click="Create_Subregion_Click"/>
+            <MenuFlyoutItem x:Name="Create_Location_Flyout" Text="New Location" Click="Create_Location_Click"/>
+            <MenuFlyoutItem x:Name="Create_Structure_Flyout" Text="New Structure" Click="Create_Structure_Click"/>
         </MenuFlyout>
         <Flyout x:Name="WorldsMenu" x:Key="WorldsMenu">
             <ListView ItemsSource="{x:Bind Context.Worlds, Mode=OneWay}">
