@@ -634,6 +634,18 @@ namespace TFG_Worldbuilder_Application
                 SetActive(sublevel);
         }
 
+        private void Level_Back_Click(object sender, RoutedEventArgs e)
+        {
+            if (Context.ActiveLevel.parent != null)
+            {
+                SetActive(Context.ActiveLevel.parent);
+                if(Context.ActiveLevel.parent == null)
+                {
+                    NavigationMenu.Hide();
+                }
+            }
+        }
+
         /// <summary>
         /// Sets focus to the prompt text box if available when the create menu is closed
         /// </summary>
@@ -1403,14 +1415,6 @@ namespace TFG_Worldbuilder_Application
         {
             ActiveJob = Job.None;
             TypePrompt.Visibility = Visibility.Collapsed;
-        }
-
-        private void Level_Back_Click(object sender, RoutedEventArgs e)
-        {
-            if(Context.ActiveLevel.parent != null)
-            {
-                SetActive(Context.ActiveLevel.parent);
-            }
         }
     }
 }
