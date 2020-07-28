@@ -1582,6 +1582,14 @@ namespace TFG_Worldbuilder_Application
                 }
                 RaisePropertyChanged("center_r");
                 RaisePropertyChanged("visibility");
+                RaisePropertyChanged("str");
+            }
+        }
+        public string str
+        {
+            get
+            {
+                return ToString();
             }
         }
         private string _color = "Black";

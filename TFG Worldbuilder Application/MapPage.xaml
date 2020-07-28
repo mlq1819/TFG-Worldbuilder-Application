@@ -91,6 +91,10 @@
             <MenuFlyoutItem Text="Move" x:Name="Vertices_Control_Move" Click="Vertices_Control_Move_Click"/>
             <MenuFlyoutItem Text="Delete" x:Name="Vertices_Control_Delete" Click="Vertices_Control_Delete_Click"/>
         </MenuFlyout>
+        <MenuFlyout x:Name="EdgesControlFlyout" x:Key="EdgesControlFlyout" Closed="EdgesControlFlyout_Closed">
+            <MenuFlyoutItem Text="{x:Bind Path=Context.CurrentLine.str, Mode=OneWay}" IsEnabled="False"/>
+            <MenuFlyoutItem Text="Split" x:Name="Edges_Control_Split" Click="Edges_Control_Split_Click"/>
+        </MenuFlyout>
     </Page.Resources>
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
@@ -131,7 +135,7 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="local:Line2D">
-                            <Line Stroke="{x:Bind Path=color, Mode=OneWay}" StrokeThickness="1" X1="{x:Bind Path=X1, Mode=OneWay}" Y1="{x:Bind Path=Y1, Mode=OneWay}" X2="{x:Bind Path=X2, Mode=OneWay}" Y2="{x:Bind Path=Y2, Mode=OneWay}"/>
+                            <Line Stroke="{x:Bind Path=color, Mode=OneWay}" StrokeThickness="1" X1="{x:Bind Path=X1, Mode=OneWay}" Y1="{x:Bind Path=Y1, Mode=OneWay}" X2="{x:Bind Path=X2, Mode=OneWay}" Y2="{x:Bind Path=Y2, Mode=OneWay}" FlyoutBase.AttachedFlyout="{StaticResource EdgesControlFlyout}"/>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>

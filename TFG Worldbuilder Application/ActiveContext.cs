@@ -77,6 +77,15 @@ namespace TFG_Worldbuilder_Application
                 RaisePropertyChanged("SelectedLine");
             }
         }
+        public Line2D CurrentLine
+        {
+            get
+            {
+                if (SelectedLine >= 0)
+                    return Lines[SelectedLine];
+                return null;
+            }
+        }
         private string BaseLevelColor = "#F2F2F2";
         private string BasePointColor = "LightCoral";
         private string BaseLineColor = "Black";
@@ -263,7 +272,7 @@ namespace TFG_Worldbuilder_Application
                 if (Lines[i] == line)
                 {
                     SelectedLine = i;
-                    Lines[SelectedLine].color = "Navy";
+                    Lines[SelectedLine].color = "Blue";
                     RaisePropertyChanged("Lines");
                     return;
                 }

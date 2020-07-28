@@ -587,6 +587,29 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         private void WorldCanvas_ClickLine(Line2D line, RenderedPoint point)
         {
+            foreach (object child in ShapesVerticesControl.Items)
+            {
+                try
+                {
+                    Windows.UI.Xaml.Shapes.Path vertex = FindVisualChild<Windows.UI.Xaml.Shapes.Path>(ShapesVerticesControl.ContainerFromItem(child) as DependencyObject);
+                    if (vertex != null)
+                    {
+                        FlyoutBase flyout = FlyoutBase.GetAttachedFlyout(vertex as FrameworkElement);
+                        if (flyout != null)
+                        {
+                            Context.SetSelected(point);
+                            FlyoutShowOptions show_options = new FlyoutShowOptions();
+                            show_options.Position = point.ToWindowsPoint();
+                            flyout.ShowAt(ShapesVerticesControl, show_options);
+                            return;
+                        }
+                    }
+                }
+                catch (InvalidCastException)
+                {
+                    ;
+                }
+            }
             Context.SetSelected(line);
         }
 
@@ -965,5 +988,15 @@ namespace TFG_Worldbuilder_Application
                 Context.NullSelected();
         }
 
+        private void EdgesControlFlyout_Closed(object sender, object e)
+        {
+            if (ActiveJob == Job.None)
+                Context.NullSelected();
+        }
+
+        private void Edges_Control_Split_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
