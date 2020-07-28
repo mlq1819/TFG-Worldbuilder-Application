@@ -708,39 +708,34 @@ namespace TFG_Worldbuilder_Application
         }
 
         /// <summary>
-        /// Sets the ActiveWorld to the World of the given name and updates Shapes and Points
+        /// Reutrns the world with the given name, or null
         /// </summary>
-        public bool SetWorld(string name)
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public SuperLevel GetWorld(string name)
         {
-            if (ActiveLevel != null && string.Equals(ActiveLevel.GetName(), name))
-                return true;
-            for (int i = 0; i < Worlds.Count; i++)
+            for(int i=0; i<Worlds.Count; i++)
             {
                 if (string.Equals(Worlds[i].GetName(), name))
-                {
-                    SetActive(Worlds[i]);
-                    return true;
-                }
+                    return Worlds[i];
             }
-            return false;
+            return null;
         }
 
         /// <summary>
-        /// Sets the ActiveWorld to the World of the given name and subtype and updates Shapes and Points
+        /// Returns the world with the given name and subtype, or null
         /// </summary>
-        public bool SetWorld(string name, string subtype)
+        /// <param name="name"></param>
+        /// <param name="subtype"></param>
+        /// <returns></returns>
+        public SuperLevel GetWorld(string name, string subtype)
         {
-            if (ActiveLevel!=null && string.Equals(ActiveLevel.GetName(), name) && string.Equals(ActiveLevel.subtype, subtype))
-                return true;
-            for (int i = 0; i < Worlds.Count; i++)
+            for(int i=0; i<Worlds.Count; i++)
             {
-                if (string.Equals(Worlds[i].GetName(), name) && string.Equals(Worlds[i].subtype, subtype))
-                {
-                    SetActive(Worlds[i]);
-                    return true;
-                }
+                if(string.Equals(Worlds[i].GetName(), name) && string.Equals(Worlds[i].subtype, subtype))
+                    return Worlds[i];
             }
-            return false;
+            return null;
         }
 
         /// <summary>

@@ -100,7 +100,8 @@ namespace TFG_Worldbuilder_Application
             Context.RaisePropertyChanged("MaxY");
             if (Worlds.Count > 0)
             {
-                Context.SetWorld(Worlds[0].name, Worlds[0].subtype);
+                SetActive(Worlds[0]);
+                //Context.SetWorld(Worlds[0].name, Worlds[0].subtype);
                 //Context.UpdateAll();
             }
             UpdateSaveState();
@@ -372,7 +373,9 @@ namespace TFG_Worldbuilder_Application
                     switch (this.LevelNum) //Control for level type
                     {
                         case 1:
-                            Context.SetWorld(prompt_text);
+                            SuperLevel world = Context.GetWorld(prompt_text);
+                            if (world != null)
+                                SetActive(world);
                             break;
                     }
                 } else if ((ActiveJob == Job.Rename) && Context.SelectedLevel != null)
@@ -444,7 +447,7 @@ namespace TFG_Worldbuilder_Application
                 OpenPopupAlert("Error: " + Enum.GetName(typeof(LevelType), type) + " with name \"" + name + "\" already exists");
             } else
             {
-                Context.SetActive(new Level1(name, subtype));
+                SetActive(new Level1(name, subtype));
                 Global.ActiveFile.Worlds.Add((Level1)Context.ActiveLevel);
             }
             ActiveJob = Job.None;
@@ -481,7 +484,9 @@ namespace TFG_Worldbuilder_Application
         {
             WorldsMenu.Hide();
             string name = ((MenuFlyoutItem)sender).Text.Trim();
-            Context.SetWorld(name);
+            SuperLevel world = Context.GetWorld(name);
+            if (world != null)
+                SetActive(world);
             ResetZoom();
             ForceUpdatePoints();
         }
@@ -745,21 +750,28 @@ namespace TFG_Worldbuilder_Application
         /// <param name="point"></param>
         private void WorldCanvas_Move_Point(AbsolutePoint point)
         {
+            if (Context.TestMovePoint(point))
+            {
 
-            if (vertices.Count < 1)
-                vertices.AppendPoint(point);
-            else
-                vertices.vertices[0] = new AbsolutePoint(point);
-            if (Context.ExtraPoints.Count < 1)
-                Context.ExtraPoints.AppendPoint(point);
-            else
-                Context.ExtraPoints._points[0] = point;
-            Context.RaisePropertyChanged("ExtraPoints");
-            TapPromptTab.Text = label + ": " + vertices.Size() + " points";
-            if (vertices.Count > 0)
-                Tap_Prompt_Back.IsEnabled = true;
-            else
-                Tap_Prompt_Back.IsEnabled = false;
+                if (vertices.Count < 1)
+                    vertices.AppendPoint(point);
+                else
+                    vertices.vertices[0] = new AbsolutePoint(point);
+                if (Context.ExtraPoints.Count < 1)
+                    Context.ExtraPoints.AppendPoint(point);
+                else
+                    Context.ExtraPoints._points[0] = point;
+                Context.RaisePropertyChanged("ExtraPoints");
+                TapPromptTab.Text = label + ": " + vertices.Size() + " points";
+                if (vertices.Count > 0)
+                    Tap_Prompt_Back.IsEnabled = true;
+                else
+                    Tap_Prompt_Back.IsEnabled = false;
+                Tap_Prompt_Confirm_Click(null, null);
+            } else
+            {
+                OpenPopupAlert("Cannot move point to that position");
+            }
 
         }
         
@@ -955,9 +967,19 @@ namespace TFG_Worldbuilder_Application
             UpdateSaveState();
         }
 
+        private void SetActive(SuperLevel level)
+        {
+            if(level.level >= 2)
+                Create_Greater_Region_Menu.IsEnabled = false; 
+            else
+                Create_Greater_Region_Menu.IsEnabled = true;
+
+            Context.SetActive(level);
+        }
+
         private void Shapes_Control_Focus_Click(object sender, RoutedEventArgs e)
         {
-            Context.SetActive(Context.SelectedLevel);
+            SetActive(Context.SelectedLevel);
             Context.NullSelected();
             ResetZoom();
             ForceUpdatePoints();

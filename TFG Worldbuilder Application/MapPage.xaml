@@ -62,7 +62,7 @@
         </MenuFlyout>
         <MenuFlyout x:Name="CreateMenu" x:Key="CreateMenu" Closed="CreateMenu_Closed">
             <MenuFlyoutItem x:Name="Create_World" Text="New World" Click="Create_World_Click"/>
-            <MenuFlyoutSubItem x:Name="Create_Region_Menu" Text="New Greater Region">
+            <MenuFlyoutSubItem x:Name="Create_Greater_Region_Menu" Text="New Greater Region">
                 <MenuFlyoutItem x:Name="Create_Greater_Region_National" Text="National" Click="Create_Greater_Region_National_Click"/>
                 <MenuFlyoutItem x:Name="Create_Greater_Region_Geographical" Text="Geographical" Click="Create_Greater_Region_Geographical_Click"/>
                 <MenuFlyoutItem x:Name="Create_Greater_Region_Climate" Text="Climate" Click="Create_Greater_Region_Climate_Click"/>
