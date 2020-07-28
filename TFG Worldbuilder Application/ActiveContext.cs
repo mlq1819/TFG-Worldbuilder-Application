@@ -12,6 +12,27 @@ using Windows.ApplicationModel.Contacts;
 namespace TFG_Worldbuilder_Application
 {
 
+    public class ListConcat<T>
+    {
+        public static IList<T> Concat(IList<T> a, IList<T> b)
+        {
+            foreach(T item in b)
+            {
+                a.Append<T>(item);
+            }
+            return a;
+        }
+
+        public static IList<Object> Concat(IList<Object> a, IList<T> b)
+        {
+            foreach(T item in b)
+            {
+                a.Append<Object>(item as Object);
+            }
+            return a;
+        }
+    }
+
     /// <summary>
     /// DataContext bindable object for convenience sake; manages Active information for the level
     /// </summary>
@@ -461,8 +482,8 @@ namespace TFG_Worldbuilder_Application
         public void UpdateShapes()
         {
             IList<SuperLevel> temp = SuperLevel.Filter(ActiveLevel.GetSublevels(), 2);
-            temp = (IList<SuperLevel>) temp.Concat<SuperLevel>(SuperLevel.Filter(ActiveLevel.GetSublevels(), 3));
-            temp = (IList<SuperLevel>) temp.Concat<SuperLevel>(SuperLevel.Filter(ActiveLevel.GetSublevels(), 4));
+            ListConcat<SuperLevel>.Concat(temp, SuperLevel.Filter(ActiveLevel.GetSublevels(), 3));
+            ListConcat<SuperLevel>.Concat(temp, SuperLevel.Filter(ActiveLevel.GetSublevels(), 4));
             Shapes = new ObservableCollection<BorderLevel>();
             for (int i = 0; i < temp.Count; i++)
             {
@@ -1129,11 +1150,11 @@ namespace TFG_Worldbuilder_Application
         public List<Object> GetObjectsContainingPoint(RenderedPoint point)
         {
             List<Object> output = new List<Object>();
-            output = (List<Object>) output.Concat<Object>(GetPointsByPoint(point));
-            output = (List<Object>) output.Concat<Object>(GetCirclesByPoint(point));
-            output = (List<Object>) output.Concat<Object>(GetVerticesByPoint(point));
-            output = (List<Object>) output.Concat<Object>(GetLinesByPoint(point));
-            output = (List<Object>) output.Concat<Object>(GetShapesByPoint(point));
+            ListConcat<Level6>.Concat(output, GetPointsByPoint(point));
+            ListConcat<Level5>.Concat(output, GetCirclesByPoint(point));
+            ListConcat<RenderedPoint>.Concat(output, GetVerticesByPoint(point));
+            ListConcat<Line2D>.Concat(output, GetLinesByPoint(point));
+            ListConcat<BorderLevel>.Concat(output, GetShapesByPoint(point));
             return output;
         }
 
