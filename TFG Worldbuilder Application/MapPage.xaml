@@ -208,7 +208,7 @@
                     <Button x:Name="FileButton" Content="File" HorizontalAlignment="Left" Margin="10" VerticalAlignment="Top" Width="80" Flyout="{StaticResource FileMenu}"/>
                     <Button x:Name="ViewButton" Content="View" HorizontalAlignment="Left" Margin="10" VerticalAlignment="Top" Width="80" Flyout="{StaticResource ViewMenu}"/>
                     <Button x:Name="WorldsButton" Content="Worlds" HorizontalAlignment="Left" Margin="10" VerticalAlignment="Top" Width="80" Flyout="{StaticResource WorldsMenu}"/>
-                    <Button x:Name="SublevelsButton" Content="Navigation" HorizontalAlignment="Left" Margin="10" VerticalAlignment="Top" Width="80" Flyout="{StaticResource SublevelsMenu}"/>
+                    <Button x:Name="SublevelsButton" Content="Navigate" HorizontalAlignment="Left" Margin="10" VerticalAlignment="Top" Width="80" Flyout="{StaticResource SublevelsMenu}"/>
                     <Button x:Name="CreateButton" Content="Create" HorizontalAlignment="Left" Margin="10" VerticalAlignment="Top" Width="80" Flyout="{StaticResource CreateMenu}"/>
                 </StackPanel>
                 <StackPanel x:Name="ZoomPanel" HorizontalAlignment="Right" Height="50" Orientation="Horizontal">
