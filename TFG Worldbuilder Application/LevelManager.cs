@@ -529,7 +529,7 @@ namespace TFG_Worldbuilder_Application
             }
             for (int i = 0; i < this.sublevels.Count; i++)
             {
-                results.Concat<SuperLevel>(this.sublevels[i].FindLevels(name));
+                results = (List<SuperLevel>) results.Concat<SuperLevel>(this.sublevels[i].FindLevels(name));
             }
             return results;
         }
@@ -555,7 +555,7 @@ namespace TFG_Worldbuilder_Application
                 {
                     if (level > this.sublevels[i].GetLevel())
                     {
-                        results.Concat<SuperLevel>(this.sublevels[i].FindLevels(name, level));
+                        results = (List<SuperLevel>) results.Concat<SuperLevel>(this.sublevels[i].FindLevels(name, level));
                     }
                 }
             }
@@ -583,7 +583,7 @@ namespace TFG_Worldbuilder_Application
                 {
                     if (level > this.sublevels[i].GetLevel())
                     {
-                        results.Concat<SuperLevel>(this.sublevels[i].FindLevels(name, level, leveltype));
+                        results = (List<SuperLevel>) results.Concat<SuperLevel>(this.sublevels[i].FindLevels(name, level, leveltype));
                     }
                 }
             }
@@ -660,7 +660,7 @@ namespace TFG_Worldbuilder_Application
                 output.Add(this);
             for(int i=0; i<sublevels.Count; i++)
             {
-                output.Concat<SuperLevel>(this.sublevels[i].SublevelsInRegion(region));
+                output = (List<SuperLevel>) output.Concat<SuperLevel>(this.sublevels[i].SublevelsInRegion(region));
             }
             return output;
         }
@@ -941,7 +941,7 @@ namespace TFG_Worldbuilder_Application
             List<SuperLevel> output = new List<SuperLevel>();
             for(int i=0; i<Worlds.Count; i++)
             {
-                output.Concat<SuperLevel>(Worlds[i].SublevelsInRegion(border));
+                output = (List<SuperLevel>) output.Concat<SuperLevel>(Worlds[i].SublevelsInRegion(border));
             }
             return output;
         }

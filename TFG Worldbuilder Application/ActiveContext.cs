@@ -461,8 +461,8 @@ namespace TFG_Worldbuilder_Application
         public void UpdateShapes()
         {
             IList<SuperLevel> temp = SuperLevel.Filter(ActiveLevel.GetSublevels(), 2);
-            temp.Concat<SuperLevel>(SuperLevel.Filter(ActiveLevel.GetSublevels(), 3));
-            temp.Concat<SuperLevel>(SuperLevel.Filter(ActiveLevel.GetSublevels(), 4));
+            temp = (IList<SuperLevel>) temp.Concat<SuperLevel>(SuperLevel.Filter(ActiveLevel.GetSublevels(), 3));
+            temp = (IList<SuperLevel>) temp.Concat<SuperLevel>(SuperLevel.Filter(ActiveLevel.GetSublevels(), 4));
             Shapes = new ObservableCollection<BorderLevel>();
             for (int i = 0; i < temp.Count; i++)
             {
@@ -470,8 +470,7 @@ namespace TFG_Worldbuilder_Application
                 {
                     try
                     {
-                        if (((BorderLevel)temp[i]).border.verticesr.Count > 0)
-                            Shapes.Add((BorderLevel)temp[i]);
+                        Shapes.Add((BorderLevel)temp[i]);
                     }
                     catch (InvalidCastException)
                     {
@@ -1130,11 +1129,11 @@ namespace TFG_Worldbuilder_Application
         public List<Object> GetObjectsContainingPoint(RenderedPoint point)
         {
             List<Object> output = new List<Object>();
-            output.Concat<Object>(GetPointsByPoint(point));
-            output.Concat<Object>(GetCirclesByPoint(point));
-            output.Concat<Object>(GetVerticesByPoint(point));
-            output.Concat<Object>(GetLinesByPoint(point));
-            output.Concat<Object>(GetShapesByPoint(point));
+            output = (List<Object>) output.Concat<Object>(GetPointsByPoint(point));
+            output = (List<Object>) output.Concat<Object>(GetCirclesByPoint(point));
+            output = (List<Object>) output.Concat<Object>(GetVerticesByPoint(point));
+            output = (List<Object>) output.Concat<Object>(GetLinesByPoint(point));
+            output = (List<Object>) output.Concat<Object>(GetShapesByPoint(point));
             return output;
         }
 
