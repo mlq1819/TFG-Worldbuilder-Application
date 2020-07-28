@@ -669,7 +669,7 @@ namespace TFG_Worldbuilder_Application
                 {
                     if (obj.GetType() == typeof(RenderedPoint))
                         WorldCanvas_ClickVertex((RenderedPoint)obj);
-                    else if (obj.GetType() == typeof(Level6))
+                    else if (obj.GetType() == typeof(Line2D))
                         WorldCanvas_ClickLine((Line2D)obj, point);
                     else if (obj.GetType() == typeof(Level6))
                         WorldCanvas_ClickLevel6((Level6)obj, point);
@@ -995,7 +995,8 @@ namespace TFG_Worldbuilder_Application
 
         private void Edges_Control_Split_Click(object sender, RoutedEventArgs e)
         {
-
+            Context.SplitLine();
+            UpdateSaveState();
         }
     }
 }

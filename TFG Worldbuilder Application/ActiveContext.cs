@@ -75,6 +75,7 @@ namespace TFG_Worldbuilder_Application
             {
                 _selectedline = value;
                 RaisePropertyChanged("SelectedLine");
+                RaisePropertyChanged("CurrentLine");
             }
         }
         public Line2D CurrentLine
@@ -408,6 +409,22 @@ namespace TFG_Worldbuilder_Application
                     UpdateAll();
                     return true;
                 }
+            }
+            return false;
+        }
+
+        public bool SplitLine()
+        {
+            bool did_split = false;
+            for(int i=0; i<Shapes.Count; i++)
+            {
+                if (Shapes[i].NewPoint(CurrentLine._vertex1, CurrentLine._vertex2) != null)
+                    did_split = true;
+            }
+            if (did_split)
+            {
+                UpdateAll();
+                return true;
             }
             return false;
         }
