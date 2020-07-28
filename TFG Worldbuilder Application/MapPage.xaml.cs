@@ -649,7 +649,6 @@ namespace TFG_Worldbuilder_Application
                 TextPromptBox.Focus(FocusState.Programmatic);
         }
 
-
         private void Create_Greater_Region_Click(object sender, RoutedEventArgs e)
         {
             LevelNum = 2;
@@ -1286,6 +1285,10 @@ namespace TFG_Worldbuilder_Application
             else
                 Create_Structure_Flyout.IsEnabled = true;
             Context.SetActive(level);
+            if (Context.ActiveLevel.parent != null)
+                Level_Back.IsEnabled = true;
+            else
+                Level_Back.IsEnabled = false;
         }
 
         private void Shapes_Control_Focus_Click(object sender, RoutedEventArgs e)
@@ -1408,5 +1411,12 @@ namespace TFG_Worldbuilder_Application
             TypePrompt.Visibility = Visibility.Collapsed;
         }
 
+        private void Level_Back_Click(object sender, RoutedEventArgs e)
+        {
+            if(Context.ActiveLevel.parent != null)
+            {
+                SetActive(Context.ActiveLevel.parent);
+            }
+        }
     }
 }

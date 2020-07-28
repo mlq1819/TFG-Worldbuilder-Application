@@ -78,13 +78,17 @@
             </ListView>
         </Flyout>
         <Flyout x:Name="SublevelsMenu" x:Key="SublevelsMenu">
-            <ListView ItemsSource="{x:Bind Context.ActiveLevel.sublevels, Mode=OneWay}">
-                <ListView.ItemTemplate>
-                    <DataTemplate x:DataType="local:SuperLevel">
-                        <MenuFlyoutItem Text="{x:Bind name, Mode=OneWay}" Background="#F2F2F2" Click="Open_Sublevel_Click" Width="80"/>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+            <StackPanel>
+                <MenuFlyoutItem x:Name="Level_Back" Text="Back" Click="Level_Back_Click"/>
+                <MenuFlyoutSeparator/>
+                <ListView ItemsSource="{x:Bind Context.ActiveLevel.sublevels, Mode=OneWay}" Width="160">
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="local:SuperLevel">
+                            <MenuFlyoutItem Text="{x:Bind name, Mode=OneWay}" Background="#F2F2F2" Click="Open_Sublevel_Click" Width="160"/>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </StackPanel>
         </Flyout>
         <MenuFlyout x:Name="ShapesControlFlyout" x:Key="ShapesControlFlyout" Closed="ShapesControlFlyout_Closed">
             <MenuFlyoutItem Text="{x:Bind Path=Context.SelectedLevel.name, Mode=OneWay}" IsEnabled="False"/>
@@ -204,7 +208,7 @@
                     <Button x:Name="FileButton" Content="File" HorizontalAlignment="Left" Margin="10" VerticalAlignment="Top" Width="80" Flyout="{StaticResource FileMenu}"/>
                     <Button x:Name="ViewButton" Content="View" HorizontalAlignment="Left" Margin="10" VerticalAlignment="Top" Width="80" Flyout="{StaticResource ViewMenu}"/>
                     <Button x:Name="WorldsButton" Content="Worlds" HorizontalAlignment="Left" Margin="10" VerticalAlignment="Top" Width="80" Flyout="{StaticResource WorldsMenu}"/>
-                    <Button x:Name="SublevelsButton" Content="Sublevels" HorizontalAlignment="Left" Margin="10" VerticalAlignment="Top" Width="80" Flyout="{StaticResource SublevelsMenu}"/>
+                    <Button x:Name="SublevelsButton" Content="Navigation" HorizontalAlignment="Left" Margin="10" VerticalAlignment="Top" Width="80" Flyout="{StaticResource SublevelsMenu}"/>
                     <Button x:Name="CreateButton" Content="Create" HorizontalAlignment="Left" Margin="10" VerticalAlignment="Top" Width="80" Flyout="{StaticResource CreateMenu}"/>
                 </StackPanel>
                 <StackPanel x:Name="ZoomPanel" HorizontalAlignment="Right" Height="50" Orientation="Horizontal">
