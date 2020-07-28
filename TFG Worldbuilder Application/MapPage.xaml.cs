@@ -37,9 +37,10 @@ namespace TFG_Worldbuilder_Application
             CloseFile = 4,
             Exit = 5,
             Create = 6,
-            Move = 7,
-            Rename = 8,
-            Open = 9
+            Type = 7,
+            Move = 8,
+            Rename = 9,
+            Open = 10
 
         }
 
@@ -412,12 +413,15 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         private void Create_Greater_Region()
         {
-            LevelNum = 2;
-            LevelStep = 1;
-            ActiveJob = Job.Create;
-            vertices = new Polygon2D();
-            Context.ClearPoints();
-            OpenTapPrompt("Enter at least 3 points for Greater Region");
+            if(Context.ActiveLevel != null && Context.ActiveLevel.level < 2)
+            {
+                LevelNum = 2;
+                LevelStep = 1;
+                ActiveJob = Job.Create;
+                vertices = new Polygon2D();
+                Context.ClearPoints();
+                OpenTapPrompt("Enter at least 3 points for Greater Region");
+            }
         }
 
         /// <summary>
@@ -504,54 +508,16 @@ namespace TFG_Worldbuilder_Application
         private void Create_Greater_Region_Click(object sender, RoutedEventArgs e)
         {
             LevelNum = 2;
-            ActiveJob = Job.Create;
             if(Context.ActiveLevel != null && Context.ActiveLevel.leveltype != LevelType.Invalid && Context.ActiveLevel.leveltype != LevelType.World)
             {
                 type = Context.ActiveLevel.leveltype;
                 Create_Greater_Region();
             } else
             {
+                ActiveJob = Job.Type;
                 OpenTypePrompt("Define Greater Region Type");
             }
         }
-
-        private void Create_Greater_Region_National_Click(object sender, RoutedEventArgs e)
-        {
-            type = LevelType.National;
-            Create_Greater_Region();
-        }
-
-        private void Create_Greater_Region_Geographical_Click(object sender, RoutedEventArgs e)
-        {
-            type = LevelType.Geographical;
-            Create_Greater_Region();
-        }
-
-        private void Create_Greater_Region_Climate_Click(object sender, RoutedEventArgs e)
-        {
-            type = LevelType.Climate;
-            Create_Greater_Region();
-        }
-
-        private void Create_Greater_Region_Factional_Click(object sender, RoutedEventArgs e)
-        {
-            type = LevelType.Factional;
-            Create_Greater_Region();
-        }
-
-        private void Create_Greater_Region_Cultural_Click(object sender, RoutedEventArgs e)
-        {
-            type = LevelType.Cultural;
-            Create_Greater_Region();
-        }
-
-        private void Create_Greater_Region_Biological_Click(object sender, RoutedEventArgs e)
-        {
-            type = LevelType.Biological;
-            Create_Greater_Region();
-        }
-
-
         private childItem FindVisualChild<childItem>(DependencyObject obj) where childItem : DependencyObject
         {
             if (obj == null)
@@ -823,7 +789,8 @@ namespace TFG_Worldbuilder_Application
             Canvas_Clicked(point);
         }
 
-        private void WorldCanvas_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
+
+        private void WorldCanvas_RightTapped(object sender, RightTappedRoutedEventArgs e)
         {
             RenderedPoint point = new RenderedPoint(e.GetPosition((Windows.UI.Xaml.UIElement)sender));
             WorldCanvas_Refocus(point.ToAbsolutePoint());
@@ -985,9 +952,9 @@ namespace TFG_Worldbuilder_Application
         private void SetActive(SuperLevel level)
         {
             if(level.level >= 2)
-                Create_Greater_Region_Menu.IsEnabled = false; 
+                Create_Greater_Region_Flyout.IsEnabled = false; 
             else
-                Create_Greater_Region_Menu.IsEnabled = true;
+                Create_Greater_Region_Flyout.IsEnabled = true;
 
             Context.SetActive(level);
         }
@@ -1095,5 +1062,6 @@ namespace TFG_Worldbuilder_Application
             ActiveJob = Job.None;
             TypePrompt.Visibility = Visibility.Collapsed;
         }
+
     }
 }

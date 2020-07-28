@@ -63,14 +63,6 @@
         <MenuFlyout x:Name="CreateMenu" x:Key="CreateMenu" Closed="CreateMenu_Closed">
             <MenuFlyoutItem x:Name="Create_World_Flyout" Text="New World" Click="Create_World_Click"/>
             <MenuFlyoutItem x:Name="Create_Greater_Region_Flyout" Text="New Greater Region" Click="Create_Greater_Region_Click"/>
-            <MenuFlyoutSubItem x:Name="Create_Greater_Region_Menu" Text="New Greater Region">
-                <MenuFlyoutItem x:Name="Create_Greater_Region_National" Text="National" Click="Create_Greater_Region_National_Click"/>
-                <MenuFlyoutItem x:Name="Create_Greater_Region_Geographical" Text="Geographical" Click="Create_Greater_Region_Geographical_Click"/>
-                <MenuFlyoutItem x:Name="Create_Greater_Region_Climate" Text="Climate" Click="Create_Greater_Region_Climate_Click"/>
-                <MenuFlyoutItem x:Name="Create_Greater_Region_Factional" Text="Factional" Click="Create_Greater_Region_Factional_Click"/>
-                <MenuFlyoutItem x:Name="Create_Greater_Region_Cultural" Text="Cultural" Click="Create_Greater_Region_Cultural_Click"/>
-                <MenuFlyoutItem x:Name="Create_Greater_Region_Biological" Text="Biological" Click="Create_Greater_Region_Biological_Click"/>
-            </MenuFlyoutSubItem>
         </MenuFlyout>
         <Flyout x:Name="WorldsMenu" x:Key="WorldsMenu">
             <ListView ItemsSource="{x:Bind Context.Worlds, Mode=OneWay}">
@@ -100,7 +92,7 @@
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid x:Name="MapDisplay" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,75,0,0">
-            <Canvas x:Name="WorldCanvas" Background="Azure" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Tapped="WorldCanvas_Tapped" DoubleTapped="WorldCanvas_DoubleTapped">
+            <Canvas x:Name="WorldCanvas" Background="Azure" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Tapped="WorldCanvas_Tapped" RightTapped="WorldCanvas_RightTapped">
                 <Polygon Fill="LightYellow" StrokeThickness="2" Name="ActiveShape" Points="{x:Bind Path=Context.ActiveShape.truepoints, Mode=OneWay}" Visibility="{x:Bind Path=Context.ActiveShapeVisibility, Mode=OneWay}"/>
                 <ItemsControl x:Name="ShapesControl" ItemsSource="{x:Bind Path=Context.Shapes, Mode=OneWay}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                     <ItemsControl.ItemsPanel>
