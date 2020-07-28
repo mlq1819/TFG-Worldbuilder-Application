@@ -423,6 +423,23 @@ namespace TFG_Worldbuilder_Application
         }
 
         /// <summary>
+        /// Deletes the passed SuperLevel from the list of sublevels, or returns false
+        /// </summary>
+        public bool DeleteSublevel(SuperLevel o)
+        {
+            for(int i=0; i<sublevels.Count; i++)
+            {
+                if(string.Equals(sublevels[i].name, o.name) && sublevels[i].GetType() == o.GetType() && string.Equals(sublevels[i].subtype, o.subtype))
+                {
+                    sublevels.RemoveAt(i);
+                    RaisePropertyChanged("sublevels");
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
         /// Attempts to sets the parent of the level; will fail if the level types are mismatched or if the parent has invalid information
         /// </summary>
         public virtual bool SetParent(SuperLevel parent)
@@ -949,6 +966,14 @@ namespace TFG_Worldbuilder_Application
             RaisePropertyChanged("visibility");
             RaisePropertyChanged("name_visibility");
             return output;
+        }
+        
+        /// <summary>
+        /// Deletes the passed point from the list of vertices, or returns false
+        /// </summary>
+        public bool DeletePoint(AbsolutePoint point)
+        {
+            return border.DeletePoint(point);
         }
 
         /// <summary>

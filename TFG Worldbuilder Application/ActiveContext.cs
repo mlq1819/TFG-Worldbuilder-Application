@@ -373,6 +373,37 @@ namespace TFG_Worldbuilder_Application
         }
 
         /// <summary>
+        /// Deletes the selected object
+        /// </summary>
+        public bool DeleteSelected()
+        {
+            if(SelectedLevel != null)
+            {
+                if (ActiveLevel.DeleteSublevel(SelectedLevel))
+                {
+                    NullSelected();
+                    UpdateAll();
+                    return true;
+                }
+            } else if(SelectedPoint >= 0)
+            {
+                bool deleted_one = false;
+                for(int i=0; i<Shapes.Count; i++)
+                {
+                    if (Shapes[i].DeletePoint(CurrentPoint.ToAbsolutePoint()))
+                        deleted_one = true;
+                }
+                if (deleted_one)
+                {
+                    NullSelected();
+                    UpdateAll();
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
         /// Checks if the SelectedPoint would work if moved to new_pos
         /// </summary>
         public bool TestMovePoint(AbsolutePoint new_pos)

@@ -1057,6 +1057,23 @@ namespace TFG_Worldbuilder_Application
         }
 
         /// <summary>
+        /// Deletes the passed point from the list of vertices, or returns false
+        /// </summary>
+        public bool DeletePoint(AbsolutePoint point)
+        {
+            for(int i=0; i<vertices.Count; i++)
+            {
+                if (vertices[i] == point)
+                {
+                    vertices.RemoveAt(i);
+                    RaisePropertyChanged("vertices");
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
         /// Removes the last point from the polygon's vertices and returns it
         /// </summary>
         public AbsolutePoint RemovePoint()

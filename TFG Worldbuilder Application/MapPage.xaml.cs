@@ -929,7 +929,8 @@ namespace TFG_Worldbuilder_Application
 
         private void Shapes_Control_Delete_Click(object sender, RoutedEventArgs e)
         {
-
+            Context.DeleteSelected();
+            UpdateSaveState();
         }
 
         private void Shapes_Control_Focus_Click(object sender, RoutedEventArgs e)
@@ -942,7 +943,8 @@ namespace TFG_Worldbuilder_Application
 
         private void Vertices_Control_Delete_Click(object sender, RoutedEventArgs e)
         {
-
+            Context.DeleteSelected();
+            UpdateSaveState();
         }
 
         private void Vertices_Control_Move_Click(object sender, RoutedEventArgs e)
