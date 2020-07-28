@@ -64,6 +64,8 @@ namespace TFG_Worldbuilder_Application
         private Polygon2D vertices = new Polygon2D();
         private LevelType type = LevelType.Invalid;
         private string subtype = "";
+        private AbsolutePoint center = null;
+        private long radius = -1;
         private Job activejob = Job.None;
         private Job ActiveJob
         {
@@ -369,7 +371,35 @@ namespace TFG_Worldbuilder_Application
                                 case 4:
                                     NewSubregion(this.name, this.type, this.subtype, this.vertices);
                                     break;
-                                    //ToDo: add more cases for other levels
+                                case 5:
+                                    this.LevelStep++;
+                                    OpenTextPrompt("Enter a radius:");
+                                    break;
+                                case 6:
+                                    NewStructure(this.name, this.type, this.subtype, center);
+                                    break;
+                            }
+                            break;
+                        case 4:
+                            try
+                            {
+                                if(this.LevelNum == 5)
+                                {
+                                    radius = Int64.Parse(prompt_text);
+                                    if(radius >= 0)
+                                    {
+                                        TextPrompt.Visibility = Visibility.Collapsed;
+                                        NewLocation(this.name, this.type, this.subtype, center, radius);
+                                    } else
+                                    {
+                                        radius = -1;
+                                        OpenPopupAlert("Invalid input - must be formatted as a positive whole number");
+                                    }
+                                }
+                            } catch (ArgumentException)
+                            {
+                                radius = -1;
+                                OpenPopupAlert("Invalid input - must be formatted as a positive whole number");
                             }
                             break;
                     }
@@ -510,6 +540,58 @@ namespace TFG_Worldbuilder_Application
             else
             {
                 Level4 new_level = new Level4(name, type, subtype, Context.ActiveLevel, border);
+                if (!Context.ActiveLevel.AddSublevel(new_level))
+                {
+                    OpenPopupAlert("Error: unknown error adding level");
+                }
+                else
+                {
+                    Context.UpdateAll();
+                }
+            }
+            ActiveJob = Job.None;
+            UpdateSaveState();
+        }
+
+        /// <summary>
+        /// Creates a new location object with the given name, type, subtype, center, and radius
+        /// </summary>
+        private void NewLocation(string name, LevelType type, string subtype, AbsolutePoint center, long radius)
+        {
+            Context.ClearPoints();
+            if (Context.ActiveLevel.HasSublevelWithName(name))
+            {
+                OpenPopupAlert("Error: " + Enum.GetName(typeof(LevelType), type) + " sublevel with name \"" + name + "\" already exists");
+            }
+            else
+            {
+                Level5 new_level = new Level5(name, type, subtype, Context.ActiveLevel, center, radius);
+                if (!Context.ActiveLevel.AddSublevel(new_level))
+                {
+                    OpenPopupAlert("Error: unknown error adding level");
+                }
+                else
+                {
+                    Context.UpdateAll();
+                }
+            }
+            ActiveJob = Job.None;
+            UpdateSaveState();
+        }
+
+        /// <summary>
+        /// Creates a new structure object with the given name, type, subtype, and center
+        /// </summary>
+        private void NewStructure(string name, LevelType type, string subtype, AbsolutePoint center)
+        {
+            Context.ClearPoints();
+            if (Context.ActiveLevel.HasSublevelWithName(name))
+            {
+                OpenPopupAlert("Error: " + Enum.GetName(typeof(LevelType), type) + " sublevel with name \"" + name + "\" already exists");
+            }
+            else
+            {
+                Level6 new_level = new Level6(name, type, subtype, Context.ActiveLevel, center);
                 if (!Context.ActiveLevel.AddSublevel(new_level))
                 {
                     OpenPopupAlert("Error: unknown error adding level");
