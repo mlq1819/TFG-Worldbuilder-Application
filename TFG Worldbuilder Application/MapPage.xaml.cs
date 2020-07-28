@@ -587,20 +587,20 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         private void WorldCanvas_ClickLine(Line2D line, RenderedPoint point)
         {
-            foreach (object child in ShapesVerticesControl.Items)
+            foreach (object child in ShapesEdgesControl.Items)
             {
                 try
                 {
-                    Windows.UI.Xaml.Shapes.Path vertex = FindVisualChild<Windows.UI.Xaml.Shapes.Path>(ShapesVerticesControl.ContainerFromItem(child) as DependencyObject);
-                    if (vertex != null)
+                    Windows.UI.Xaml.Shapes.Line edge = FindVisualChild<Windows.UI.Xaml.Shapes.Line>(ShapesEdgesControl.ContainerFromItem(child) as DependencyObject);
+                    if (edge != null)
                     {
-                        FlyoutBase flyout = FlyoutBase.GetAttachedFlyout(vertex as FrameworkElement);
+                        FlyoutBase flyout = FlyoutBase.GetAttachedFlyout(edge as FrameworkElement);
                         if (flyout != null)
                         {
-                            Context.SetSelected(point);
+                            Context.SetSelected(line);
                             FlyoutShowOptions show_options = new FlyoutShowOptions();
                             show_options.Position = point.ToWindowsPoint();
-                            flyout.ShowAt(ShapesVerticesControl, show_options);
+                            flyout.ShowAt(ShapesEdgesControl, show_options);
                             return;
                         }
                     }
@@ -610,7 +610,6 @@ namespace TFG_Worldbuilder_Application
                     ;
                 }
             }
-            Context.SetSelected(line);
         }
 
         /// <summary>
