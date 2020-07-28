@@ -473,6 +473,10 @@ namespace TFG_Worldbuilder_Application
             while (index < ActiveText.Length - 1)
             {
                 length = Math.Max(ActiveText.Substring(index).IndexOf(outer_delimiter), 0);
+                if (length <= 0)
+                {
+                    length = Math.Max(0, ActiveText.Substring(index).Length);
+                }
                 line = ActiveText.Substring(index, length).Trim();
                 if(line.IndexOf("Level Name") == 0)
                 {
@@ -499,6 +503,10 @@ namespace TFG_Worldbuilder_Application
             while (index < ActiveText.Length - 1)
             {
                 length = Math.Max(ActiveText.Substring(index).IndexOf(outer_delimiter), 0);
+                if (length <= 0)
+                {
+                    length = Math.Max(0, ActiveText.Substring(index).Length);
+                }
                 line = ActiveText.Substring(index, length).Trim();
                 if (line.IndexOf("Level Type") == 0)
                 {
@@ -544,6 +552,10 @@ namespace TFG_Worldbuilder_Application
             while (index < ActiveText.Length - 1)
             {
                 length = Math.Max(ActiveText.Substring(index).IndexOf(outer_delimiter), 0);
+                if (length <= 0)
+                {
+                    length = Math.Max(0, ActiveText.Substring(index).Length);
+                }
                 line = ActiveText.Substring(index, length).Trim();
                 if (line.IndexOf("Level Subtype") == 0)
                 {
@@ -573,9 +585,9 @@ namespace TFG_Worldbuilder_Application
             while (index < ActiveText.Length - 1)
             {
                 length = ActiveText.Substring(index).IndexOf(outer_delimiter);
-                if(length < 0)
+                if (length <= 0)
                 {
-                    length = Math.Max(ActiveText.Substring(index).Length, 0);
+                    length = Math.Max(0, ActiveText.Substring(index).Length);
                 }
                 line = ActiveText.Substring(index, length).Trim();
                 string temp = ActiveText.Substring(index);
@@ -619,6 +631,10 @@ namespace TFG_Worldbuilder_Application
             while (index < ActiveText.Length - 1)
             {
                 length = Math.Max(ActiveText.Substring(index).IndexOf(outer_delimiter), 0);
+                if(length <= 0)
+                {
+                    length = Math.Max(0, ActiveText.Substring(index).Length);
+                }
                 line = ActiveText.Substring(index, length).Trim();
                 if (line.IndexOf("Center") == 0)
                 {
@@ -651,6 +667,10 @@ namespace TFG_Worldbuilder_Application
             while (index < ActiveText.Length - 1)
             {
                 length = Math.Max(ActiveText.Substring(index).IndexOf(outer_delimiter), 0);
+                if (length <= 0)
+                {
+                    length = Math.Max(0, ActiveText.Substring(index).Length);
+                }
                 line = ActiveText.Substring(index, length).Trim();
                 if (line.IndexOf("Radius") == 0)
                 {
