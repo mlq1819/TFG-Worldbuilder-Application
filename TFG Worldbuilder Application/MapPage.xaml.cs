@@ -613,7 +613,7 @@ namespace TFG_Worldbuilder_Application
         }
 
         /// <summary>
-        /// Sets the ActiveWorld to the saved world defined by the sender event
+        /// Sets the ActiveLevel to the saved world defined by the sender event
         /// </summary>
         private void Open_World_Click(object sender, RoutedEventArgs e)
         {
@@ -622,6 +622,20 @@ namespace TFG_Worldbuilder_Application
             SuperLevel world = Context.GetWorld(name);
             if (world != null)
                 SetActive(world);
+            ResetZoom();
+            ForceUpdatePoints();
+        }
+
+        /// <summary>
+        /// Sets the ActiveLevel to the sublevel defined by the sender event
+        /// </summary>
+        private void Open_Sublevel_Click(object sender, RoutedEventArgs e)
+        {
+            SublevelsMenu.Hide();
+            string name = ((MenuFlyoutItem)sender).Text.Trim();
+            SuperLevel sublevel = Context.ActiveLevel.GetLevel(name);
+            if (sublevel != null)
+                SetActive(sublevel);
             ResetZoom();
             ForceUpdatePoints();
         }
@@ -1393,5 +1407,6 @@ namespace TFG_Worldbuilder_Application
             ActiveJob = Job.None;
             TypePrompt.Visibility = Visibility.Collapsed;
         }
+
     }
 }

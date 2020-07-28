@@ -37,6 +37,16 @@ namespace TFG_Worldbuilder_Application
                 {
                     parent.RaisePropertyChanged(this.name + '.' + str);
                 }
+                if (string.Equals(str, "name") || string.Equals(str, "level") || string.Equals(str, "subtype"))
+                    RaisePropertyChanged("prop_str");
+            }
+        }
+
+        public string prop_str
+        {
+            get
+            {
+                return name + ": Level " + level.ToString() + " " + subtype;
             }
         }
 
