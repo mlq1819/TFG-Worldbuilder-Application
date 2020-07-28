@@ -37,10 +37,12 @@ namespace TFG_Worldbuilder_Application
             CloseFile = 4,
             Exit = 5,
             Create = 6,
-            Type = 7,
-            Move = 8,
-            Rename = 9,
-            Open = 10
+            CreatePolygon = 7,
+            CreatePoint = 8,
+            Type = 9,
+            Move = 10,
+            Rename = 11,
+            Open = 12
 
         }
 
@@ -323,7 +325,7 @@ namespace TFG_Worldbuilder_Application
         private void Text_Prompt_Cancel_Click(object sender, RoutedEventArgs e)
         {
             TextPrompt.Visibility = Visibility.Collapsed;
-            if ((ActiveJob == Job.Create) && LevelNum > 1)
+            if ((ActiveJob == Job.CreatePolygon || ActiveJob == Job.CreatePoint) && LevelNum > 1)
             {
                 Context.ClearPoints();
             }
@@ -713,7 +715,7 @@ namespace TFG_Worldbuilder_Application
             {
                 LevelNum = 2;
                 LevelStep = 1;
-                ActiveJob = Job.Create;
+                ActiveJob = Job.CreatePolygon;
                 vertices = new Polygon2D();
                 Context.ClearPoints();
                 OpenTapPrompt("Enter at least 3 points for Greater Region");
@@ -729,7 +731,7 @@ namespace TFG_Worldbuilder_Application
             {
                 LevelNum = 3;
                 LevelStep = 1;
-                ActiveJob = Job.Create;
+                ActiveJob = Job.CreatePolygon;
                 vertices = new Polygon2D();
                 Context.ClearPoints();
                 OpenTapPrompt("Enter at least 3 points for Region");
@@ -745,10 +747,25 @@ namespace TFG_Worldbuilder_Application
             {
                 LevelNum = 4;
                 LevelStep = 1;
-                ActiveJob = Job.Create;
+                ActiveJob = Job.CreatePolygon;
                 vertices = new Polygon2D();
                 Context.ClearPoints();
                 OpenTapPrompt("Enter at least 3 points for Subregion");
+            }
+        }
+        /// <summary>
+        /// Opens the popup and prepares to create a new location
+        /// </summary>
+        private void Create_Location()
+        {
+            if (Context.ActiveLevel != null && Context.ActiveLevel.level < 4)
+            {
+                LevelNum = 5;
+                LevelStep = 1;
+                ActiveJob = Job.CreatePoint;
+                vertices = new Polygon2D();
+                Context.ClearPoints();
+                OpenTapPrompt("Enter a point for the center");
             }
         }
 
@@ -924,7 +941,7 @@ namespace TFG_Worldbuilder_Application
         /// <param name="point">an AbsolutePoint object representing the translated click location</param>
         private void WorldCanvas_Add_Point(AbsolutePoint point)
         {
-            if(LevelNum > 1 && LevelNum < 5)
+            if(ActiveJob == Job.CreatePolygon || ActiveJob == Job.CreatePoint)
             {
                 for(int i=0; i<vertices.Count; i++)
                 {
@@ -938,8 +955,15 @@ namespace TFG_Worldbuilder_Application
                 {
                     if (Context.ActiveLevel.CanFitPoint(point) && !Context.Conflicts(point, LevelNum) && (Context.SelectedLevel == null || Context.SelectedLevel.CanFitPoint(point)))
                     {
-                        vertices.AppendPoint(point);
-                        Context.ExtraPoints.AppendPoint(point);
+                        if(ActiveJob == Job.CreatePolygon || vertices.Count == 0)
+                        {
+                            vertices.AppendPoint(point);
+                            Context.ExtraPoints.AppendPoint(point);
+                        } else
+                        {
+                            vertices.vertices[0] = point;
+                            Context.ExtraPoints._points[0] = point;
+                        }
                         Context.RaisePropertyChanged("ExtraPoints");
                     }
                     else if(Context.Conflicts(point, LevelNum))
@@ -967,7 +991,6 @@ namespace TFG_Worldbuilder_Application
         {
             if (Context.TestMovePoint(point))
             {
-
                 if (vertices.Count < 1)
                     vertices.AppendPoint(point);
                 else
@@ -1050,66 +1073,51 @@ namespace TFG_Worldbuilder_Application
             TapPromptTab.Text = label + ": " + vertices.Size() + " points";
         }
 
-        private bool Tap_Prompt_Confirm_Greater_Region()
-        {
-            if (vertices.Size() < 3)
-            {
-                OpenPopupAlert("Requires at least 3 points");
-                return false;
-            }
-            LevelStep++;
-            TapPrompt.Visibility = Visibility.Collapsed;
-            OpenTextPrompt("What type of " + Enum.GetName(typeof(LevelType), type) + " greater region are you creating?\nEnter a subtype:");
-            return true;
-        }
-
-        private bool Tap_Prompt_Confirm_Region()
-        {
-            if (vertices.Size() < 3)
-            {
-                OpenPopupAlert("Requires at least 3 points");
-                return false;
-            }
-            LevelStep++;
-            TapPrompt.Visibility = Visibility.Collapsed;
-            OpenTextPrompt("What type of " + Enum.GetName(typeof(LevelType), type) + " region are you creating?\nEnter a subtype:");
-            return true;
-        }
-
-        private bool Tap_Prompt_Confirm_Subregion()
-        {
-            if (vertices.Size() < 3)
-            {
-                OpenPopupAlert("Requires at least 3 points");
-                return false;
-            }
-            LevelStep++;
-            TapPrompt.Visibility = Visibility.Collapsed;
-            OpenTextPrompt("What type of " + Enum.GetName(typeof(LevelType), type) + " subregion are you creating?\nEnter a subtype:");
-            return true;
-        }
-
         private void Tap_Prompt_Confirm_Click(object sender, RoutedEventArgs e)
         {
-            if(ActiveJob == Job.Create){
+            if(ActiveJob == Job.CreatePolygon || ActiveJob == Job.CreatePoint){
                 if(Context.Intersects(vertices, LevelNum))
                 {
                     OpenPopupAlert("Current object intersects with an existing object");
                 } else
                 {
-                    switch (LevelNum)
+                    if(ActiveJob == Job.CreatePolygon && vertices.Size() < 3)
                     {
-                        case 2:
-                            Tap_Prompt_Confirm_Greater_Region();
-                            break;
-                        case 3:
-                            Tap_Prompt_Confirm_Region();
-                            break;
-                        case 4:
-                            Tap_Prompt_Confirm_Subregion();
-                            break;
-                        default:
-                            break;
+                        OpenPopupAlert("Requires at least 3 points");
+                    } else if(ActiveJob == Job.CreatePoint && vertices.Size() < 1)
+                    {
+                        OpenPopupAlert("Requires at least 1 point");
+                    } else
+                    {
+                        if (ActiveJob == Job.CreatePoint)
+                            center = vertices[0];
+                        TapPrompt.Visibility = Visibility.Collapsed;
+                        LevelStep++;
+                        string level_type_name = "<UNDEFINED>";
+                        switch (LevelNum)
+                        {
+                            case 2:
+                                level_type_name = "greater region";
+                                break;
+                            case 3:
+                                level_type_name = "region";
+                                break;
+                            case 4:
+                                level_type_name = "subregion";
+                                break;
+                            case 5:
+                                level_type_name = "location";
+                                break;
+                            case 6:
+                                level_type_name = "structure";
+                                break;
+                            default:
+                                break;
+                        }
+                        if(LevelNum >= 2 && LevelNum <= 6)
+                        {
+                            OpenTextPrompt("What type of " + Enum.GetName(typeof(LevelType), type) + " " + level_type_name + " are you creating?\nEnter a subtype:");
+                        }
                     }
                 }
             }
