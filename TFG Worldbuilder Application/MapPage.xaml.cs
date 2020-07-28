@@ -769,6 +769,22 @@ namespace TFG_Worldbuilder_Application
             }
         }
 
+        /// <summary>
+        /// Opens the popup and prepares to create a new structure
+        /// </summary>
+        private void Create_Structure()
+        {
+            if (Context.ActiveLevel != null && Context.ActiveLevel.level < 4)
+            {
+                LevelNum = 6;
+                LevelStep = 1;
+                ActiveJob = Job.CreatePoint;
+                vertices = new Polygon2D();
+                Context.ClearPoints();
+                OpenTapPrompt("Enter a point for the center");
+            }
+        }
+
         private childItem FindVisualChild<childItem>(DependencyObject obj) where childItem : DependencyObject
         {
             if (obj == null)
