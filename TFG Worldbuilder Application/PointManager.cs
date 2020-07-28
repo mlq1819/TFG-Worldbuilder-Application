@@ -936,7 +936,7 @@ namespace TFG_Worldbuilder_Application
         {
             get
             {
-                return Polygon2D.TrimVertices(untrimmedvertices);
+                return untrimmedvertices;
             }
         }
         public ObservableCollection<AbsolutePoint> vertices;

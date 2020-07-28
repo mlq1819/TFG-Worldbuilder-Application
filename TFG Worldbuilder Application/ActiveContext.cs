@@ -18,7 +18,7 @@ namespace TFG_Worldbuilder_Application
         {
             foreach(T item in b)
             {
-                a.Append<T>(item);
+                a.Add(item);
             }
             return a;
         }
@@ -27,7 +27,7 @@ namespace TFG_Worldbuilder_Application
         {
             foreach(T item in b)
             {
-                a.Append<Object>(item as Object);
+                a.Add(item as Object);
             }
             return a;
         }
