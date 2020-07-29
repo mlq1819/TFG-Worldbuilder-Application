@@ -890,6 +890,14 @@ namespace TFG_Worldbuilder_Application
                 if (point.SnapsTo(Vertices.points[i], snap_range))
                     return true;
             }
+            if(ActiveShapePolygon != null)
+            {
+                foreach(RenderedPoint vertex in ActiveShapePolygon.border.verticesr)
+                {
+                    if (point.SnapsTo(vertex, snap_range))
+                        return true;
+                }
+            }
             return false;
         }
 
@@ -979,10 +987,25 @@ namespace TFG_Worldbuilder_Application
             {
                 distance = Math.Min(distance, point.Distance(Vertices.points[i]));
             }
+            if(ActiveShapePolygon != null)
+            {
+                foreach (RenderedPoint vertex in ActiveShapePolygon.border.verticesr)
+                {
+                    distance = Math.Min(distance, point.Distance(vertex));
+                }
+            }
             for (int i = 0; i < Vertices.points.Count; i++)
             {
                 if (point.Distance(Vertices.points[i]) == distance)
                     return Vertices.points[i];
+            }
+            if(ActiveShapePolygon != null)
+            {
+                foreach (RenderedPoint vertex in ActiveShapePolygon.border.verticesr)
+                {
+                    if (point.Distance(vertex) == distance)
+                        return vertex;
+                }
             }
             return point;
         }
