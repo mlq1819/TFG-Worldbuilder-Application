@@ -881,7 +881,7 @@ namespace TFG_Worldbuilder_Application
         }
 
         /// <summary>
-        /// Checks whether the given point will snap to an element of Vertices
+        /// Checks whether the given point will snap to an element of Vertices, or a vertex of the ActiveShapePolygon
         /// </summary>
         public bool SnapsToVertices(RenderedPoint point)
         {
@@ -928,7 +928,7 @@ namespace TFG_Worldbuilder_Application
         }
 
         /// <summary>
-        /// Checks whether the given point will snap to an element of Lines
+        /// Checks whether the given point will snap to an element of Lines, or an edge of the Active Shape
         /// </summary>
         public bool SnapsToLine(RenderedPoint point)
         {
@@ -945,6 +945,8 @@ namespace TFG_Worldbuilder_Application
                         return true;
                 }
             }
+            if (ActiveShapeCircle != null)
+                return ActiveShapeCircle.SnapsToEdge(point, snap_range);
             return false;
         }
 
@@ -982,7 +984,7 @@ namespace TFG_Worldbuilder_Application
         }
 
         /// <summary>
-        /// Snaps the point to the closest Vertices element in range
+        /// Snaps the point to the closest Vertices element in range, or a vertex of the ActiveShapePolygon
         /// </summary>
         public RenderedPoint SnapToVertices(RenderedPoint point)
         {
@@ -1057,7 +1059,7 @@ namespace TFG_Worldbuilder_Application
         }
 
         /// <summary>
-        /// Snaps the point to the closest Circles element in range
+        /// Snaps the point to the closest Lines element in range, or an edge of the Active Shape
         /// </summary>
         public RenderedPoint SnapToLines(RenderedPoint point)
         {
@@ -1090,6 +1092,8 @@ namespace TFG_Worldbuilder_Application
                         return line.GetClosestPoint(point.ToAbsolutePoint()).ToRenderedPoint();
                 }
             }
+            if (ActiveShapeCircle != null)
+                return ActiveShapeCircle.SnapToEdge(point, snap_range);
             return point;
         }
 

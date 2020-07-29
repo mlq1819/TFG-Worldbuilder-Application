@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Foundation;
@@ -1571,6 +1572,32 @@ namespace TFG_Worldbuilder_Application
             if (parent == null)
                 return myZoom;
             return Math.Max(myZoom, parent.GetMedZoom());
+        }
+
+        /// <summary>
+        /// Checks whether the point can be snapped to the edge of the circle
+        /// </summary>
+        public bool SnapsToEdge(RenderedPoint point, long snap_range)
+        {
+            if(radius_r < 20)
+                return false;
+            return Math.Abs(Math.Abs(center.ToRenderedPoint().Distance(point)) - radius_r) <= snap_range;
+        }
+
+        /// <summary>
+        /// Returns the point snapped to the edge of the circle, if possible
+        /// </summary>
+        public RenderedPoint SnapToEdge(RenderedPoint point, long snap_range)
+        {
+            if(SnapsToEdge(point, snap_range))
+            {
+                RenderedPoint direction = point - center.ToRenderedPoint();
+                direction = (direction * radius_r) / direction.Length();
+                direction = direction + center.ToRenderedPoint();
+                if (point.Distance(direction) <= snap_range)
+                    return direction;
+            }
+            return point;
         }
     }
 
