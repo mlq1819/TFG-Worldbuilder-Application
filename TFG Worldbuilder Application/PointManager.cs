@@ -451,7 +451,7 @@ namespace TFG_Worldbuilder_Application
     /// </summary>
     public class RenderedPoint : Point2D
     {
-        public override long X
+        public override double X
         {
             get
             {
@@ -463,7 +463,7 @@ namespace TFG_Worldbuilder_Application
                 RaisePropertyChanged("visibility");
             }
         }
-        public override long Y
+        public override double Y
         {
             get
             {
@@ -493,7 +493,7 @@ namespace TFG_Worldbuilder_Application
             }
         }
 
-        public RenderedPoint(long X, long Y) : base(X, Y)
+        public RenderedPoint(double X, double Y) : base(X, Y)
         {
             ;
         }
@@ -559,7 +559,7 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         /// <param name="o">The point to snap to</param>
         /// <param name="snaprange">The range within which to snap</param>
-        public bool SnapsTo(RenderedPoint o, long snaprange)
+        public bool SnapsTo(RenderedPoint o, double snaprange)
         {
             return this.Distance(o) <= snaprange;
         }
@@ -606,7 +606,7 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         public static RenderedPoint operator *(RenderedPoint a, double s)
         {
-            return new RenderedPoint((long)(a.X * s), (long)(a.Y * s));
+            return new RenderedPoint(a.X * s, a.Y * s);
         }
 
         /// <summary>
@@ -614,7 +614,7 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         public static RenderedPoint operator *(double s, RenderedPoint a)
         {
-            return new RenderedPoint((long)(a.X * s), (long)(a.Y * s));
+            return new RenderedPoint(a.X * s, a.Y * s);
         }
 
         /// <summary>
@@ -622,21 +622,21 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         public static RenderedPoint operator /(RenderedPoint a, double s)
         {
-            return new RenderedPoint((long)(a.X / s), (long)(a.Y / s));
+            return new RenderedPoint(a.X / s, a.Y / s);
         }
 
         /// <summary>
         /// divides a scalar by a RenderedPoint object
         /// </summary>
-        public static RenderedPoint operator /(long s, RenderedPoint a)
+        public static RenderedPoint operator /(double s, RenderedPoint a)
         {
-            return new RenderedPoint((long)(s / a.X), (long)(s / a.Y));
+            return new RenderedPoint(s / a.X, s / a.Y);
         }
         
         /// <summary>
         /// Returns the distance between this point and the passed point
         /// </summary>
-        public long Distance(RenderedPoint o)
+        public double Distance(RenderedPoint o)
         {
             return (this - o).Length();
         }
@@ -650,7 +650,7 @@ namespace TFG_Worldbuilder_Application
                 return true;
             if (((object)a) == null ^ ((object)b) == null)
                 return false;
-            return a.X == b.X && a.Y == b.Y;
+            return Double.Equals(a.X, b.X) && Double.Equals(a.Y, b.Y);
         }
 
         /// <summary>
@@ -662,7 +662,7 @@ namespace TFG_Worldbuilder_Application
                 return false;
             if (((object)a) == null ^ ((object)b) == null)
                 return true;
-            return a.X != b.X || a.Y != b.Y;
+            return !Double.Equals(a.X, b.X) || !Double.Equals(a.Y, b.Y);
         }
 
         /// <summary>
@@ -711,7 +711,7 @@ namespace TFG_Worldbuilder_Application
     /// </summary>
     public class AbsolutePoint : Point2D
     {
-        public AbsolutePoint(long X, long Y) : base(X, Y)
+        public AbsolutePoint(double X, double Y) : base(X, Y)
         {
             ;
         }
@@ -770,14 +770,14 @@ namespace TFG_Worldbuilder_Application
             if (str.Trim().IndexOf('(') == 0 && str.Trim().IndexOf(')') == str.Trim().Length - 1 && str.IndexOf(',') > 0)
             {
                 str = str.Trim().Substring(1, str.Trim().Length - 2).Trim();
-                long X, Y;
+                double X, Y;
                 try
                 {
-                    X = Convert.ToInt64(str.Substring(0, str.IndexOf(',')));
-                    Y = Convert.ToInt64(str.Substring(str.IndexOf(',') + 1));
+                    X = Double.Parse(str.Substring(0, str.IndexOf(',')));
+                    Y = Double.Parse(str.Substring(str.IndexOf(',') + 1));
                     return new AbsolutePoint(X, Y);
                 }
-                catch (InvalidCastException)
+                catch (ArgumentException)
                 {
                     return null;
                 }
@@ -806,7 +806,7 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         public static AbsolutePoint operator *(AbsolutePoint a, double s)
         {
-            return new AbsolutePoint((long)(a.X * s), (long)(a.Y * s));
+            return new AbsolutePoint(a.X * s, a.Y * s);
         }
 
         /// <summary>
@@ -814,7 +814,7 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         public static AbsolutePoint operator *(double s, AbsolutePoint a)
         {
-            return new AbsolutePoint((long)(a.X * s), (long)(a.Y * s));
+            return new AbsolutePoint(a.X * s, a.Y * s);
         }
 
         /// <summary>
@@ -822,7 +822,7 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         public static AbsolutePoint operator /(AbsolutePoint a, double s)
         {
-            return new AbsolutePoint((long)(a.X / s), (long)(a.Y / s));
+            return new AbsolutePoint(a.X / s, a.Y / s);
         }
 
         /// <summary>
@@ -830,13 +830,13 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         public static AbsolutePoint operator /(long s, AbsolutePoint a)
         {
-            return new AbsolutePoint((long)(s / a.X), (long)(s / a.Y));
+            return new AbsolutePoint(s / a.X, s / a.Y);
         }
         
         /// <summary>
         /// Returns the distance between this point and the passed point
         /// </summary>
-        public long Distance(AbsolutePoint o)
+        public double Distance(AbsolutePoint o)
         {
             return (this - o).Length();
         }
@@ -850,7 +850,7 @@ namespace TFG_Worldbuilder_Application
                 return true;
             if (((object)a) == null ^ ((object)b) == null)
                 return false;
-            return a.X == b.X && a.Y == b.Y;
+            return Double.Equals(a.X, b.X) && Double.Equals(a.Y, b.Y);
         }
 
         /// <summary>
@@ -862,7 +862,7 @@ namespace TFG_Worldbuilder_Application
                 return false;
             if (((object)a) == null ^ ((object)b) == null)
                 return true;
-            return a.X != b.X || a.Y != b.Y;
+            return !Double.Equals(a.X, b.X) || !Double.Equals(a.Y, b.Y);
         }
         
         /// <summary>
