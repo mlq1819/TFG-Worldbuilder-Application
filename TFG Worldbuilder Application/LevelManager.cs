@@ -62,23 +62,20 @@ namespace TFG_Worldbuilder_Application
             get
             {
                 ObservableCollection<BorderLevel> output = new ObservableCollection<BorderLevel>();
-                foreach (SuperLevel level in sublevels)
+                foreach (SuperLevel sublevel in sublevels)
                 {
-                    if (level != null)
+                    if (sublevel != null)
                     {
-                        foreach (SuperLevel sublevel in level.sublevels)
+                        if (sublevel.HasBorderProperty())
                         {
-                            if (sublevel.HasBorderProperty())
+                            try
                             {
-                                try
-                                {
-                                    BorderLevel subshape = (BorderLevel)sublevel;
-                                    output.Add(subshape);
-                                }
-                                catch (InvalidCastException)
-                                {
-                                    ;
-                                }
+                                BorderLevel subshape = (BorderLevel)sublevel;
+                                output.Add(subshape);
+                            }
+                            catch (InvalidCastException)
+                            {
+                                ;
                             }
                         }
                     }
@@ -91,23 +88,20 @@ namespace TFG_Worldbuilder_Application
             get
             {
                 ObservableCollection<Level5> output = new ObservableCollection<Level5>();
-                foreach (SuperLevel level in sublevels)
+                foreach (SuperLevel sublevel in sublevels)
                 {
-                    if (level != null)
+                    if (sublevel != null)
                     {
-                        foreach (SuperLevel sublevel in level.sublevels)
+                        if (sublevel.HasCenterProperty() && sublevel.HasRadiusProperty() && sublevel.level == 5)
                         {
-                            if (sublevel.HasCenterProperty() && sublevel.HasRadiusProperty() && sublevel.level == 5)
+                            try
                             {
-                                try
-                                {
-                                    Level5 subshape = (Level5)sublevel;
-                                    output.Add(subshape);
-                                }
-                                catch (InvalidCastException)
-                                {
-                                    ;
-                                }
+                                Level5 subshape = (Level5)sublevel;
+                                output.Add(subshape);
+                            }
+                            catch (InvalidCastException)
+                            {
+                                ;
                             }
                         }
                     }
@@ -120,23 +114,20 @@ namespace TFG_Worldbuilder_Application
             get
             {
                 ObservableCollection<Level6> output = new ObservableCollection<Level6>();
-                foreach (SuperLevel level in sublevels)
+                foreach (SuperLevel sublevel in sublevels)
                 {
-                    if (level != null)
+                    if (sublevel != null)
                     {
-                        foreach (SuperLevel sublevel in level.sublevels)
+                        if (sublevel.HasCenterProperty() && !sublevel.HasRadiusProperty() && sublevel.level == 6)
                         {
-                            if (sublevel.HasCenterProperty() && !sublevel.HasRadiusProperty() && sublevel.level == 6)
+                            try
                             {
-                                try
-                                {
-                                    Level6 subshape = (Level6)sublevel;
-                                    output.Add(subshape);
-                                }
-                                catch (InvalidCastException)
-                                {
-                                    ;
-                                }
+                                Level6 subshape = (Level6)sublevel;
+                                output.Add(subshape);
+                            }
+                            catch (InvalidCastException)
+                            {
+                                ;
                             }
                         }
                     }
