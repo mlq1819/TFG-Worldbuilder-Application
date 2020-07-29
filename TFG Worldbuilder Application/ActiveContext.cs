@@ -478,6 +478,18 @@ namespace TFG_Worldbuilder_Application
         }
 
         /// <summary>
+        /// Checks whether the selected PointLevel can be moved to the new position
+        /// </summary>
+        public bool TestMoveLevel(AbsolutePoint new_pos)
+        {
+            if(ActiveLevel != null && SelectedLevel != null && SelectedLevel.HasCenterProperty())
+            {
+                return ActiveLevel.CanFitPoint(new_pos);
+            }
+            return false;
+        }
+
+        /// <summary>
         /// Updates the Shapes to match those in ActiveLevel
         /// </summary>
         public void UpdateShapes()

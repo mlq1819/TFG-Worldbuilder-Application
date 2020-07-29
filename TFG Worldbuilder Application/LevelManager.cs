@@ -1137,11 +1137,35 @@ namespace TFG_Worldbuilder_Application
             }
         }
 
-        public RenderedPoint center_r
+        public Point center_r
         {
             get
             {
-                return center.ToRenderedPoint();
+                return center.ToRenderedPoint().ToWindowsPoint();
+            }
+        }
+
+        public string margin
+        {
+            get
+            {
+                int intended_width = 50;
+                int intended_height = 20;
+                Point __center = center_r;
+                string left, top, right, bottom;
+                left = (__center.X - intended_width).ToString();
+                top = (__center.Y - intended_height).ToString();
+                right = ((Global.CanvasSize.X - __center.X) - intended_width).ToString();
+                bottom = ((Global.CanvasSize.Y - __center.Y) - intended_height).ToString();
+                return left + ',' + top + ',' + right + ',' + bottom;
+            }
+        }
+
+        public string name_visibility
+        {
+            get
+            {
+                return center.ToRenderedPoint().visibility;
             }
         }
 

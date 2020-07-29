@@ -43,7 +43,8 @@ namespace TFG_Worldbuilder_Application
             Move = 10,
             Rename = 11,
             Open = 12,
-            Resize = 13
+            Resize = 13,
+            MoveLevel = 14
         }
 
         private Canvas _mapcanvas;
@@ -1054,7 +1055,7 @@ namespace TFG_Worldbuilder_Application
         /// <param name="point"></param>
         private void WorldCanvas_Move_Point(AbsolutePoint point)
         {
-            if (Context.TestMovePoint(point))
+            if ((ActiveJob == Job.MoveLevel && Context.TestMoveLevel(point)) || (ActiveJob == Job.Move && Context.TestMovePoint(point)))
             {
                 if (vertices.Count < 1)
                     vertices.AppendPoint(point);
@@ -1088,7 +1089,7 @@ namespace TFG_Worldbuilder_Application
             if (ActiveJob == Job.CreatePolygon || ActiveJob == Job.CreatePoint)
             {
                 WorldCanvas_Add_Point(point.ToAbsolutePoint());
-            } else if(ActiveJob == Job.Move)
+            } else if(ActiveJob == Job.Move || ActiveJob == Job.MoveLevel)
             {
                 WorldCanvas_Move_Point(point.ToAbsolutePoint());
             }
@@ -1110,7 +1111,6 @@ namespace TFG_Worldbuilder_Application
             RenderedPoint point = new RenderedPoint(e.GetPosition((Windows.UI.Xaml.UIElement)sender));
             Canvas_Clicked(point);
         }
-
 
         private void WorldCanvas_RightTapped(object sender, RightTappedRoutedEventArgs e)
         {
@@ -1187,11 +1187,32 @@ namespace TFG_Worldbuilder_Application
                     }
                 }
             }
-            else if(ActiveJob == Job.Move)
+            else if(ActiveJob == Job.Move || ActiveJob == Job.MoveLevel)
             {
                 if(vertices.Count > 0)
                 {
-                    Context.SetVertex(vertices[0]);
+                    if(ActiveJob == Job.Move)
+                    {
+                        Context.SetVertex(vertices[0]);
+                    } 
+                    else if(ActiveJob == Job.MoveLevel)
+                    {
+                        if (Context.SelectedLevel.HasCenterProperty())
+                        {
+                            try
+                            {
+                                ((PointLevel)Context.SelectedLevel).center = vertices[0];
+                            } catch (InvalidCastException levelcastexception)
+                            {
+                                OpenPopupAlert("Invalid selected level:\n" + levelcastexception.Message);
+                            }
+                            
+                        }
+                        else
+                        {
+                            OpenPopupAlert("Invalid selected level");
+                        }
+                    }
                     Context.ClearPoints();
                     TapPrompt.Visibility = Visibility.Collapsed;
                     ActiveJob = Job.None;
@@ -1419,6 +1440,12 @@ namespace TFG_Worldbuilder_Application
         {
             Context.DeleteSelected();
             UpdateSaveState();
+        }
+
+        private void Circles_Control_Move_Click(object sender, RoutedEventArgs e)
+        {
+            ActiveJob = Job.MoveLevel;
+            OpenTapPrompt("Click new position for " + Context.SelectedPoint.name);
         }
 
         /// <summary>

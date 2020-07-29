@@ -110,6 +110,7 @@
             <MenuFlyoutItem Text="{x:Bind Path=Context.SelectedLevel.name, Mode=OneWay}" IsEnabled="False"/>
             <MenuFlyoutItem Text="Rename" x:Name="Circles_Control_Rename" Click="Circles_Control_Rename_Click"/>
             <MenuFlyoutItem Text="Focus" x:Name="Circles_Control_Focus" Click="Circles_Control_Focus_Click"/>
+            <MenuFlyoutItem Text="Move" x:Name="Circles_Control_Move" Click="Circles_Control_Move_Click"/>
             <MenuFlyoutItem Text="Resize" x:Name="Circles_Control_Resize" Click="Circles_Control_Resize_Click"/>
             <MenuFlyoutItem Text="Delete" x:Name="Circles_Control_Delete" Click="Circles_Control_Delete_Click"/>
         </MenuFlyout>
@@ -186,6 +187,50 @@
                                     <EllipseGeometry Center="{x:Bind Path=center_r, Mode=OneWay}" RadiusX="{x:Bind Path=radius_str, Mode=OneWay}" RadiusY="{x:Bind Path=radius_str, Mode=OneWay}"/>
                                 </Path.Data>
                             </Path>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <ItemsControl x:Name="CirclesNameControl" ItemsSource="{x:Bind Path=Context.Circles, Mode=OneWay}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="local:Level5">
+                            <Grid VerticalAlignment="Center" HorizontalAlignment="Center" Margin="{x:Bind Path=margin, Mode=OneWay}" Visibility="{x:Bind Path=name_visibility, Mode=OneWay}">
+                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" TextAlignment="Center" Text="{x:Bind Path=name, Mode=OneWay}"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <ItemsControl x:Name="PointsControl" ItemsSource="{x:Bind Path=Context.Points, Mode=OneWay}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="local:Level6">
+                            <Path Fill="{x:Bind Path=color, Mode=OneWay}" StrokeThickness="0" Name="{x:Bind Path=name, Mode=OneWay}" FlyoutBase.AttachedFlyout="{StaticResource PointsControlFlyout}">
+                                <Path.Data>
+                                    <EllipseGeometry Center="{x:Bind Path=center_r, Mode=OneWay}" RadiusX="5" RadiusY="5"/>
+                                </Path.Data>
+                            </Path>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <ItemsControl x:Name="PointsNameControl" ItemsSource="{x:Bind Path=Context.Points, Mode=OneWay}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="local:Level6">
+                            <Grid VerticalAlignment="Center" HorizontalAlignment="Center" Margin="{x:Bind Path=margin, Mode=OneWay}" Visibility="{x:Bind Path=name_visibility, Mode=OneWay}">
+                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" TextAlignment="Center" Text="{x:Bind Path=name, Mode=OneWay}"/>
+                            </Grid>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
