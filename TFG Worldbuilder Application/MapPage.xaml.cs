@@ -42,8 +42,8 @@ namespace TFG_Worldbuilder_Application
             Type = 9,
             Move = 10,
             Rename = 11,
-            Open = 12
-
+            Open = 12,
+            Resize = 13
         }
 
         private Canvas _mapcanvas;
@@ -432,6 +432,31 @@ namespace TFG_Worldbuilder_Application
                     } catch (ArgumentException rename_exception)
                     {
                         OpenPopupAlert(rename_exception.Message);
+                    }
+                }
+                else if ((ActiveJob == Job.Resize))
+                {
+                    try
+                    {
+                        if (this.LevelNum == 5)
+                        {
+                            radius = Int64.Parse(prompt_text);
+                            if (radius >= 0)
+                            {
+                                Resize_ActiveCircle(radius);
+                                TextPrompt.Visibility = Visibility.Collapsed;
+                            }
+                            else
+                            {
+                                radius = -1;
+                                OpenPopupAlert("Invalid input - must be formatted as a positive whole number");
+                            }
+                        }
+                    }
+                    catch (ArgumentException)
+                    {
+                        radius = -1;
+                        OpenPopupAlert("Invalid input - must be formatted as a positive whole number");
                     }
                 }
             }
@@ -1341,6 +1366,61 @@ namespace TFG_Worldbuilder_Application
             UpdateSaveState();
         }
 
+        private void Resize_ActiveCircle(long radius)
+        {
+            if(Context.SelectedLevel!=null && Context.SelectedLevel.HasRadiusProperty())
+            {
+                try
+                {
+                    ((Level5)Context.SelectedLevel).radius = radius;
+                    Context.NullSelected();
+                    UpdateSaveState();
+                }
+                catch (InvalidCastException levelcastexception)
+                {
+                    OpenPopupAlert("Invalid level object; cannot resize\n" + levelcastexception.Message);
+                }
+            } else
+            {
+                OpenPopupAlert("Invalid level object; cannot resize");
+            }
+            ActiveJob = Job.None;
+        }
+
+        private void Circles_Control_Resize_Click(object sender, RoutedEventArgs e)
+        {
+            if (Context.SelectedLevel!=null && Context.SelectedLevel.HasRadiusProperty())
+            {
+                ActiveJob = Job.Resize;
+                OpenTextPrompt("Input new radius for " + Context.SelectedLevel.name);
+            }
+        }
+
+        private void CirclesControlFlyout_Closed(object sender, object e)
+        {
+
+            if (ActiveJob == Job.None)
+                Context.NullSelected();
+        }
+
+        private void Circles_Control_Rename_Click(object sender, RoutedEventArgs e)
+        {
+            ActiveJob = Job.Rename;
+            OpenTextPrompt("Enter new name for " + Context.SelectedLevel.name + ':');
+        }
+
+        private void Circles_Control_Focus_Click(object sender, RoutedEventArgs e)
+        {
+            SetActive(Context.SelectedLevel);
+            Context.NullSelected();
+        }
+
+        private void Circles_Control_Delete_Click(object sender, RoutedEventArgs e)
+        {
+            Context.DeleteSelected();
+            UpdateSaveState();
+        }
+
         /// <summary>
         /// Opens the Popup Alert with the given message
         /// </summary>
@@ -1416,5 +1496,6 @@ namespace TFG_Worldbuilder_Application
             ActiveJob = Job.None;
             TypePrompt.Visibility = Visibility.Collapsed;
         }
+
     }
 }

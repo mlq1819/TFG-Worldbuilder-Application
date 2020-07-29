@@ -106,12 +106,19 @@
             <MenuFlyoutItem Text="{x:Bind Path=Context.CurrentLine.str, Mode=OneWay}" IsEnabled="False"/>
             <MenuFlyoutItem Text="Split" x:Name="Edges_Control_Split" Click="Edges_Control_Split_Click"/>
         </MenuFlyout>
+        <MenuFlyout x:Name="CirclesControlFlyout" x:Key="CirclesControlFlyout" Closed='CirclesControlFlyout_Closed'>
+            <MenuFlyoutItem Text="{x:Bind Path=Context.SelectedLevel.name, Mode=OneWay}" IsEnabled="False"/>
+            <MenuFlyoutItem Text="Rename" x:Name="Circles_Control_Rename" Click="Circles_Control_Rename_Click"/>
+            <MenuFlyoutItem Text="Focus" x:Name="Circles_Control_Focus" Click="Circles_Control_Focus_Click"/>
+            <MenuFlyoutItem Text="Resize" x:Name="Circles_Control_Resize" Click="Circles_Control_Resize_Click"/>
+            <MenuFlyoutItem Text="Delete" x:Name="Circles_Control_Delete" Click="Circles_Control_Delete_Click"/>
+        </MenuFlyout>
     </Page.Resources>
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid x:Name="MapDisplay" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,75,0,0">
             <Canvas x:Name="WorldCanvas" Background="Azure" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Tapped="WorldCanvas_Tapped" RightTapped="WorldCanvas_RightTapped">
-                <Polygon Fill="LightYellow" StrokeThickness="2" Name="ActiveShape" Points="{x:Bind Path=Context.ActiveShape.truepoints, Mode=OneWay}" Visibility="{x:Bind Path=Context.ActiveShapeVisibility, Mode=OneWay}"/>
+                <Polygon Fill="White" StrokeThickness="2" Stroke="Black" Name="ActiveShape" Points="{x:Bind Path=Context.ActiveShape.truepoints, Mode=OneWay}" Visibility="{x:Bind Path=Context.ActiveShapeVisibility, Mode=OneWay}"/>
                 <ItemsControl x:Name="ShapesControl" ItemsSource="{x:Bind Path=Context.Shapes, Mode=OneWay}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -161,6 +168,22 @@
                             <Path Fill="{x:Bind Path=color, Mode=OneWay}" StrokeThickness="0" Name="{x:Bind Path=pointstr, Mode=OneWay}" Visibility="{x:Bind Path=visibility, Mode=OneWay}" FlyoutBase.AttachedFlyout="{StaticResource VerticesControlFlyout}">
                                 <Path.Data>
                                     <EllipseGeometry Center="{x:Bind Path=pointstr, Mode=OneWay}" RadiusX="10" RadiusY="10"/>
+                                </Path.Data>
+                            </Path>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <ItemsControl x:Name="CirclesControl" ItemsSource="{x:Bind Path=Context.Circles, Mode=OneWay}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="local:Level5">
+                            <Path Fill="{x:Bind Path=color, Mode=OneWay}" StrokeThickness="0" Name="{x:Bind Path=name, Mode=OneWay}" FlyoutBase.AttachedFlyout="{StaticResource CirclesControlFlyout}">
+                                <Path.Data>
+                                    <EllipseGeometry Center="{x:Bind Path=center_r, Mode=OneWay}" RadiusX="{x:Bind Path=radius_str, Mode=OneWay}" RadiusY="{x:Bind Path=radius_str, Mode=OneWay}"/>
                                 </Path.Data>
                             </Path>
                         </DataTemplate>

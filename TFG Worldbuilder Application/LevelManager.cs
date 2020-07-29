@@ -1133,6 +1133,15 @@ namespace TFG_Worldbuilder_Application
             {
                 _center = value;
                 RaisePropertyChanged("center");
+                RaisePropertyChanged("center_r");
+            }
+        }
+
+        public RenderedPoint center_r
+        {
+            get
+            {
+                return center.ToRenderedPoint();
             }
         }
 
@@ -1396,6 +1405,7 @@ namespace TFG_Worldbuilder_Application
                 _radius = value;
                 RaisePropertyChanged("radius");
                 RaisePropertyChanged("radius_r");
+                RaisePropertyChanged("radius_str");
             }
         }
         public long radius_r
@@ -1403,6 +1413,14 @@ namespace TFG_Worldbuilder_Application
             get
             {
                 return (long) (radius * Global.Zoom);
+            }
+        }
+
+        public string radius_str
+        {
+            get
+            {
+                return radius.ToString();
             }
         }
 
