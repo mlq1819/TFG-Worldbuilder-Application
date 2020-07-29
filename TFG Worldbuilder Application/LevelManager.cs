@@ -41,6 +41,107 @@ namespace TFG_Worldbuilder_Application
                 }
                 if (string.Equals(str, "name") || string.Equals(str, "level") || string.Equals(str, "subtype"))
                     RaisePropertyChanged("prop_str");
+                if(string.Equals(str, "sublevels"))
+                {
+                    RaisePropertyChanged("SubShapes");
+                    RaisePropertyChanged("SubCircles");
+                    RaisePropertyChanged("SubPoints");
+                }
+            }
+        }
+
+        public SuperLevel _this
+        {
+            get
+            {
+                return this;
+            }
+        }
+        public ObservableCollection<BorderLevel> SubShapes
+        {
+            get
+            {
+                ObservableCollection<BorderLevel> output = new ObservableCollection<BorderLevel>();
+                foreach (SuperLevel level in sublevels)
+                {
+                    if (level != null)
+                    {
+                        foreach (SuperLevel sublevel in level.sublevels)
+                        {
+                            if (sublevel.HasBorderProperty())
+                            {
+                                try
+                                {
+                                    BorderLevel subshape = (BorderLevel)sublevel;
+                                    output.Add(subshape);
+                                }
+                                catch (InvalidCastException)
+                                {
+                                    ;
+                                }
+                            }
+                        }
+                    }
+                }
+                return output;
+            }
+        }
+        public ObservableCollection<Level5> SubCircles
+        {
+            get
+            {
+                ObservableCollection<Level5> output = new ObservableCollection<Level5>();
+                foreach (SuperLevel level in sublevels)
+                {
+                    if (level != null)
+                    {
+                        foreach (SuperLevel sublevel in level.sublevels)
+                        {
+                            if (sublevel.HasCenterProperty() && sublevel.HasRadiusProperty() && sublevel.level == 5)
+                            {
+                                try
+                                {
+                                    Level5 subshape = (Level5)sublevel;
+                                    output.Add(subshape);
+                                }
+                                catch (InvalidCastException)
+                                {
+                                    ;
+                                }
+                            }
+                        }
+                    }
+                }
+                return output;
+            }
+        }
+        public ObservableCollection<Level6> SubPoints
+        {
+            get
+            {
+                ObservableCollection<Level6> output = new ObservableCollection<Level6>();
+                foreach (SuperLevel level in sublevels)
+                {
+                    if (level != null)
+                    {
+                        foreach (SuperLevel sublevel in level.sublevels)
+                        {
+                            if (sublevel.HasCenterProperty() && !sublevel.HasRadiusProperty() && sublevel.level == 6)
+                            {
+                                try
+                                {
+                                    Level6 subshape = (Level6)sublevel;
+                                    output.Add(subshape);
+                                }
+                                catch (InvalidCastException)
+                                {
+                                    ;
+                                }
+                            }
+                        }
+                    }
+                }
+                return output;
             }
         }
 
