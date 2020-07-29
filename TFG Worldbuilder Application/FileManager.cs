@@ -26,8 +26,8 @@ namespace TFG_Worldbuilder_Application
             get
             {
                 bool _valid = Data != null && length >= 0 && index >= 0 && ActiveText != null;
-                if (_valid && typeof(T) == typeof(long))
-                    _valid = ((long)((object)Data)) >= 0;
+                if (_valid && typeof(T) == typeof(double))
+                    _valid = ((double)((object)Data)) >= 0;
                 if (_valid && typeof(T) == typeof(string))
                     _valid = ((string)((object)Data)).Length > 0;
                 return _valid;
@@ -658,7 +658,7 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Given text, gets the Radius within the text and returns a ParseContainer holding it
         /// </summary>
-        private ParseContainer<long> ParseRadius(ParseContainer<long> text)
+        private ParseContainer<double> ParseRadius(ParseContainer<double> text)
         {
             string ActiveText = text.ActiveText;
             int length = Math.Max(text.length, 0);
@@ -677,8 +677,8 @@ namespace TFG_Worldbuilder_Application
                     line = line.Substring("Radius".Length + 1).Trim();
                     try
                     {
-                        long radius = Convert.ToInt64(line);
-                        text = new ParseContainer<long>(length, index + length + 1, ActiveText, radius);
+                        double radius = Convert.ToDouble(line);
+                        text = new ParseContainer<double>(length, index + length + 1, ActiveText, radius);
                         return text;
                     }
                     catch (FormatException)
@@ -706,7 +706,7 @@ namespace TFG_Worldbuilder_Application
             string line = "";
             Polygon2D border = null;
             AbsolutePoint center = null;
-            long radius = 0;
+            double radius = 0;
             int index = 0;
             int length = 0;
             SuperLevel level = null;
@@ -784,7 +784,7 @@ namespace TFG_Worldbuilder_Application
             }
             if (continue_parse && SuperLevel.HasRadiusProperty(level_num)) //Parse Radius
             {
-                ParseContainer<long> container = new ParseContainer<long>(length, index, ActiveText, -1);
+                ParseContainer<double> container = new ParseContainer<double>(length, index, ActiveText, -1);
                 container = ParseRadius(container);
                 if (container.Valid && container.Data >= 0)
                 {
