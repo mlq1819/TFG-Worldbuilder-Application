@@ -1247,10 +1247,10 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         public AbsolutePoint GetCenter()
         {
-            long minX, maxX, minY, maxY;
+            double minX, maxX, minY, maxY;
             //long sumX, sumY;
-            minX = minY = Int64.MaxValue;
-            maxX = maxY = Int64.MinValue;
+            minX = minY = Double.MaxValue;
+            maxX = maxY = Double.MinValue;
             //sumX = sumY = 0;
             for (int i = 0; i < vertices.Count; i++)
             {
@@ -1282,32 +1282,32 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         public class Square2D
         {
-            private long minX;
-            private long minY;
-            private long maxX;
-            private long maxY;
-            public long Top
+            private double minX;
+            private double minY;
+            private double maxX;
+            private double maxY;
+            public double Top
             {
                 get
                 {
                     return minY;
                 }
             }
-            public long Bottom
+            public double Bottom
             {
                 get
                 {
                     return maxY;
                 }
             }
-            public long Left
+            public double Left
             {
                 get
                 {
                     return minX;
                 }
             }
-            public long Right
+            public double Right
             {
                 get
                 {
