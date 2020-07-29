@@ -1666,7 +1666,7 @@ namespace TFG_Worldbuilder_Application
         {
             get
             {
-                return _vertex1.TrueDistance(_vertex2);
+                return _vertex1.Distance(_vertex2);
             }
         }
         public bool vertical
@@ -1731,14 +1731,14 @@ namespace TFG_Worldbuilder_Application
                 return ((double)dx) / ((double)dy);
             }
         }
-        private long dx
+        private double dx
         {
             get
             {
                 return _vertex2.X - _vertex1.X;
             }
         }
-        private long dy
+        private double dy
         {
             get
             {
@@ -2133,8 +2133,8 @@ namespace TFG_Worldbuilder_Application
             double delta = this.A * line.B - line.A * this.B;
             if (delta == 0)
                 throw new ArgumentException("Lines are parallel");
-            AbsolutePoint output = new AbsolutePoint((long)((line.B * this.C - this.B * line.C) / delta + .5), (long)((this.A * line.C - line.A * this.C) / delta + .5));
-            output.Y = (long) (output.X * slope_x + y_intercept + 0.5);
+            AbsolutePoint output = new AbsolutePoint(((line.B * this.C - this.B * line.C) / delta + .5), ((this.A * line.C - line.A * this.C) / delta + .5));
+            output.Y = (output.X * slope_x + y_intercept + 0.5);
             return output;
         }
 
@@ -2150,21 +2150,14 @@ namespace TFG_Worldbuilder_Application
             return -1 / slope_x;
         }
 
-        public double TrueDistance(AbsolutePoint point)
-        {
-            if (On(point))
-                return 0;
-            return point.TrueDistance(GetClosestPoint(point));
-        }
-
-        public long RenderedDistance(RenderedPoint point)
+        public double RenderedDistance(RenderedPoint point)
         {
             if (On(point.ToAbsolutePoint()))
                 return 0;
             return point.Distance(GetClosestPoint(point.ToAbsolutePoint()).ToRenderedPoint());
         }
 
-        public long Distance(AbsolutePoint point)
+        public double Distance(AbsolutePoint point)
         {
             if (On(point))
                 return 0;
@@ -2211,17 +2204,17 @@ namespace TFG_Worldbuilder_Application
             AbsolutePoint v1_2, v2_2;
             if(Math.Abs(slope_x) > Math.Abs(slope_y)) //The line is more vertical than horizontal; change the y by 1, and the x by slope_y
             {
-                v1_2 = new AbsolutePoint((long)(v1.X + .5 + Math.Abs(slope_y)), v1.Y + 1); //This should be just right of the leftmost point
-                v2_2 = new AbsolutePoint((long)(v2.X + .5 - Math.Abs(slope_y)), v2.Y - 1); //This should be just left of the rightmost point
+                v1_2 = new AbsolutePoint((v1.X + .5 + Math.Abs(slope_y)), v1.Y + 1); //This should be just right of the leftmost point
+                v2_2 = new AbsolutePoint((v2.X + .5 - Math.Abs(slope_y)), v2.Y - 1); //This should be just left of the rightmost point
             }
             else //The line is as or more horizontal than vertical; change the x by 1, and the y by slope_x
             {
-                v1_2 = new AbsolutePoint(v1.X + 1, (long)(v1.Y + .5 + Math.Abs(slope_x))); //This should be just right of the leftmost point
-                v2_2 = new AbsolutePoint(v2.X - 1, (long)(v2.Y + .5 - Math.Abs(slope_x))); //This should be just left of the rightmost point
+                v1_2 = new AbsolutePoint(v1.X + 1, (v1.Y + .5 + Math.Abs(slope_x))); //This should be just right of the leftmost point
+                v2_2 = new AbsolutePoint(v2.X - 1, (v2.Y + .5 - Math.Abs(slope_x))); //This should be just left of the rightmost point
             }
-            if (point.TrueDistance(v1) < point.TrueDistance(v1_2)) //This checks whether the leftmost point is closer than the next leftmost point
+            if (point.Distance(v1) < point.Distance(v1_2)) //This checks whether the leftmost point is closer than the next leftmost point
                 return v1;
-            if (point.TrueDistance(v2) < point.TrueDistance(v2_2)) //This checks whether the rightmost point is closer than the next rightmost point
+            if (point.Distance(v2) < point.Distance(v2_2)) //This checks whether the rightmost point is closer than the next rightmost point
                 return v2;
             return Intersection(CreatePerpendicularLine(point));
         }
@@ -2256,9 +2249,9 @@ namespace TFG_Worldbuilder_Application
                 do
                 {
                     if(Math.Abs(slope) > 20)
-                        v2 = v1 + new AbsolutePoint(i * i, (long)(i * i * -1 * slope));
+                        v2 = v1 + new AbsolutePoint(i * i, (i * i * -1 * slope));
                     else
-                        v2 = v1 + new AbsolutePoint(i * i * 100, (long)(i * i * -100 * slope));
+                        v2 = v1 + new AbsolutePoint(i * i * 100, (i * i * -100 * slope));
                     i++;
                 } while (Above(v1) == Above(v2));
             } else
@@ -2269,9 +2262,9 @@ namespace TFG_Worldbuilder_Application
                 do
                 {
                     if (Math.Abs(slope) > 20)
-                        v2 = v1 + new AbsolutePoint(i * i, (long)(i * i * slope));
+                        v2 = v1 + new AbsolutePoint(i * i, (i * i * slope));
                     else
-                        v2 = v1 + new AbsolutePoint(i * i * 100, (long)(i * i * 100 * slope));
+                        v2 = v1 + new AbsolutePoint(i * i * 100, (i * i * 100 * slope));
                     i++;
                 } while (Above(v1) == Above(v2));
             }
