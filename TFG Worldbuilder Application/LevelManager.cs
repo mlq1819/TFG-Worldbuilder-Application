@@ -1459,7 +1459,7 @@ namespace TFG_Worldbuilder_Application
         {
             get
             {
-                return radius.ToString();
+                return ((long)(radius * Global.Zoom)).ToString();
             }
         }
 
