@@ -1290,9 +1290,10 @@ namespace TFG_Worldbuilder_Application
         {
             double myZoom = 1.0f;
             double width_percent, height_percent;
-            width_percent = (20) / Global.CanvasSize.X;
-            height_percent = (20) / Global.CanvasSize.Y;
+            width_percent = ((double) 20) / Global.CanvasSize.X;
+            height_percent = ((double) 20) / Global.CanvasSize.Y;
             myZoom = 1 / Math.Max(width_percent, height_percent);
+
             if (parent == null)
                 return myZoom;
             return Math.Max(myZoom, parent.GetMedZoom());
@@ -1566,7 +1567,7 @@ namespace TFG_Worldbuilder_Application
             double width_percent, height_percent;
             width_percent = ((double)(radius * 2)) / Global.CanvasSize.X;
             height_percent = ((double)(radius * 2)) / Global.CanvasSize.Y;
-            myZoom = Math.Max(width_percent, height_percent);
+            myZoom = 1 / Math.Max(width_percent, height_percent);
             if (parent == null)
                 return myZoom;
             return Math.Max(myZoom, parent.GetMedZoom());
