@@ -337,7 +337,7 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// divides a scalar by a Point2D object
         /// </summary>
-        public static Point2D operator /(long s, Point2D a)
+        public static Point2D operator /(double s, Point2D a)
         {
             return new Point2D(s / a.X, s / a.Y);
         }
@@ -828,7 +828,7 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// divides a scalar by a AbsolutePoint object
         /// </summary>
-        public static AbsolutePoint operator /(long s, AbsolutePoint a)
+        public static AbsolutePoint operator /(double s, AbsolutePoint a)
         {
             return new AbsolutePoint(s / a.X, s / a.Y);
         }
@@ -1248,7 +1248,7 @@ namespace TFG_Worldbuilder_Application
         public AbsolutePoint GetCenter()
         {
             double minX, maxX, minY, maxY;
-            //long sumX, sumY;
+            //double sumX, sumY;
             minX = minY = Double.MaxValue;
             maxX = maxY = Double.MinValue;
             //sumX = sumY = 0;

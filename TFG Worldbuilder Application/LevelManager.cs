@@ -1093,7 +1093,7 @@ namespace TFG_Worldbuilder_Application
         public override double GetMedZoom()
         {
             double myZoom = 1.0f;
-            long MinX, MinY, MaxX, MaxY;
+            double MinX, MinY, MaxX, MaxY;
             MinX = MinY = Int64.MaxValue;
             MaxX = MaxY = Int64.MinValue;
             for(int i=0; i<border.vertices.Count; i++)
@@ -1434,8 +1434,8 @@ namespace TFG_Worldbuilder_Application
     /// </summary>
     public class Level5 : PointLevel
     {
-        private long _radius;
-        public long radius
+        private double _radius;
+        public double radius
         {
             get
             {
@@ -1449,11 +1449,11 @@ namespace TFG_Worldbuilder_Application
                 RaisePropertyChanged("radius_str");
             }
         }
-        public long radius_r
+        public double radius_r
         {
             get
             {
-                return (long) (radius * Global.Zoom);
+                return radius * Global.Zoom;
             }
         }
 
@@ -1473,7 +1473,7 @@ namespace TFG_Worldbuilder_Application
         /// <param name="parent">Level parent, must be of same type as child or World</param>
         /// <param name="center">Level center</param>
         /// <param name="radius">Level radius, indicates region in which sublevels can be placed surrounding center</param>
-        public Level5(string name, LevelType leveltype, SuperLevel parent, AbsolutePoint center, long radius) : base(name, 5, leveltype, parent, center)
+        public Level5(string name, LevelType leveltype, SuperLevel parent, AbsolutePoint center, double radius) : base(name, 5, leveltype, parent, center)
         {
             if (PointInParent(center))
             {
@@ -1494,7 +1494,7 @@ namespace TFG_Worldbuilder_Application
         /// <param name="parent">Level parent, must be of same type as child or World</param>
         /// <param name="center">Level center</param>
         /// <param name="radius">Level radius, indicates region in which sublevels can be placed surrounding center</param>
-        public Level5(string name, LevelType leveltype, string sublevel, SuperLevel parent, AbsolutePoint center, long radius) : base(name, 5, leveltype, sublevel, parent, center)
+        public Level5(string name, LevelType leveltype, string sublevel, SuperLevel parent, AbsolutePoint center, double radius) : base(name, 5, leveltype, sublevel, parent, center)
         {
             if (PointInParent(center))
             {
@@ -1577,7 +1577,7 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Checks whether the point can be snapped to the edge of the circle
         /// </summary>
-        public bool SnapsToEdge(RenderedPoint point, long snap_range)
+        public bool SnapsToEdge(RenderedPoint point, double snap_range)
         {
             if(radius_r < 20)
                 return false;
@@ -1587,7 +1587,7 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Returns the point snapped to the edge of the circle, if possible
         /// </summary>
-        public RenderedPoint SnapToEdge(RenderedPoint point, long snap_range)
+        public RenderedPoint SnapToEdge(RenderedPoint point, double snap_range)
         {
             if(SnapsToEdge(point, snap_range))
             {
