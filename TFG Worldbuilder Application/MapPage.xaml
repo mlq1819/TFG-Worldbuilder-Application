@@ -119,7 +119,6 @@
         <MenuFlyout x:Name="PointsControlFlyout" x:Key="PointsControlFlyout" Closed="PointsControlFlyout_Closed">
             <MenuFlyoutItem Text="{x:Bind Path=Context.SelectedLevel.name, Mode=OneWay}" IsEnabled="False"/>
             <MenuFlyoutItem Text="Rename" x:Name="Points_Control_Rename" Click="Points_Control_Rename_Click"/>
-            <MenuFlyoutItem Text="Focus" x:Name="Points_Control_Focus" Click="Points_Control_Focus_Click"/>
             <MenuFlyoutItem Text="Move" x:Name="Points_Control_Move" Click="Points_Control_Move_Click"/>
             <MenuFlyoutItem Text="Delete" x:Name="Points_Control_Delete" Click="Points_Control_Delete_Click"/>
         </MenuFlyout>

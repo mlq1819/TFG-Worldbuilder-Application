@@ -1497,12 +1497,6 @@ namespace TFG_Worldbuilder_Application
             OpenTextPrompt("Enter new name for " + Context.SelectedLevel.name + ':');
         }
 
-        private void Points_Control_Focus_Click(object sender, RoutedEventArgs e)
-        {
-            SetActive(Context.SelectedLevel);
-            Context.NullSelected();
-        }
-
         private void Points_Control_Move_Click(object sender, RoutedEventArgs e)
         {
             ActiveJob = Job.MoveLevel;
