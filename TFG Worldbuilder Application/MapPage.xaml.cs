@@ -910,19 +910,63 @@ namespace TFG_Worldbuilder_Application
         }
 
         /// <summary>
-        /// Displays a flyout menu of options when a Level6 object is clicked
-        /// </summary>
-        private void WorldCanvas_ClickLevel6(Level6 level, RenderedPoint point)
-        {
-            Context.SetSelected(level);
-        }
-
-        /// <summary>
         /// Displays a flyout menu of options when a Level5 object is clicked
         /// </summary>
         private void WorldCanvas_ClickLevel5(Level5 level, RenderedPoint point)
         {
-            Context.SetSelected(level);
+            foreach (object child in CirclesControl.Items)
+            {
+                try
+                {
+                    Windows.UI.Xaml.Shapes.Path circle = FindVisualChild<Windows.UI.Xaml.Shapes.Path>(CirclesControl.ContainerFromItem(child) as DependencyObject);
+                    if (circle != null)
+                    {
+                        FlyoutBase flyout = FlyoutBase.GetAttachedFlyout(circle as FrameworkElement);
+                        if (flyout != null)
+                        {
+                            FlyoutShowOptions show_options = new FlyoutShowOptions();
+                            show_options.Position = point.ToWindowsPoint();
+                            flyout.ShowAt(CirclesControl, show_options);
+                            Context.SetSelected(level);
+                            return;
+                        }
+                    }
+                }
+                catch (InvalidCastException)
+                {
+                    ;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Displays a flyout menu of options when a Level6 object is clicked
+        /// </summary>
+        private void WorldCanvas_ClickLevel6(Level6 level, RenderedPoint point)
+        {
+            foreach (object child in CirclesControl.Items)
+            {
+                try
+                {
+                    Windows.UI.Xaml.Shapes.Path circle = FindVisualChild<Windows.UI.Xaml.Shapes.Path>(CirclesControl.ContainerFromItem(child) as DependencyObject);
+                    if (circle != null)
+                    {
+                        FlyoutBase flyout = FlyoutBase.GetAttachedFlyout(circle as FrameworkElement);
+                        if (flyout != null)
+                        {
+                            FlyoutShowOptions show_options = new FlyoutShowOptions();
+                            show_options.Position = point.ToWindowsPoint();
+                            flyout.ShowAt(CirclesControl, show_options);
+                            Context.SetSelected(level);
+                            return;
+                        }
+                    }
+                }
+                catch (InvalidCastException)
+                {
+                    ;
+                }
+            }
         }
         /// <summary>
         /// Displays a flyout menu of options when a BorderLevel object is clicked
