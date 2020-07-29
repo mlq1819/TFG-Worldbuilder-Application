@@ -189,6 +189,7 @@ namespace TFG_Worldbuilder_Application
                                 try
                                 {
                                     BorderLevel subshape = (BorderLevel)sublevel;
+                                    output.Add(subshape);
                                 }
                                 catch (InvalidCastException)
                                 {
