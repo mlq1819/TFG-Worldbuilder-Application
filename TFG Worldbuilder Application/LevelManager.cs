@@ -1459,7 +1459,7 @@ namespace TFG_Worldbuilder_Application
         {
             get
             {
-                return ((long)(radius * Global.Zoom)).ToString();
+                return radius_r.ToString();
             }
         }
 
@@ -1510,6 +1510,14 @@ namespace TFG_Worldbuilder_Application
         public Level5(Level5 o) : base(o)
         {
             this.radius = o.radius;
+        }
+
+        public override void ForceUpdatePoints()
+        {
+            RaisePropertyChanged("radius");
+            RaisePropertyChanged("radius_r");
+            RaisePropertyChanged("radius_str");
+            base.ForceUpdatePoints();
         }
 
         public override SuperLevel Copy()
