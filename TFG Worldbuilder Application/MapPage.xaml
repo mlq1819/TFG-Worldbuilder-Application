@@ -70,6 +70,8 @@
         </MenuFlyout>
         <Flyout x:Name="NavigationMenu" x:Key="NavigationMenu">
             <StackPanel>
+                <MenuFlyoutItem Text="{x:Bind Path=Context.ActiveLevel.name, Mode=OneWay}" IsEnabled="False"/>
+                <MenuFlyoutSeparator/>
                 <MenuFlyoutItem x:Name="Level_Back" Text="Back" Click="Level_Back_Click"/>
                 <MenuFlyoutSeparator/>
                 <MenuFlyoutItem Text="Worlds" IsEnabled="False"/>
@@ -125,7 +127,7 @@
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid x:Name="MapDisplay" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,75,0,0">
-            <Canvas x:Name="WorldCanvas" Background="Azure" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Tapped="WorldCanvas_Tapped" RightTapped="WorldCanvas_RightTapped" DoubleTapped="WorldCanvas_DoubleTapped">
+            <Canvas x:Name="WorldCanvas" Background="Azure" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Tapped="WorldCanvas_Tapped" RightTapped="WorldCanvas_RightTapped">
                 <Polygon Fill="White" StrokeThickness="2" Stroke="Black" Name="ActiveShape" Points="{x:Bind Path=Context.ActiveShape.truepoints, Mode=OneWay}" Visibility="{x:Bind Path=Context.ActiveShapeVisibility, Mode=OneWay}"/>
                 <ItemsControl x:Name="ShapesControl" ItemsSource="{x:Bind Path=Context.Shapes, Mode=OneWay}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                     <ItemsControl.ItemsPanel>

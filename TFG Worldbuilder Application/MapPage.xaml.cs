@@ -1112,14 +1112,6 @@ namespace TFG_Worldbuilder_Application
             WorldCanvas_Refocus(point.ToAbsolutePoint());
         }
 
-        private void WorldCanvas_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
-        {
-            if(Context.SelectedLevel != null)
-            {
-                SetActive(Context.SelectedLevel);
-                Context.NullSelected();
-            }
-        }
         private void Tap_Prompt_Cancel_Click(object sender, RoutedEventArgs e)
         {
             TapPrompt.Visibility = Visibility.Collapsed;
