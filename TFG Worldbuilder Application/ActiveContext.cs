@@ -173,14 +173,34 @@ namespace TFG_Worldbuilder_Application
             }
         }
 
-        public ObservableCollection<BorderLevel> RenderedShapes
+        public ObservableCollection<BorderLevel> SubShapes
         {
             get
             {
                 ObservableCollection<BorderLevel> output = new ObservableCollection<BorderLevel>();
                 foreach(BorderLevel level in Shapes)
                 {
-                    output.Add(level);
+                    if (level != null)
+                    {
+                        foreach (SuperLevel sublevel in level.sublevels)
+                        {
+                            if (sublevel.HasBorderProperty())
+                            {
+                                try
+                                {
+                                    BorderLevel subshape = (BorderLevel)sublevel;
+                                }
+                                catch (InvalidCastException)
+                                {
+                                    ;
+                                }
+                            }
+                        }
+                    }
+                }
+                foreach(BorderLevel level in output)
+                {
+                    
                 }
                 return output;
             }
@@ -266,7 +286,7 @@ namespace TFG_Worldbuilder_Application
                 if (string.Equals(str, "ExtraPoints"))
                     SetExtraLines();
                 if (string.Equals(str, "Shapes"))
-                    RaisePropertyChanged("RenderedShapes");
+                    RaisePropertyChanged("SubShapes");
             }
         }
 
