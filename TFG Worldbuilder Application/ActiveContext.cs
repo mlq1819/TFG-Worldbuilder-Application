@@ -117,7 +117,7 @@ namespace TFG_Worldbuilder_Application
             get
             {
                 if (ActiveLevel != null && ActiveLevel.parent != null)
-                    return ActiveLevel.parent.name;
+                    return "Back: " + ActiveLevel.parent.name;
                 return "Back";
             }
         }
