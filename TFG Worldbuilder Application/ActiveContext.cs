@@ -392,6 +392,7 @@ namespace TFG_Worldbuilder_Application
                 RaisePropertyChanged("Points");
             }
             RaisePropertyChanged("ActiveLevel");
+            RaisePropertyChanged("BackButtonName");
         }
 
         /// <summary>
