@@ -1533,8 +1533,7 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         public bool PointInRadius(AbsolutePoint point)
         {
-            double temp = center.Distance(point);
-            return center.Distance(point) <= radius;
+            return center.Distance(point) <= radius + 0.1;
         }
         
         /// <summary>
@@ -1598,8 +1597,6 @@ namespace TFG_Worldbuilder_Application
                 direction = direction + center.ToRenderedPoint();
                 if (point.Distance(direction) <= snap_range)
                 {
-                    double temp1 = direction.Distance(center.ToRenderedPoint()) - radius_r;
-                    double temp2 = point.Distance(direction) - snap_range;
                     return direction;
                 }
             }

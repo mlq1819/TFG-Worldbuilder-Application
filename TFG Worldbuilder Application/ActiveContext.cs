@@ -709,7 +709,7 @@ namespace TFG_Worldbuilder_Application
         {
             if (levelnum > 1 && levelnum < 6 && activelevel != null)
             {
-                if (activelevel.HasBorderProperty())
+                if (activelevel.HasBorderProperty() || activelevel.HasRadiusProperty())
                 {
                     if(!activelevel.CanFitPoint(point))
                         return false;
