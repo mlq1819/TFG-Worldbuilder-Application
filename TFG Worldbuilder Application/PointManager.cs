@@ -38,8 +38,8 @@ namespace TFG_Worldbuilder_Application
             }
         }
 
-        private long _X;
-        public virtual long X
+        private double _X;
+        public virtual double X
         {
             get
             {
@@ -52,8 +52,8 @@ namespace TFG_Worldbuilder_Application
                 RaisePropertyChanged("pointstr");
             }
         }
-        private long _Y;
-        public virtual long Y
+        private double _Y;
+        public virtual double Y
         {
             get
             {
@@ -99,7 +99,7 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// creates a Point2D object
         /// </summary>
-        public Point2D(long X, long Y)
+        public Point2D(double X, double Y)
         {
             this.X = X;
             this.Y = Y;
@@ -117,7 +117,7 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Converts a Windows Foundation Point into a Point2D
         /// </summary>
-        public Point2D(Point o) : this((long)o.X, (long)o.Y)
+        public Point2D(Point o) : this(o.X, o.Y)
         {
             ;
         }
@@ -183,7 +183,7 @@ namespace TFG_Worldbuilder_Application
         public static RenderedPoint ApplyTransformation(AbsolutePoint input)
         {
             AbsolutePoint translated_input = input - Global.Center; //translated_input is set to the input translated such that Global.Center becomes (0,0)
-            RenderedPoint untraslated_output = new RenderedPoint((long)(translated_input.X * Global.Zoom), (long)(translated_input.Y * Global.Zoom)); //untraslated_output is set to a rescaling of translated_input based on Global.Zoom
+            RenderedPoint untraslated_output = new RenderedPoint((translated_input.X * Global.Zoom), (translated_input.Y * Global.Zoom)); //untraslated_output is set to a rescaling of translated_input based on Global.Zoom
             return untraslated_output + Global.RenderedCenter; //The returned point is untraslated_output translated such that (0,0) becomes Global.RenderedCenter
         }
 
@@ -236,7 +236,7 @@ namespace TFG_Worldbuilder_Application
         public static AbsolutePoint RevertTransformation(RenderedPoint input)
         {
             RenderedPoint translated_input = input - Global.RenderedCenter; //translated_input is set to the input translated such that Global.RenderedCenter becomes (0,0)
-            AbsolutePoint untraslated_output = new AbsolutePoint((long)(translated_input.X / Global.Zoom), (long)(translated_input.Y / Global.Zoom)); //untraslated_output is set to a rescaling of translated_input based on Global.Zoom
+            AbsolutePoint untraslated_output = new AbsolutePoint((translated_input.X / Global.Zoom), (translated_input.Y / Global.Zoom)); //untraslated_output is set to a rescaling of translated_input based on Global.Zoom
             return untraslated_output + Global.Center; //The returned point is untraslated_output translated such that (0,0) becomes Global.Center
         }
 
@@ -315,7 +315,7 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         public static Point2D operator *(Point2D a, double s)
         {
-            return new Point2D((long) (a.X * s), (long) (a.Y * s));
+            return new Point2D(a.X * s, a.Y * s);
         }
 
         /// <summary>
@@ -323,7 +323,7 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         public static Point2D operator *(double s, Point2D a)
         {
-            return new Point2D((long)(a.X * s), (long)(a.Y * s));
+            return new Point2D(a.X * s, a.Y * s);
         }
 
         /// <summary>
@@ -331,7 +331,7 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         public static Point2D operator /(Point2D a, double s)
         {
-            return new Point2D((long)(a.X / s), (long)(a.Y / s));
+            return new Point2D(a.X / s, a.Y / s);
         }
 
         /// <summary>
@@ -339,25 +339,15 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         public static Point2D operator /(long s, Point2D a)
         {
-            return new Point2D((long)(s / a.X), (long)(s / a.Y));
+            return new Point2D(s / a.X, s / a.Y);
         }
 
         /// <summary>
         /// Returns the distance between this point and the passed point
         /// </summary>
-        public long Distance(Point2D o)
+        public double Distance(Point2D o)
         {
             return (this - o).Length();
-        }
-
-        /// <summary>
-        /// Returns the exact between this point and the passed point
-        /// </summary>
-        public double TrueDistance(Point2D o)
-        {
-            long dx = o.X - X;
-            long dy = o.Y - Y;
-            return Math.Sqrt(Math.Pow(dx, 2) + Math.Pow(dy, 2));
         }
 
         /// <summary>
@@ -369,7 +359,7 @@ namespace TFG_Worldbuilder_Application
                 return true;
             if (((object)a) == null ^ ((object)b) == null)
                 return false;
-            return a.X == b.X && a.Y == b.Y;
+            return Double.Equals(a.X, b.X) && Double.Equals(a.Y, b.Y);
         }
 
         /// <summary>
@@ -392,11 +382,7 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         public override int GetHashCode()
         {
-            int sign = 1;
-            long hashl = this.X ^ this.Y;
-            if (hashl < 0)
-                sign = -1;
-            return (int)Math.Sqrt(Math.Abs(hashl)) * sign;
+            return this.X.GetHashCode() ^ this.Y.GetHashCode();
         }
 
         /// <summary>
@@ -408,7 +394,7 @@ namespace TFG_Worldbuilder_Application
                 return false;
             if (((object)a) == null ^ ((object)b) == null)
                 return true;
-            return a.X != b.X || a.Y != b.Y;
+            return !Double.Equals(a.X, b.X) || !Double.Equals(a.Y, b.Y);
         }
 
         /// <summary>
@@ -416,15 +402,15 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         public override string ToString()
         {
-            return "(" + X.ToString() + "," + Y.ToString() + ")";
+            return "(" + Math.Round(X, 3).ToString() + "," + Math.Round(Y, 3).ToString() + ")";
         }
 
         /// <summary>
         /// Returns the "length" of a point
         /// </summary>
-        public long Length()
+        public double Length()
         {
-            return (long)Math.Sqrt(Math.Pow(X, 2) + Math.Pow(Y, 2));
+            return Math.Sqrt(Math.Pow(X, 2) + Math.Pow(Y, 2));
         }
 
         /// <summary>
