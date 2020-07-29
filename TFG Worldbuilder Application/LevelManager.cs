@@ -1094,8 +1094,8 @@ namespace TFG_Worldbuilder_Application
         {
             double myZoom = 1.0f;
             double MinX, MinY, MaxX, MaxY;
-            MinX = MinY = Int64.MaxValue;
-            MaxX = MaxY = Int64.MinValue;
+            MinX = MinY = Double.MaxValue;
+            MaxX = MaxY = Double.MinValue;
             for(int i=0; i<border.vertices.Count; i++)
             {
                 MinX = Math.Min(MinX, border.vertices[i].X);

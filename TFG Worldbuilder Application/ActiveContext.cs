@@ -246,20 +246,20 @@ namespace TFG_Worldbuilder_Application
                 RaisePropertyChanged("ZoomStr");
             }
         }
-        public long snap_range = 10;
+        public double snap_range = 10;
 
         public string CenterX
         {
             get
             {
-                return ((long)Global.CanvasSize.X / 2).ToString();
+                return Math.Round(Global.CanvasSize.X / 2, 3).ToString();
             }
         }
         public string CenterY
         {
             get
             {
-                return ((long)Global.CanvasSize.Y / 2).ToString();
+                return Math.Round(Global.CanvasSize.Y / 2, 3).ToString();
             }
         }
         public string MaxX
@@ -970,14 +970,14 @@ namespace TFG_Worldbuilder_Application
         {
             if (!SnapsToExtraPoint(point))
                 return point;
-            long distance = snap_range;
+            double distance = snap_range;
             for(int i=0; i<ExtraPoints.points.Count; i++)
             {
                 distance = Math.Min(distance, point.Distance(ExtraPoints.points[i]));
             }
             for(int i=0; i<ExtraPoints.points.Count; i++)
             {
-                if (point.Distance(ExtraPoints.points[i]) == distance)
+                if (Double.Equals(point.Distance(ExtraPoints.points[i]), distance))
                     return ExtraPoints.points[i];
             }
             return point;
@@ -990,7 +990,7 @@ namespace TFG_Worldbuilder_Application
         {
             if (!SnapsToVertices(point))
                 return point;
-            long distance = snap_range;
+            double distance = snap_range;
             for (int i = 0; i < Vertices.points.Count; i++)
             {
                 distance = Math.Min(distance, point.Distance(Vertices.points[i]));
@@ -1004,14 +1004,14 @@ namespace TFG_Worldbuilder_Application
             }
             for (int i = 0; i < Vertices.points.Count; i++)
             {
-                if (point.Distance(Vertices.points[i]) == distance)
+                if (Double.Equals(point.Distance(Vertices.points[i]), distance))
                     return Vertices.points[i];
             }
             if(ActiveShapePolygon != null)
             {
                 foreach (RenderedPoint vertex in ActiveShapePolygon.border.verticesr)
                 {
-                    if (point.Distance(vertex) == distance)
+                    if (Double.Equals(point.Distance(vertex), distance))
                         return vertex;
                 }
             }
@@ -1025,14 +1025,14 @@ namespace TFG_Worldbuilder_Application
         {
             if (!SnapsToVertices(point))
                 return point;
-            long distance = snap_range;
+            double distance = snap_range;
             for (int i = 0; i < Points.Count; i++)
             {
                 distance = Math.Min(distance, point.Distance(Points[i].center.ToRenderedPoint()));
             }
             for (int i = 0; i < Points.Count; i++)
             {
-                if (point.Distance(Points[i].center.ToRenderedPoint()) == distance)
+                if (Double.Equals(point.Distance(Points[i].center.ToRenderedPoint()), distance))
                     return Points[i].center.ToRenderedPoint();
             }
             return point;
@@ -1045,14 +1045,14 @@ namespace TFG_Worldbuilder_Application
         {
             if (!SnapsToVertices(point))
                 return point;
-            long distance = long.MaxValue;
+            double distance = double.MaxValue;
             for (int i = 0; i < Points.Count; i++)
             {
                 distance = Math.Min(distance, point.Distance(Circles[i].center.ToRenderedPoint()));
             }
             for (int i = 0; i < Points.Count; i++)
             {
-                if (point.Distance(Circles[i].center.ToRenderedPoint()) == distance)
+                if (Double.Equals(point.Distance(Circles[i].center.ToRenderedPoint()), distance))
                     return Circles[i].center.ToRenderedPoint();
             }
             return point;
@@ -1065,7 +1065,7 @@ namespace TFG_Worldbuilder_Application
         {
             if (!SnapsToLine(point))
                 return point;
-            long distance = snap_range + 1;
+            double distance = snap_range + 1;
             for(int i=0; i<Lines.Count; i++)
             {
                 distance = Math.Min(distance, Lines[i].RenderedDistance(point));
@@ -1079,7 +1079,7 @@ namespace TFG_Worldbuilder_Application
             }
             for(int i=0; i<Lines.Count; i++)
             {
-                if (Lines[i].RenderedDistance(point) == distance)
+                if (Double.Equals(Lines[i].RenderedDistance(point), distance))
                 {
                     return Lines[i].GetClosestPoint(point.ToAbsolutePoint()).ToRenderedPoint();
                 }
@@ -1133,7 +1133,7 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         public Line2D GetLine(RenderedPoint point)
         {
-            long min_distance = snap_range + 1;
+            double min_distance = snap_range + 1;
             for (int i=0; i<Lines.Count; i++)
             {
                 min_distance = Math.Min(min_distance, Lines[i].RenderedDistance(point));
@@ -1142,7 +1142,7 @@ namespace TFG_Worldbuilder_Application
             {
                 for(int i=0; i<Lines.Count; i++)
                 {
-                    if (Lines[i].RenderedDistance(point) == min_distance)
+                    if (Double.Equals(Lines[i].RenderedDistance(point), min_distance))
                         return Lines[i];
                 }
             }
@@ -1156,7 +1156,7 @@ namespace TFG_Worldbuilder_Application
         {
             if (SnapsToCircle(point))
             {
-                long min_distance = long.MaxValue;
+                double min_distance = double.MaxValue;
                 for (int i = 0; i < Circles.Count; i++)
                 {
                     if (Circles[i].PointInRadius(point.ToAbsolutePoint()))
@@ -1164,7 +1164,7 @@ namespace TFG_Worldbuilder_Application
                 }
                 for (int i = 0; i < Lines.Count; i++)
                 {
-                    if (point.Distance(Circles[i].center.ToRenderedPoint()) == min_distance)
+                    if (Double.Equals(point.Distance(Circles[i].center.ToRenderedPoint()), min_distance))
                         return Circles[i];
                 }
             }
@@ -1178,7 +1178,7 @@ namespace TFG_Worldbuilder_Application
         {
             if (SnapsToShape(point))
             {
-                long min_distance = long.MaxValue;
+                double min_distance = double.MaxValue;
                 for (int i = 0; i < Shapes.Count; i++)
                 {
                     if (Shapes[i].PointInPolygon(point.ToAbsolutePoint()))
@@ -1188,7 +1188,7 @@ namespace TFG_Worldbuilder_Application
                 }
                 for (int i = 0; i < Shapes.Count; i++)
                 {
-                    if (Shapes[i].PointInPolygon(point.ToAbsolutePoint()) && point.Distance(Shapes[i]._center) == min_distance)
+                    if (Shapes[i].PointInPolygon(point.ToAbsolutePoint()) && Double.Equals(point.Distance(Shapes[i]._center), min_distance))
                     {
                         return Shapes[i];
                     }
