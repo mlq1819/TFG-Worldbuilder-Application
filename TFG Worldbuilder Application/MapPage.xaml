@@ -133,18 +133,6 @@
                         <EllipseGeometry Center="{x:Bind Path=Context.ActiveShapeCircle.center_r, Mode=OneWay}" RadiusX="{x:Bind Path=Context.ActiveShapeCircle.radius_str, Mode=OneWay}" RadiusY="{x:Bind Path=Context.ActiveShapeCircle.radius_str, Mode=OneWay}"/>
                     </Path.Data>
                 </Path>
-                <ItemsControl x:Name="SubShapeControl" ItemsSource="{x:Bind Path=Context.SubShapes, Mode=OneWay}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate x:DataType="local:BorderLevel">
-                            <Polygon Fill="White" StrokeThickness="0" Name="{x:Bind Path=name, Mode=OneWay}" Points="{x:Bind Path=points, Mode=OneWay}" Visibility="{x:Bind Path=visibility, Mode=OneWay}" FlyoutBase.AttachedFlyout="{StaticResource ShapesControlFlyout}"/>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
                 <ItemsControl x:Name="ShapesControl" ItemsSource="{x:Bind Path=Context.Shapes, Mode=OneWay}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -154,6 +142,18 @@
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="local:BorderLevel">
                             <Polygon Fill="{x:Bind Path=color, Mode=OneWay}" StrokeThickness="0" Name="{x:Bind Path=name, Mode=OneWay}" Points="{x:Bind Path=points, Mode=OneWay}" Visibility="{x:Bind Path=visibility, Mode=OneWay}" FlyoutBase.AttachedFlyout="{StaticResource ShapesControlFlyout}"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <ItemsControl x:Name="SubShapeControl" ItemsSource="{x:Bind Path=Context.SubShapes, Mode=OneWay}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="local:BorderLevel">
+                            <Polygon Fill="White" StrokeThickness="1" Stroke="Gray" Name="{x:Bind Path=name, Mode=OneWay}" Points="{x:Bind Path=points, Mode=OneWay}" Visibility="{x:Bind Path=visibility, Mode=OneWay}"/>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
