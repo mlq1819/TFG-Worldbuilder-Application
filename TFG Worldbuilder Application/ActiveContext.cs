@@ -523,6 +523,7 @@ namespace TFG_Worldbuilder_Application
         public void UpdateCircles()
         {
             IList<SuperLevel> temp = SuperLevel.Filter(ActiveLevel.GetSublevels(), 5);
+            Circles = new ObservableCollection<Level5>();
             for (int i = 0; i < temp.Count; i++)
             {
                 try
@@ -543,6 +544,7 @@ namespace TFG_Worldbuilder_Application
         public void UpdatePoints()
         {
             IList<SuperLevel> temp = SuperLevel.Filter(ActiveLevel.GetSublevels(), 6);
+            Points = new ObservableCollection<Level6>();
             for (int i = 0; i < temp.Count; i++)
             {
                 try
