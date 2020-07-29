@@ -68,7 +68,7 @@ namespace TFG_Worldbuilder_Application
         private LevelType type = LevelType.Invalid;
         private string subtype = "";
         private AbsolutePoint center = null;
-        private long radius = -1;
+        private double radius = -1;
         private Job activejob = Job.None;
         private Job ActiveJob
         {
@@ -398,7 +398,7 @@ namespace TFG_Worldbuilder_Application
                             {
                                 if(this.LevelNum == 5)
                                 {
-                                    radius = Int64.Parse(prompt_text);
+                                    radius = Double.Parse(prompt_text);
                                     if(radius >= 0)
                                     {
                                         this.LevelStep++;
@@ -407,13 +407,13 @@ namespace TFG_Worldbuilder_Application
                                     } else
                                     {
                                         radius = -1;
-                                        OpenPopupAlert("Invalid input - must be formatted as a positive whole number");
+                                        OpenPopupAlert("Invalid input - must be formatted as a positive number");
                                     }
                                 }
                             } catch (ArgumentException)
                             {
                                 radius = -1;
-                                OpenPopupAlert("Invalid input - must be formatted as a positive whole number");
+                                OpenPopupAlert("Invalid input - must be formatted as a positive number");
                             }
                             break;
                     }
@@ -449,7 +449,7 @@ namespace TFG_Worldbuilder_Application
                     {
                         if (this.LevelNum == 5)
                         {
-                            radius = Int64.Parse(prompt_text);
+                            radius = Double.Parse(prompt_text);
                             if (radius >= 0)
                             {
                                 Resize_ActiveCircle(radius);
@@ -458,14 +458,14 @@ namespace TFG_Worldbuilder_Application
                             else
                             {
                                 radius = -1;
-                                OpenPopupAlert("Invalid input - must be formatted as a positive whole number");
+                                OpenPopupAlert("Invalid input - must be formatted as a positive number");
                             }
                         }
                     }
                     catch (ArgumentException)
                     {
                         radius = -1;
-                        OpenPopupAlert("Invalid input - must be formatted as a positive whole number");
+                        OpenPopupAlert("Invalid input - must be formatted as a positive number");
                     }
                 }
             }
@@ -595,7 +595,7 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Creates a new location object with the given name, type, subtype, center, and radius
         /// </summary>
-        private void NewLocation(string name, LevelType type, string subtype, AbsolutePoint center, long radius)
+        private void NewLocation(string name, LevelType type, string subtype, AbsolutePoint center, double radius)
         {
             Context.ClearPoints();
             if (Context.ActiveLevel.HasSublevelWithName(name))
@@ -1435,7 +1435,7 @@ namespace TFG_Worldbuilder_Application
             UpdateSaveState();
         }
 
-        private void Resize_ActiveCircle(long radius)
+        private void Resize_ActiveCircle(double radius)
         {
             if(Context.SelectedLevel!=null && Context.SelectedLevel.HasRadiusProperty())
             {
