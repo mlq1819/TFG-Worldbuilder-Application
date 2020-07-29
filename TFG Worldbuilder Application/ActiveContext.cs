@@ -178,7 +178,7 @@ namespace TFG_Worldbuilder_Application
             get
             {
                 ObservableCollection<BorderLevel> output = new ObservableCollection<BorderLevel>();
-                foreach(BorderLevel level in Shapes)
+                foreach(SuperLevel level in ActiveLevel.sublevels)
                 {
                     if (level != null)
                     {
@@ -199,9 +199,63 @@ namespace TFG_Worldbuilder_Application
                         }
                     }
                 }
-                foreach(BorderLevel level in output)
+                return output;
+            }
+        }
+        public ObservableCollection<Level5> SubCircles
+        {
+            get
+            {
+                ObservableCollection<Level5> output = new ObservableCollection<Level5>();
+                foreach (SuperLevel level in ActiveLevel.sublevels)
                 {
-                    
+                    if (level != null)
+                    {
+                        foreach (SuperLevel sublevel in level.sublevels)
+                        {
+                            if (sublevel.HasCenterProperty() && sublevel.HasRadiusProperty() && sublevel.level == 5)
+                            {
+                                try
+                                {
+                                    Level5 subshape = (Level5)sublevel;
+                                    output.Add(subshape);
+                                }
+                                catch (InvalidCastException)
+                                {
+                                    ;
+                                }
+                            }
+                        }
+                    }
+                }
+                return output;
+            }
+        }
+        public ObservableCollection<Level6> SubPoints
+        {
+            get
+            {
+                ObservableCollection<Level6> output = new ObservableCollection<Level6>();
+                foreach (SuperLevel level in ActiveLevel.sublevels)
+                {
+                    if (level != null)
+                    {
+                        foreach (SuperLevel sublevel in level.sublevels)
+                        {
+                            if (sublevel.HasCenterProperty() && !sublevel.HasRadiusProperty() && sublevel.level == 6)
+                            {
+                                try
+                                {
+                                    Level6 subshape = (Level6)sublevel;
+                                    output.Add(subshape);
+                                }
+                                catch (InvalidCastException)
+                                {
+                                    ;
+                                }
+                            }
+                        }
+                    }
                 }
                 return output;
             }
@@ -287,7 +341,11 @@ namespace TFG_Worldbuilder_Application
                 if (string.Equals(str, "ExtraPoints"))
                     SetExtraLines();
                 if (string.Equals(str, "Shapes"))
+                {
                     RaisePropertyChanged("SubShapes");
+                    RaisePropertyChanged("SubCircles");
+                    RaisePropertyChanged("SubPoints");
+                }
             }
         }
 
@@ -1135,6 +1193,19 @@ namespace TFG_Worldbuilder_Application
         }
 
         /// <summary>
+        /// Checks if a valid line object is available
+        /// </summary>
+        public bool LineInRange(RenderedPoint point)
+        {
+            for (int i = 0; i < Lines.Count; i++)
+            {
+                if (Lines[i].RenderedDistance(point) <= snap_range)
+                    return true;
+            }
+            return false;
+        }
+
+        /// <summary>
         /// Gets the closest element of Lines in range
         /// </summary>
         public Line2D GetLine(RenderedPoint point)
@@ -1336,7 +1407,7 @@ namespace TFG_Worldbuilder_Application
                 return GetCirlce(point);
             if (SnapsToVertices(point))
                 return GetVertex(point);
-            if (SnapsToLine(point))
+            if (LineInRange(point))
                 return GetLine(point);
             if (SnapsToShape(point))
                 return GetShape(point);

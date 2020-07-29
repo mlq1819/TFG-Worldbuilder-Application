@@ -145,32 +145,6 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
-                <ItemsControl x:Name="SubShapeControl" ItemsSource="{x:Bind Path=Context.SubShapes, Mode=OneWay}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate x:DataType="local:BorderLevel">
-                            <Polygon Fill="White" StrokeThickness="1" Stroke="Gray" Name="{x:Bind Path=name, Mode=OneWay}" Points="{x:Bind Path=points, Mode=OneWay}" Visibility="{x:Bind Path=visibility, Mode=OneWay}"/>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-                <ItemsControl x:Name="ShapeNamesControl" ItemsSource="{x:Bind Path=Context.Shapes, Mode=OneWay}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate x:DataType="local:BorderLevel">
-                            <Grid VerticalAlignment="Center" HorizontalAlignment="Center" Margin="{x:Bind Path=margin, Mode=OneWay}" Visibility="{x:Bind Path=name_visibility, Mode=OneWay}">
-                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" TextAlignment="Center" Text="{x:Bind Path=name, Mode=OneWay}"/>
-                            </Grid>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
                 <ItemsControl x:Name="ShapesEdgesControl" ItemsSource="{x:Bind Path=Context.Lines, Mode=OneWay}"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -215,20 +189,6 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
-                <ItemsControl x:Name="CirclesNameControl" ItemsSource="{x:Bind Path=Context.Circles, Mode=OneWay}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate x:DataType="local:Level5">
-                            <Grid VerticalAlignment="Center" HorizontalAlignment="Center" Margin="{x:Bind Path=margin, Mode=OneWay}" Visibility="{x:Bind Path=name_visibility, Mode=OneWay}">
-                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" TextAlignment="Center" Text="{x:Bind Path=name, Mode=OneWay}"/>
-                            </Grid>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
                 <ItemsControl x:Name="PointsControl" ItemsSource="{x:Bind Path=Context.Points, Mode=OneWay}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -245,6 +205,50 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
+                <ItemsControl x:Name="SubShapeControl" ItemsSource="{x:Bind Path=Context.SubShapes, Mode=OneWay}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="local:BorderLevel">
+                            <Polygon Fill="White" StrokeThickness="1" Stroke="Gray" Name="{x:Bind Path=name, Mode=OneWay}" Points="{x:Bind Path=points, Mode=OneWay}" Visibility="{x:Bind Path=visibility, Mode=OneWay}"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <ItemsControl x:Name="SubCirclesControl" ItemsSource="{x:Bind Path=Context.SubCircles, Mode=OneWay}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="local:Level5">
+                            <Path Fill="White" StrokeThickness="1" Stroke="Gray" Name="{x:Bind Path=name, Mode=OneWay}">
+                                <Path.Data>
+                                    <EllipseGeometry Center="{x:Bind Path=center_r, Mode=OneWay}" RadiusX="{x:Bind Path=radius_str, Mode=OneWay}" RadiusY="{x:Bind Path=radius_str, Mode=OneWay}"/>
+                                </Path.Data>
+                            </Path>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <ItemsControl x:Name="SubPointsControl" ItemsSource="{x:Bind Path=Context.SubPoints, Mode=OneWay}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="local:Level6">
+                            <Path Fill="White" StrokeThickness="1" Stroke="Gray" Name="{x:Bind Path=name, Mode=OneWay}">
+                                <Path.Data>
+                                    <EllipseGeometry Center="{x:Bind Path=center_r, Mode=OneWay}" RadiusX="5" RadiusY="5"/>
+                                </Path.Data>
+                            </Path>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
                 <ItemsControl x:Name="PointsNameControl" ItemsSource="{x:Bind Path=Context.Points, Mode=OneWay}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -253,6 +257,34 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="local:Level6">
+                            <Grid VerticalAlignment="Center" HorizontalAlignment="Center" Margin="{x:Bind Path=margin, Mode=OneWay}" Visibility="{x:Bind Path=name_visibility, Mode=OneWay}">
+                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" TextAlignment="Center" Text="{x:Bind Path=name, Mode=OneWay}"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <ItemsControl x:Name="CirclesNameControl" ItemsSource="{x:Bind Path=Context.Circles, Mode=OneWay}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="local:Level5">
+                            <Grid VerticalAlignment="Center" HorizontalAlignment="Center" Margin="{x:Bind Path=margin, Mode=OneWay}" Visibility="{x:Bind Path=name_visibility, Mode=OneWay}">
+                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" TextAlignment="Center" Text="{x:Bind Path=name, Mode=OneWay}"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <ItemsControl x:Name="ShapeNamesControl" ItemsSource="{x:Bind Path=Context.Shapes, Mode=OneWay}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="local:BorderLevel">
                             <Grid VerticalAlignment="Center" HorizontalAlignment="Center" Margin="{x:Bind Path=margin, Mode=OneWay}" Visibility="{x:Bind Path=name_visibility, Mode=OneWay}">
                                 <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" TextAlignment="Center" Text="{x:Bind Path=name, Mode=OneWay}"/>
                             </Grid>
