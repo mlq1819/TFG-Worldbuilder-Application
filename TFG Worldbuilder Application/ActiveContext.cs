@@ -112,6 +112,15 @@ namespace TFG_Worldbuilder_Application
         private string BaseLevelColor = "#F2F2F2";
         private string BasePointColor = "LightCoral";
         private string BaseLineColor = "Black";
+        public string BackButtonName
+        {
+            get
+            {
+                if (ActiveLevel != null && ActiveLevel.parent != null)
+                    return ActiveLevel.parent.name;
+                return "Back";
+            }
+        }
         public string ActiveShapePolygonVisibility
         {
             get

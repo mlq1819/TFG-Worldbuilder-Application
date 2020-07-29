@@ -72,7 +72,7 @@
             <StackPanel>
                 <MenuFlyoutItem Text="{x:Bind Path=Context.ActiveLevel.name, Mode=OneWay}" IsEnabled="False"/>
                 <MenuFlyoutSeparator/>
-                <MenuFlyoutItem x:Name="Level_Back" Text="Back" Click="Level_Back_Click"/>
+                <MenuFlyoutItem x:Name="Level_Back" Text="{x:Bind Path=Context.BackButtonName, Mode=OneWay}" Click="Level_Back_Click"/>
                 <MenuFlyoutSeparator/>
                 <MenuFlyoutItem Text="Worlds" IsEnabled="False"/>
                 <ListView ItemsSource="{x:Bind Context.Worlds, Mode=OneWay}">
@@ -195,7 +195,7 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="local:Level5">
-                            <Path Fill="{x:Bind Path=color, Mode=OneWay}" StrokeThickness="0" Name="{x:Bind Path=name, Mode=OneWay}" FlyoutBase.AttachedFlyout="{StaticResource CirclesControlFlyout}">
+                            <Path Fill="{x:Bind Path=color, Mode=OneWay}" StrokeThickness="1" Stroke="Black" Name="{x:Bind Path=name, Mode=OneWay}" FlyoutBase.AttachedFlyout="{StaticResource CirclesControlFlyout}">
                                 <Path.Data>
                                     <EllipseGeometry Center="{x:Bind Path=center_r, Mode=OneWay}" RadiusX="{x:Bind Path=radius_str, Mode=OneWay}" RadiusY="{x:Bind Path=radius_str, Mode=OneWay}"/>
                                 </Path.Data>
@@ -225,7 +225,7 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="local:Level6">
-                            <Path Fill="{x:Bind Path=color, Mode=OneWay}" StrokeThickness="0" Name="{x:Bind Path=name, Mode=OneWay}" FlyoutBase.AttachedFlyout="{StaticResource PointsControlFlyout}">
+                            <Path Fill="{x:Bind Path=color, Mode=OneWay}" StrokeThickness="1" Stroke="Black" Name="{x:Bind Path=name, Mode=OneWay}" FlyoutBase.AttachedFlyout="{StaticResource PointsControlFlyout}">
                                 <Path.Data>
                                     <EllipseGeometry Center="{x:Bind Path=center_r, Mode=OneWay}" RadiusX="5" RadiusY="5"/>
                                 </Path.Data>
