@@ -325,8 +325,8 @@ namespace TFG_Worldbuilder_Application
                 ActiveLevel.color = "LightSkyBlue";
                 Global.DefaultZoom = ActiveLevel.GetMedZoom();
                 Global.DefaultCenter = ActiveLevel.GetCenter();
-                ForceUpdatePoints();
                 UpdateAll();
+                ForceUpdatePoints();
             } else //If ActiveLevel *is* null
             {
                 ActiveShape = null;

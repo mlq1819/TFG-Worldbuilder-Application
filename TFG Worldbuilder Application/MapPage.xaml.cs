@@ -641,7 +641,6 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         private void Open_World_Click(object sender, RoutedEventArgs e)
         {
-            NavigationMenu.Hide();
             string name = ((MenuFlyoutItem)sender).Text.Trim();
             SuperLevel world = Context.GetWorld(name);
             if (world != null)
@@ -653,7 +652,6 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         private void Open_Sublevel_Click(object sender, RoutedEventArgs e)
         {
-            NavigationMenu.Hide();
             string name = ((MenuFlyoutItem)sender).Text.Trim();
             SuperLevel sublevel = Context.ActiveLevel.GetLevel(name);
             if (sublevel != null)
@@ -665,10 +663,6 @@ namespace TFG_Worldbuilder_Application
             if (Context.ActiveLevel.parent != null)
             {
                 SetActive(Context.ActiveLevel.parent);
-                if(Context.ActiveLevel.parent == null)
-                {
-                    NavigationMenu.Hide();
-                }
             }
         }
 
@@ -920,7 +914,7 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         private void WorldCanvas_ClickLevel6(Level6 level, RenderedPoint point)
         {
-
+            Context.SetSelected(level);
         }
 
         /// <summary>
@@ -928,7 +922,7 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         private void WorldCanvas_ClickLevel5(Level5 level, RenderedPoint point)
         {
-
+            Context.SetSelected(level);
         }
         /// <summary>
         /// Displays a flyout menu of options when a BorderLevel object is clicked
