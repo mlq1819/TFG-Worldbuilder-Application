@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Windows.UI.Xaml.Media;
 using Windows.Foundation;
 using Windows.ApplicationModel.Contacts;
+using Windows.UI.Xaml.Shapes;
 
 namespace TFG_Worldbuilder_Application
 {
@@ -172,6 +173,18 @@ namespace TFG_Worldbuilder_Application
             }
         }
 
+        public ObservableCollection<BorderLevel> RenderedShapes
+        {
+            get
+            {
+                ObservableCollection<BorderLevel> output = new ObservableCollection<BorderLevel>();
+                foreach(BorderLevel level in Shapes)
+                {
+                    output.Add(level);
+                }
+                return output;
+            }
+        }
         public ObservableCollection<BorderLevel> Shapes;
         public ObservableCollection<Level5> Circles;
         public ObservableCollection<Level6> Points;
@@ -252,6 +265,8 @@ namespace TFG_Worldbuilder_Application
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(str));
                 if (string.Equals(str, "ExtraPoints"))
                     SetExtraLines();
+                if (string.Equals(str, "Shapes"))
+                    RaisePropertyChanged("RenderedShapes");
             }
         }
 

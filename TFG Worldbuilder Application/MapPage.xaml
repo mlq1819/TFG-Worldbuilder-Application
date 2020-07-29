@@ -133,7 +133,7 @@
                         <EllipseGeometry Center="{x:Bind Path=Context.ActiveShapeCircle.center_r, Mode=OneWay}" RadiusX="{x:Bind Path=Context.ActiveShapeCircle.radius_str, Mode=OneWay}" RadiusY="{x:Bind Path=Context.ActiveShapeCircle.radius_str, Mode=OneWay}"/>
                     </Path.Data>
                 </Path>
-                <ItemsControl x:Name="ShapesControl" ItemsSource="{x:Bind Path=Context.Shapes, Mode=OneWay}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                <ItemsControl x:Name="ShapesControl" ItemsSource="{x:Bind Path=Context.RenderedShapes, Mode=OneWay}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
