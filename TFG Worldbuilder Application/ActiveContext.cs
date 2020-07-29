@@ -177,6 +177,8 @@ namespace TFG_Worldbuilder_Application
         {
             get
             {
+                if (ActiveLevel == null)
+                    return new ObservableCollection<BorderLevel>();
                 ObservableCollection<BorderLevel> output = new ObservableCollection<BorderLevel>();
                 foreach(SuperLevel level in ActiveLevel.sublevels)
                 {
@@ -206,6 +208,8 @@ namespace TFG_Worldbuilder_Application
         {
             get
             {
+                if (ActiveLevel == null)
+                    return new ObservableCollection<Level5>();
                 ObservableCollection<Level5> output = new ObservableCollection<Level5>();
                 foreach (SuperLevel level in ActiveLevel.sublevels)
                 {
@@ -235,6 +239,8 @@ namespace TFG_Worldbuilder_Application
         {
             get
             {
+                if (ActiveLevel == null)
+                    return new ObservableCollection<Level6>();
                 ObservableCollection<Level6> output = new ObservableCollection<Level6>();
                 foreach (SuperLevel level in ActiveLevel.sublevels)
                 {
