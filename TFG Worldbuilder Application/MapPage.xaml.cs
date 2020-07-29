@@ -1374,7 +1374,9 @@ namespace TFG_Worldbuilder_Application
                 Create_Structure_Flyout.IsEnabled = false;
             else
                 Create_Structure_Flyout.IsEnabled = true;
+
             Context.SetActive(level);
+
             if (Context.ActiveLevel.parent != null)
                 Level_Back.IsEnabled = true;
             else

@@ -127,7 +127,12 @@
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid x:Name="MapDisplay" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,75,0,0">
             <Canvas x:Name="WorldCanvas" Background="Azure" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Tapped="WorldCanvas_Tapped" RightTapped="WorldCanvas_RightTapped">
-                <Polygon Fill="White" StrokeThickness="2" Stroke="Black" Name="ActiveShape" Points="{x:Bind Path=Context.ActiveShape.truepoints, Mode=OneWay}" Visibility="{x:Bind Path=Context.ActiveShapeVisibility, Mode=OneWay}"/>
+                <Polygon Fill="White" StrokeThickness="2" Stroke="Black" Name="ActiveShapePolygon" Points="{x:Bind Path=Context.ActiveShapePolygon.truepoints, Mode=OneWay}" Visibility="{x:Bind Path=Context.ActiveShapePolygonVisibility, Mode=OneWay}"/>
+                <Path Fill="White" StrokeThickness="2" Stroke="Black" Name="ActiveShapeCircle" Visibility="{x:Bind Path=Context.ActiveShapeCircleVisibility, Mode=OneWay}">
+                    <Path.Data>
+                        <EllipseGeometry Center="{x:Bind Path=Context.ActiveShapeCircle.center_r, Mode=OneWay}" RadiusX="{x:Bind Path=Context.ActiveShapeCircle.radius_str, Mode=OneWay}" RadiusY="{x:Bind Path=Context.ActiveShapeCircle.radius_str, Mode=OneWay}"/>
+                    </Path.Data>
+                </Path>
                 <ItemsControl x:Name="ShapesControl" ItemsSource="{x:Bind Path=Context.Shapes, Mode=OneWay}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
