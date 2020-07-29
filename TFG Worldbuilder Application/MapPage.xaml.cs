@@ -110,6 +110,14 @@ namespace TFG_Worldbuilder_Application
                 //Context.SetWorld(Worlds[0].name, Worlds[0].subtype);
                 //Context.UpdateAll();
             }
+            else
+            {
+                Create_Greater_Region_Flyout.IsEnabled = false;
+                Create_Region_Flyout.IsEnabled = false;
+                Create_Subregion_Flyout.IsEnabled = false;
+                Create_Location_Flyout.IsEnabled = false;
+                Create_Structure_Flyout.IsEnabled = false;
+            }
             UpdateSaveState();
         }
 
