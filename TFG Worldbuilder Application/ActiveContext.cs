@@ -764,6 +764,8 @@ namespace TFG_Worldbuilder_Application
             }
             RaisePropertyChanged("Lines");
             RaisePropertyChanged("ExtraPoints");
+            RaisePropertyChanged("ActiveShapePolygon");
+            RaisePropertyChanged("ActiveShapeCircle");
         }
 
         /// <summary>

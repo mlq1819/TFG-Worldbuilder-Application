@@ -802,7 +802,7 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         private void Create_Location()
         {
-            if (Context.ActiveLevel != null && Context.ActiveLevel.level < 4)
+            if (Context.ActiveLevel != null && Context.ActiveLevel.level < 5)
             {
                 LevelNum = 5;
                 LevelStep = 1;
@@ -818,7 +818,7 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         private void Create_Structure()
         {
-            if (Context.ActiveLevel != null && Context.ActiveLevel.level < 4)
+            if (Context.ActiveLevel != null && Context.ActiveLevel.level < 6)
             {
                 LevelNum = 6;
                 LevelStep = 1;
