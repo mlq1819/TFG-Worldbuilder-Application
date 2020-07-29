@@ -738,7 +738,7 @@ namespace TFG_Worldbuilder_Application
         {
             if (parent == null)
                 return 1.0f;
-            return Math.Min(1.0f, parent.GetMedZoom());
+            return Math.Max(1.0f, parent.GetMedZoom());
         }
 
         public virtual AbsolutePoint GetCenter()
@@ -1240,7 +1240,7 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Returns the center
         /// </summary>
-        public AbsolutePoint GetCenter()
+        public override AbsolutePoint GetCenter()
         {
             return new AbsolutePoint(this.center);
         }
@@ -1281,6 +1281,21 @@ namespace TFG_Worldbuilder_Application
         {
             RaisePropertyChanged("center");
             base.ForceUpdatePoints();
+        }
+
+        /// <summary>
+        /// Returns the MedZoom for the region such that being zoomed in will fully encompass the region
+        /// </summary>
+        public override double GetMedZoom()
+        {
+            double myZoom = 1.0f;
+            double width_percent, height_percent;
+            width_percent = (20) / Global.CanvasSize.X;
+            height_percent = (20) / Global.CanvasSize.Y;
+            myZoom = 1 / Math.Max(width_percent, height_percent);
+            if (parent == null)
+                return myZoom;
+            return Math.Max(myZoom, parent.GetMedZoom());
         }
     }
 
