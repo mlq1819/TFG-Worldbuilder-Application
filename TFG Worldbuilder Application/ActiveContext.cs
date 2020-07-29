@@ -709,6 +709,11 @@ namespace TFG_Worldbuilder_Application
         {
             if (levelnum > 1 && levelnum < 6 && activelevel != null)
             {
+                if (activelevel.HasBorderProperty())
+                {
+                    if(!activelevel.CanFitPoint(point))
+                        return false;
+                }
                 for (int i = 0; i < activelevel.sublevels.Count; i++)
                 {
                     if (activelevel.sublevels[i].level == levelnum)

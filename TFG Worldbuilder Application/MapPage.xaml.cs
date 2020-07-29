@@ -1122,7 +1122,6 @@ namespace TFG_Worldbuilder_Application
             {
                 OpenPopupAlert("Cannot move point to that position");
             }
-
         }
         
         /// <summary>

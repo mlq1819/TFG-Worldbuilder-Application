@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Graphics.Canvas.Effects;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -1532,7 +1533,8 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         public bool PointInRadius(AbsolutePoint point)
         {
-            return (point - center).Length() <= radius;
+            double temp = center.Distance(point);
+            return center.Distance(point) <= radius;
         }
         
         /// <summary>
@@ -1595,7 +1597,11 @@ namespace TFG_Worldbuilder_Application
                 direction = (direction * radius_r) / direction.Length();
                 direction = direction + center.ToRenderedPoint();
                 if (point.Distance(direction) <= snap_range)
+                {
+                    double temp1 = direction.Distance(center.ToRenderedPoint()) - radius_r;
+                    double temp2 = point.Distance(direction) - snap_range;
                     return direction;
+                }
             }
             return point;
         }
