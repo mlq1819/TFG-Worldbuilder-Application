@@ -752,21 +752,7 @@ namespace TFG_Worldbuilder_Application
                 RaisePropertyChanged("ExtraPoints");
             }
             RaisePropertyChanged("Shapes");
-            if (Circles != null)
-            {
-                for(int i=0; i<Circles.Count; i++)
-                {
-                    Circles[i].ForceUpdatePoints();
-                }
-            }
             RaisePropertyChanged("Circles");
-            if (Points != null)
-            {
-                for (int i = 0; i < Points.Count; i++)
-                {
-                    Points[i].ForceUpdatePoints();
-                }
-            }
             RaisePropertyChanged("Points");
             RaisePropertyChanged("Vertices");
             if(Lines != null)
