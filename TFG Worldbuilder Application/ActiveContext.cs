@@ -934,10 +934,16 @@ namespace TFG_Worldbuilder_Application
         {
             for (int i = 0; i < Lines.Count; i++)
             {
-                long distance = Lines[i].RenderedDistance(point);
-                Line2D temp = Lines[i];
                 if (Lines[i].RenderedDistance(point) <= snap_range)
                     return true;
+            }
+            if(ActiveShapePolygon != null)
+            {
+                foreach(Line2D line in ActiveShapePolygon.border.edges)
+                {
+                    if (line.RenderedDistance(point) <= snap_range)
+                        return true;
+                }
             }
             return false;
         }
@@ -1062,13 +1068,27 @@ namespace TFG_Worldbuilder_Application
             {
                 distance = Math.Min(distance, Lines[i].RenderedDistance(point));
             }
+            if(ActiveShapePolygon != null)
+            {
+                foreach(Line2D line in ActiveShapePolygon.border.edges)
+                {
+                    distance = Math.Min(distance, line.RenderedDistance(point));
+                }
+            }
             for(int i=0; i<Lines.Count; i++)
             {
                 if (Lines[i].RenderedDistance(point) == distance)
                 {
                     return Lines[i].GetClosestPoint(point.ToAbsolutePoint()).ToRenderedPoint();
                 }
-                    
+            }
+            if(ActiveShapePolygon != null)
+            {
+                foreach(Line2D line in ActiveShapePolygon.border.edges)
+                {
+                    if (line.RenderedDistance(point) == distance)
+                        return line.GetClosestPoint(point.ToAbsolutePoint()).ToRenderedPoint();
+                }
             }
             return point;
         }
