@@ -1419,7 +1419,6 @@ namespace TFG_Worldbuilder_Application
 
         private void CirclesControlFlyout_Closed(object sender, object e)
         {
-
             if (ActiveJob == Job.None)
                 Context.NullSelected();
         }
@@ -1445,7 +1444,37 @@ namespace TFG_Worldbuilder_Application
         private void Circles_Control_Move_Click(object sender, RoutedEventArgs e)
         {
             ActiveJob = Job.MoveLevel;
-            OpenTapPrompt("Click new position for " + Context.SelectedPoint.name);
+            OpenTapPrompt("Click new position for " + Context.SelectedLevel.name);
+        }
+
+        private void PointsControlFlyout_Closed(object sender, object e)
+        {
+            if (ActiveJob == Job.None)
+                Context.NullSelected();
+        }
+
+        private void Points_Control_Rename_Click(object sender, RoutedEventArgs e)
+        {
+            ActiveJob = Job.Rename;
+            OpenTextPrompt("Enter new name for " + Context.SelectedLevel.name + ':');
+        }
+
+        private void Points_Control_Focus_Click(object sender, RoutedEventArgs e)
+        {
+            SetActive(Context.SelectedLevel);
+            Context.NullSelected();
+        }
+
+        private void Points_Control_Move_Click(object sender, RoutedEventArgs e)
+        {
+            ActiveJob = Job.MoveLevel;
+            OpenTapPrompt("Click new position for " + Context.SelectedLevel.name);
+        }
+
+        private void Points_Control_Delete_Click(object sender, RoutedEventArgs e)
+        {
+            Context.DeleteSelected();
+            UpdateSaveState();
         }
 
         /// <summary>
@@ -1523,6 +1552,5 @@ namespace TFG_Worldbuilder_Application
             ActiveJob = Job.None;
             TypePrompt.Visibility = Visibility.Collapsed;
         }
-
     }
 }
