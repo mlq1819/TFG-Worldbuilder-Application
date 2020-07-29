@@ -1130,6 +1130,10 @@ namespace TFG_Worldbuilder_Application
         /// <param name="point">A RenderedPoint that will automatically snap to the nearest ExtraPoint or Vertex within range</param>
         private void Canvas_Clicked(RenderedPoint point)
         {
+            if (Context.ActiveShapePolygon != null)
+                point = Context.ActiveShapePolygon.Constrain(point);
+            if (Context.ActiveShapeCircle != null)
+                point = Context.ActiveShapeCircle.Constrain(point);
             point = Context.SnapToAPoint(point);
             if (ActiveJob == Job.CreatePolygon || ActiveJob == Job.CreatePoint)
             {

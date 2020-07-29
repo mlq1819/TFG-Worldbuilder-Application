@@ -343,6 +343,14 @@ namespace TFG_Worldbuilder_Application
         }
 
         /// <summary>
+        /// Returns a point with the same X:Y ratio, but of length 1
+        /// </summary>
+        public Point2D Normalize()
+        {
+            return this / this.Length();
+        }
+
+        /// <summary>
         /// Returns the distance between this point and the passed point
         /// </summary>
         public double Distance(Point2D o)
@@ -632,7 +640,7 @@ namespace TFG_Worldbuilder_Application
         {
             return new RenderedPoint(s / a.X, s / a.Y);
         }
-        
+
         /// <summary>
         /// Returns the distance between this point and the passed point
         /// </summary>

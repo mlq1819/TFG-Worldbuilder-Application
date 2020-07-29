@@ -1117,6 +1117,27 @@ namespace TFG_Worldbuilder_Application
         {
             return border.GetCenter();
         }
+
+        /// <summary>
+        /// If the point is outside the boundaries of the level, returns the closest point within the boundaries
+        /// </summary>
+        public RenderedPoint Constrain(RenderedPoint point)
+        {
+            if (!PointInPolygon(point.ToAbsolutePoint()))
+            {
+                double distance = double.MaxValue;
+                foreach(Line2D line in border.edges)
+                {
+                    distance = Math.Min(distance, line.RenderedDistance(point));
+                }
+                foreach(Line2D line in border.edges)
+                {
+                    if (Double.Equals(line.RenderedDistance(point), distance))
+                        return line.GetClosestPoint(point.ToAbsolutePoint()).ToRenderedPoint();
+                }
+            }
+            return point;
+        }
     }
 
     /// <summary>
@@ -1599,6 +1620,21 @@ namespace TFG_Worldbuilder_Application
                 {
                     return direction;
                 }
+            }
+            return point;
+        }
+
+        /// <summary>
+        /// If the point is outside the boundaries of the level, returns the closest point within the boundaries
+        /// </summary>
+        public RenderedPoint Constrain(RenderedPoint point)
+        {
+            if (!PointInRadius(point.ToAbsolutePoint()))
+            {
+                RenderedPoint output = (RenderedPoint)(center.ToRenderedPoint() - point).Normalize();
+                output = output * radius_r;
+                output = output + center.ToRenderedPoint();
+                return output;
             }
             return point;
         }
