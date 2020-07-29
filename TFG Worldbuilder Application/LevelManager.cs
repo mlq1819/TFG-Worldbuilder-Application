@@ -1569,7 +1569,7 @@ namespace TFG_Worldbuilder_Application
             myZoom = Math.Max(width_percent, height_percent);
             if (parent == null)
                 return myZoom;
-            return Math.Min(myZoom, parent.GetMedZoom());
+            return Math.Max(myZoom, parent.GetMedZoom());
         }
     }
 
