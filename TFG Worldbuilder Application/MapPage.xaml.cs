@@ -956,7 +956,7 @@ namespace TFG_Worldbuilder_Application
             {
                 try
                 {
-                    Windows.UI.Xaml.Shapes.Path circle = FindVisualChild<Windows.UI.Xaml.Shapes.Path>(CirclesControl.ContainerFromItem(child) as DependencyObject);
+                    MyLevel6 circle = FindVisualChild<MyLevel6>(CirclesControl.ContainerFromItem(child) as DependencyObject);
                     if (circle != null)
                     {
                         FlyoutBase flyout = FlyoutBase.GetAttachedFlyout(circle as FrameworkElement);

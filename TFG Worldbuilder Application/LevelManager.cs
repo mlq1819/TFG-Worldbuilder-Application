@@ -1752,6 +1752,14 @@ namespace TFG_Worldbuilder_Application
     /// </summary>
     public class Level6 : PointLevel
     {
+        public Level6 thisLevel6
+        {
+            get
+            {
+                return this;
+            }
+        }
+
         /// <summary>
         /// Basic constructor, creates a level 6 object given a name, level type, parent, and center
         /// </summary>

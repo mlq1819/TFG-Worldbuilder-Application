@@ -145,8 +145,6 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
-                
-                
                 <ItemsControl x:Name="ShapesEdgesControl" ItemsSource="{x:Bind Path=Context.Lines, Mode=OneWay}"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -195,25 +193,7 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="local:Level6">
-                            <Path Fill="{x:Bind Path=color, Mode=OneWay}" StrokeThickness="1" Stroke="Black" Name="{x:Bind Path=name, Mode=OneWay}" FlyoutBase.AttachedFlyout="{StaticResource PointsControlFlyout}">
-                                <Path.Data>
-                                    <EllipseGeometry Center="{x:Bind Path=center_r, Mode=OneWay}" RadiusX="5" RadiusY="5"/>
-                                </Path.Data>
-                            </Path>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-                <ItemsControl x:Name="PointsNameControl" ItemsSource="{x:Bind Path=Context.Points, Mode=OneWay}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate x:DataType="local:Level6">
-                            <Grid VerticalAlignment="Center" HorizontalAlignment="Center" Margin="{x:Bind Path=margin, Mode=OneWay}" Visibility="{x:Bind Path=name_visibility, Mode=OneWay}">
-                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" TextAlignment="Center" Text="{x:Bind Path=name, Mode=OneWay}"/>
-                            </Grid>
+                            <local:MyLevel6 Level="{x:Bind Path=thisLevel6, Mode=OneWay}" StrokeThickness="1" Stroke="Black" Name="{x:Bind Path=name, Mode=OneWay}" FlyoutBase.AttachedFlyout="{StaticResource PointsControlFlyout}"/>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
