@@ -1,0 +1,60 @@
+﻿<UserControl
+    x:Class="TFG_Worldbuilder_Application.MyBorderLevel"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:TFG_Worldbuilder_Application"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    x:Name="ThisBorderLevel"
+    d:DesignHeight="300"
+    d:DesignWidth="400">
+
+    <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <Polygon Points="{Binding Level.points, ElementName=ThisBorderLevel}" Fill="{Binding Level.color, ElementName=ThisBorderLevel}" Stroke="{Binding Stroke, ElementName=ThisBorderLevel}" StrokeThickness="{Binding StrokeThickness, ElementName=ThisBorderLevel}" Visibility="{Binding Level.visibility, ElementName=ThisBorderLevel}"/>
+        <ItemsControl ItemsSource="{x:Bind Path=Level.SubShapes, Mode=OneWay}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="local:BorderLevel">
+                    <Polygon Points="{x:Bind Path=points, Mode=OneWay}" Fill="White" Stroke="Gray" StrokeThickness="1" Visibility="{x:Bind visibility}"/>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        <ItemsControl ItemsSource="{x:Bind Path=Level.SubCircles, Mode=OneWay}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="local:Level5">
+                    <Path Fill="White" StrokeThickness="1" Stroke="Gray">
+                        <Path.Data>
+                            <EllipseGeometry Center="{x:Bind Path=center_r, Mode=OneWay}" RadiusX="{x:Bind Path=radius_str, Mode=OneWay}" RadiusY="{x:Bind Path=radius_str, Mode=OneWay}"/>
+                        </Path.Data>
+                    </Path>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        <ItemsControl ItemsSource="{x:Bind Path=Level.SubPoints, Mode=OneWay}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="local:Level6">
+                    <Path Fill="White" StrokeThickness="1" Stroke="Gray">
+                        <Path.Data>
+                            <EllipseGeometry Center="{x:Bind Path=center_r, Mode=OneWay}" RadiusX="5" RadiusY="5"/>
+                        </Path.Data>
+                    </Path>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </Canvas>
+</UserControl>
