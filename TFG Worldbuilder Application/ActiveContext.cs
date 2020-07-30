@@ -10,6 +10,7 @@ using Windows.Foundation;
 using Windows.ApplicationModel.Contacts;
 using Windows.UI.Xaml.Shapes;
 using Windows.UI.Xaml.Controls.Primitives;
+using Windows.Devices.Perception;
 
 namespace TFG_Worldbuilder_Application
 {
@@ -38,7 +39,7 @@ namespace TFG_Worldbuilder_Application
 
     public class SubtypeArchive
     {
-        protected List<Tuple<int, LevelType, string>> subtypes;
+        public List<Tuple<int, LevelType, string>> subtypes;
 
         public int Count
         {
@@ -68,6 +69,9 @@ namespace TFG_Worldbuilder_Application
             ;
         }
 
+        /// <summary>
+        /// Attempts to add the given item to the list of subtypes; returns true on success
+        /// </summary>
         public bool Add(Tuple<int, LevelType, string> item)
         {
             if (item.Item1 < 1 || item.Item1 > 6)
@@ -80,25 +84,69 @@ namespace TFG_Worldbuilder_Application
             return true;
         }
 
-        public bool Has(string str)
+        private int Add(SuperLevel level)
         {
-            str = Capitalize(str);
+            int count = 0;
+            if (Add(new Tuple<int, LevelType, string>(level.level, level.leveltype, level.subtype)))
+                count++;
+            foreach (SuperLevel sublevel in level.sublevels) {
+                count += Add(sublevel);
+            }
+            return count;
+        }
+
+        public int Add(IList<Level1> Worlds)
+        {
+            int count = 0;
+            foreach(Level1 world in Worlds)
+            {
+                count += Add(world);
+            }
+            return count;
+        }
+
+        /// <summary>
+        /// Checks whether a given subtype is in the list
+        /// </summary>
+        public bool Has(string subtype)
+        {
+            subtype = Capitalize(subtype);
             foreach(Tuple<int, LevelType, string> item in subtypes)
             {
-                if (string.Equals(item.Item3, str))
+                if (string.Equals(item.Item3, subtype))
                     return true;
             }
             return false;
         }
 
-        public Tuple<int, LevelType, string> Get(string str)
+        /// <summary>
+        /// Checks for an entry conflict; entry conflicts occur when a new entry shares a name with a member of subtypes but is not otherwise identical
+        /// </summary>
+        public bool Conflicts(Tuple<int, LevelType, string> entry)
         {
-            str = Capitalize(str);
-            if (Has(str))
+            if (!Has(entry.Item3))
+                return false;
+            foreach(Tuple<int, LevelType, string> item in subtypes)
+            {
+                if(string.Equals(entry.Item3, item.Item3))
+                {
+                    return entry.Item1 != item.Item1 || entry.Item2 != item.Item2;
+                }
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Returns the tuple containing the given subtype, or null
+        /// </summary>
+        public Tuple<int, LevelType, string> Get(string subtype)
+        {
+            subtype = Capitalize(subtype);
+            if (Has(subtype))
             {
                 foreach(Tuple<int, LevelType, string> item in subtypes)
                 {
-                    if (string.Equals(str, item.Item2))
+                    if (string.Equals(subtype, item.Item3))
                         return item;
                 }
             }
@@ -108,9 +156,9 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Returns the type of the given subtype, or Invalid
         /// </summary>
-        public LevelType GetType(string str)
+        public LevelType GetType(string subtype)
         {
-            Tuple<int, LevelType, string> output = Get(str);
+            Tuple<int, LevelType, string> output = Get(subtype);
             if (output != null)
             {
                 return output.Item2;
@@ -121,9 +169,9 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Returns the level of the given subtype, or -1
         /// </summary>
-        public int GetLevel(string str)
+        public int GetLevel(string subtype)
         {
-            Tuple<int, LevelType, string> output = Get(str);
+            Tuple<int, LevelType, string> output = Get(subtype);
             if (output != null)
             {
                 return output.Item1;
@@ -192,6 +240,7 @@ namespace TFG_Worldbuilder_Application
     {
         public ObservableCollection<Level1> Worlds;
         public SuperLevel ActiveLevel;
+        public SubtypeArchive SubtypeList;
         public bool HasActive
         {
             get
@@ -421,12 +470,14 @@ namespace TFG_Worldbuilder_Application
             this.Vertices = new MyPointCollection();
             this.Lines = new ObservableCollection<Line2D>();
             this.ExtraPoints = new MyPointCollection();
+            this.SubtypeList = new SubtypeArchive();
             SetExtraLines();
         }
 
         public ActiveContext(ObservableCollection<Level1> Worlds) : this()
         {
             this.Worlds = Worlds;
+            this.SubtypeList.Add(Worlds);
         }
 
         public void NullSelected()
