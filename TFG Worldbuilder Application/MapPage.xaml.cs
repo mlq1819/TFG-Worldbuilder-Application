@@ -65,6 +65,7 @@ namespace TFG_Worldbuilder_Application
         private int LevelStep = 0;
         private string name = "";
         private string label = "";
+        private string color = SuperLevel.DefaultColor;
         private Polygon2D vertices = new Polygon2D();
         private LevelType type = LevelType.Invalid;
         private string subtype = "";
@@ -360,13 +361,14 @@ namespace TFG_Worldbuilder_Application
                     switch (this.LevelStep) // Control for level step
                     {
                         case 2:
-                            if(Context.SubtypeList.Conflicts(new Tuple<int, LevelType, string>(this.LevelNum, this.type, prompt_text))){
-                                Tuple<int, LevelType, string> actual = Context.SubtypeList.Get(prompt_text);
+                            if(Context.SubtypeList.Conflicts(new Tuple<int, LevelType, string, string>(this.LevelNum, this.type, prompt_text, SuperLevel.DefaultColor))){
+                                Tuple<int, LevelType, string, string> actual = Context.SubtypeList.Get(prompt_text);
                                 OpenPopupAlert("Invalid subtype; conflicts with existing Subtype definition for level " + actual.Item1 + " of type " + Enum.GetName(typeof(LevelType), actual.Item2));
                             } else
                             {
                                 this.subtype = prompt_text;
                                 this.LevelStep++;
+                                Global.Subtypes.Add(new Tuple<int, LevelType, string, string>(3, type, subtype, color));
                                 OpenTextPrompt("Name your " + this.subtype + ":");
                             }
                             break;
@@ -519,7 +521,6 @@ namespace TFG_Worldbuilder_Application
             {
                 SetActive(new Level1(name, subtype));
                 Global.ActiveFile.Worlds.Add((Level1)Context.ActiveLevel);
-                Context.SubtypeList.Add(new Tuple<int, LevelType, string>(1, LevelType.World, subtype));
             }
             ActiveJob = Job.None;
             UpdateSaveState();
@@ -542,7 +543,6 @@ namespace TFG_Worldbuilder_Application
                 } else
                 {
                     Context.UpdateAll();
-                    Context.SubtypeList.Add(new Tuple<int, LevelType, string>(2, type, subtype));
                 }
             }
             ActiveJob = Job.None;
@@ -569,7 +569,6 @@ namespace TFG_Worldbuilder_Application
                 else
                 {
                     Context.UpdateAll();
-                    Context.SubtypeList.Add(new Tuple<int, LevelType, string>(3, type, subtype));
                 }
             }
             ActiveJob = Job.None;
@@ -596,7 +595,6 @@ namespace TFG_Worldbuilder_Application
                 else
                 {
                     Context.UpdateAll();
-                    Context.SubtypeList.Add(new Tuple<int, LevelType, string>(4, type, subtype));
                 }
             }
             ActiveJob = Job.None;
@@ -623,7 +621,6 @@ namespace TFG_Worldbuilder_Application
                 else
                 {
                     Context.UpdateAll();
-                    Context.SubtypeList.Add(new Tuple<int, LevelType, string>(5, type, subtype));
                 }
             }
             ActiveJob = Job.None;
@@ -650,7 +647,6 @@ namespace TFG_Worldbuilder_Application
                 else
                 {
                     Context.UpdateAll();
-                    Context.SubtypeList.Add(new Tuple<int, LevelType, string>(6, type, subtype));
                 }
             }
             ActiveJob = Job.None;

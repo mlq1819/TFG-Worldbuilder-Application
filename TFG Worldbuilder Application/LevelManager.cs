@@ -136,6 +136,8 @@ namespace TFG_Worldbuilder_Application
             }
         }
 
+        public static readonly string DefaultColor = "#F2F2F2";
+
         public string prop_str
         {
             get
@@ -207,7 +209,7 @@ namespace TFG_Worldbuilder_Application
             }
             set
             {
-                basecolor = value;
+                _basecolor = value;
                 RaisePropertyChanged("basecolor");
             }
         }
@@ -266,8 +268,8 @@ namespace TFG_Worldbuilder_Application
             else
                 this.parent = null;
             this.leveldata = new List<string>();
-            basecolor = "#F2F2F2";
-            color = "#F2F2F2";
+            basecolor = SuperLevel.DefaultColor;
+            color = basecolor;
         }
 
         /// <summary>
@@ -281,6 +283,8 @@ namespace TFG_Worldbuilder_Application
         protected SuperLevel(string name, int level, LevelType leveltype, string subtype, SuperLevel parent) : this(name, level, leveltype, parent)
         {
             this.subtype = subtype;
+            basecolor = Global.Subtypes.GetColor(subtype);
+            color = basecolor;
         }
 
         /// <summary>

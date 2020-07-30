@@ -110,5 +110,7 @@ namespace TFG_Worldbuilder_Application
                 _center = value;
             }
         }
+
+        public static SubtypeArchive Subtypes = new SubtypeArchive();
     }
 }

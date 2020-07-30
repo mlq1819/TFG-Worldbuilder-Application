@@ -39,7 +39,7 @@ namespace TFG_Worldbuilder_Application
 
     public class SubtypeArchive
     {
-        public List<Tuple<int, LevelType, string>> subtypes;
+        public List<Tuple<int, LevelType, string, string>> subtypes;
 
         public int Count
         {
@@ -53,12 +53,12 @@ namespace TFG_Worldbuilder_Application
 
         public SubtypeArchive()
         {
-            subtypes = new List<Tuple<int, LevelType, string>>();
+            subtypes = new List<Tuple<int, LevelType, string, string>>();
         }
 
-        public SubtypeArchive(List<Tuple<int, LevelType, string>> list) : this()
+        public SubtypeArchive(List<Tuple<int, LevelType, string, string>> list) : this()
         {
-            foreach(Tuple<int, LevelType, string> item in list)
+            foreach(Tuple<int, LevelType, string, string> item in list)
             {
                 Add(item);
             }
@@ -72,7 +72,7 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Attempts to add the given item to the list of subtypes; returns true on success
         /// </summary>
-        public bool Add(Tuple<int, LevelType, string> item)
+        public bool Add(Tuple<int, LevelType, string, string> item)
         {
             if (item.Item1 < 1 || item.Item1 > 6)
                 return false;
@@ -80,14 +80,14 @@ namespace TFG_Worldbuilder_Application
                 return false;
             if (Has(item.Item3))
                 return false;
-            subtypes.Add(new Tuple<int, LevelType, string>(item.Item1, item.Item2, Capitalize(item.Item3)));
+            subtypes.Add(new Tuple<int, LevelType, string, string>(item.Item1, item.Item2, Capitalize(item.Item3), SuperLevel.DefaultColor));
             return true;
         }
 
         private int Add(SuperLevel level)
         {
             int count = 0;
-            if (Add(new Tuple<int, LevelType, string>(level.level, level.leveltype, level.subtype)))
+            if (Add(new Tuple<int, LevelType, string, string>(level.level, level.leveltype, level.subtype, SuperLevel.DefaultColor)))
                 count++;
             foreach (SuperLevel sublevel in level.sublevels) {
                 count += Add(sublevel);
@@ -111,7 +111,7 @@ namespace TFG_Worldbuilder_Application
         public bool Has(string subtype)
         {
             subtype = Capitalize(subtype);
-            foreach(Tuple<int, LevelType, string> item in subtypes)
+            foreach(Tuple<int, LevelType, string, string> item in subtypes)
             {
                 if (string.Equals(item.Item3, subtype))
                     return true;
@@ -124,9 +124,17 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         public bool Conflicts(Tuple<int, LevelType, string> entry)
         {
+            return Conflicts(new Tuple<int, LevelType, string, string>(entry.Item1, entry.Item2, entry.Item3, SuperLevel.DefaultColor));
+        }
+
+        /// <summary>
+        /// Checks for an entry conflict; entry conflicts occur when a new entry shares a name with a member of subtypes but is not otherwise identical
+        /// </summary>
+        public bool Conflicts(Tuple<int, LevelType, string, string> entry)
+        {
             if (!Has(entry.Item3))
                 return false;
-            foreach(Tuple<int, LevelType, string> item in subtypes)
+            foreach(Tuple<int, LevelType, string, string> item in subtypes)
             {
                 if(string.Equals(entry.Item3, item.Item3))
                 {
@@ -139,12 +147,12 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Returns the tuple containing the given subtype, or null
         /// </summary>
-        public Tuple<int, LevelType, string> Get(string subtype)
+        public Tuple<int, LevelType, string, string> Get(string subtype)
         {
             subtype = Capitalize(subtype);
             if (Has(subtype))
             {
-                foreach(Tuple<int, LevelType, string> item in subtypes)
+                foreach(Tuple<int, LevelType, string, string> item in subtypes)
                 {
                     if (string.Equals(subtype, item.Item3))
                         return item;
@@ -158,7 +166,7 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         public LevelType GetType(string subtype)
         {
-            Tuple<int, LevelType, string> output = Get(subtype);
+            Tuple<int, LevelType, string, string> output = Get(subtype);
             if (output != null)
             {
                 return output.Item2;
@@ -171,12 +179,25 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         public int GetLevel(string subtype)
         {
-            Tuple<int, LevelType, string> output = Get(subtype);
+            Tuple<int, LevelType, string, string> output = Get(subtype);
             if (output != null)
             {
                 return output.Item1;
             }
             return -1;
+        }
+
+        /// <summary>
+        /// Returns the color of the given subtype, or SuperLevel.DefaultColor
+        /// </summary>
+        public string GetColor(string subtype)
+        {
+            Tuple<int, LevelType, string, string> output = Get(subtype);
+            if(output != null)
+            {
+                return output.Item4;
+            }
+            return SuperLevel.DefaultColor;
         }
 
         /// <summary>
@@ -187,7 +208,7 @@ namespace TFG_Worldbuilder_Application
             List<string> output = new List<string>();
             if(leveltype != LevelType.Invalid)
             {
-                foreach (Tuple<int, LevelType, string> item in subtypes)
+                foreach (Tuple<int, LevelType, string, string> item in subtypes)
                 {
                     if (item.Item1 == level && item.Item2 == leveltype)
                         output.Add(item.Item3);
@@ -240,7 +261,17 @@ namespace TFG_Worldbuilder_Application
     {
         public ObservableCollection<Level1> Worlds;
         public SuperLevel ActiveLevel;
-        public SubtypeArchive SubtypeList;
+        public SubtypeArchive SubtypeList
+        {
+            get
+            {
+                return Global.Subtypes;
+            }
+            set
+            {
+                Global.Subtypes = value;
+            }
+        }
         public bool HasActive
         {
             get
@@ -549,7 +580,7 @@ namespace TFG_Worldbuilder_Application
         public void SetActive(SuperLevel level)
         {
             if(ActiveLevel != null)
-                ActiveLevel.color = "#F2F2F2";
+                ActiveLevel.color = ActiveLevel.basecolor;
             ActiveLevel = level;
             if (ActiveLevel != null)
             {
