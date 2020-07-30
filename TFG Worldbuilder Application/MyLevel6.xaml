@@ -13,7 +13,7 @@
     <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <Path Fill="{Binding Level.color, ElementName=ThisLevel6}" StrokeThickness="{Binding StrokeThickness, ElementName=ThisLevel6}" Stroke="{Binding Stroke, ElementName=ThisLevel6}" Opacity="0.5">
             <Path.Data>
-                <EllipseGeometry Center="{Binding Level.center_r, ElementName=ThisLevel5}" RadiusX="5" RadiusY="5"/>
+                <EllipseGeometry Center="{Binding Level.center_r, ElementName=ThisLevel6}" RadiusX="5" RadiusY="5"/>
             </Path.Data>
         </Path>
         <ItemsControl ItemsSource="{x:Bind Path=Level.SubShapes, Mode=OneWay}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">

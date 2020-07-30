@@ -1014,25 +1014,28 @@ namespace TFG_Worldbuilder_Application
             {
                 Context.NullSelected();
                 Object obj = Context.GetObjectContainingPoint(point);
-                try
+                if (obj != null)
                 {
-                    if (obj.GetType() == typeof(RenderedPoint))
-                        WorldCanvas_ClickVertex((RenderedPoint)obj);
-                    else if (obj.GetType() == typeof(Line2D))
-                        WorldCanvas_ClickLine((Line2D)obj, point);
-                    else if (obj.GetType() == typeof(Level6))
-                        WorldCanvas_ClickLevel6((Level6)obj, point);
-                    else if (obj.GetType() == typeof(Level5))
-                        WorldCanvas_ClickLevel5((Level5)obj, point);
-                    else
+                    try
                     {
-                        BorderLevel level = (BorderLevel)obj;
-                        WorldCanvas_ClickBorderLevel(level, point);
+                        if (obj.GetType() == typeof(RenderedPoint))
+                            WorldCanvas_ClickVertex((RenderedPoint)obj);
+                        else if (obj.GetType() == typeof(Line2D))
+                            WorldCanvas_ClickLine((Line2D)obj, point);
+                        else if (obj.GetType() == typeof(Level6))
+                            WorldCanvas_ClickLevel6((Level6)obj, point);
+                        else if (obj.GetType() == typeof(Level5))
+                            WorldCanvas_ClickLevel5((Level5)obj, point);
+                        else
+                        {
+                            BorderLevel level = (BorderLevel)obj;
+                            WorldCanvas_ClickBorderLevel(level, point);
+                        }
                     }
-                }
-                catch (InvalidCastException)
-                {
-                    ;
+                    catch (InvalidCastException)
+                    {
+                        ;
+                    }
                 }
             }
         }
