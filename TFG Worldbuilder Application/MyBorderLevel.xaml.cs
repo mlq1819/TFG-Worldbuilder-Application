@@ -31,11 +31,11 @@ namespace TFG_Worldbuilder_Application
             }
         }
 
-        public uint StrokeThickness
+        public Object StrokeThickness
         {
             get
             {
-                return (uint)GetValue(strokethicknessproperty);
+                return GetValue(strokethicknessproperty);
             }
             set
             {
@@ -62,6 +62,6 @@ namespace TFG_Worldbuilder_Application
 
         public static readonly DependencyProperty levelproperty = DependencyProperty.Register("Level", typeof(BorderLevel), typeof(MyBorderLevel), new PropertyMetadata(0));
         public static readonly DependencyProperty strokethicknessproperty = DependencyProperty.Register("StrokeThickness", typeof(uint), typeof(MyBorderLevel), new PropertyMetadata(0));
-        public static readonly DependencyProperty strokeproperty = DependencyProperty.Register("Stroke", typeof(string), typeof(MyBorderLevel), new PropertyMetadata(0));
+        public static readonly DependencyProperty strokeproperty = DependencyProperty.Register("Stroke", typeof(Object), typeof(MyBorderLevel), new PropertyMetadata(0));
     }
 }
