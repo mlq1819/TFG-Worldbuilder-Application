@@ -198,6 +198,19 @@ namespace TFG_Worldbuilder_Application
                 RaisePropertyChanged("subtype");
             }
         }
+        private string _basecolor;
+        public string basecolor
+        {
+            get
+            {
+                return _basecolor;
+            }
+            set
+            {
+                basecolor = value;
+                RaisePropertyChanged("basecolor");
+            }
+        }
         private string _color;
         public string color
         {
@@ -253,6 +266,7 @@ namespace TFG_Worldbuilder_Application
             else
                 this.parent = null;
             this.leveldata = new List<string>();
+            basecolor = "#F2F2F2";
             color = "#F2F2F2";
         }
 
@@ -281,6 +295,7 @@ namespace TFG_Worldbuilder_Application
             {
                 this.leveldata.Add(o.leveldata[i]);
             }
+            this.basecolor = o.basecolor;
             this.color = o.color;
         }
         public virtual SuperLevel Copy()

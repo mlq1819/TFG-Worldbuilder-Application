@@ -9,6 +9,7 @@ using Windows.UI.Xaml.Media;
 using Windows.Foundation;
 using Windows.ApplicationModel.Contacts;
 using Windows.UI.Xaml.Shapes;
+using Windows.UI.Xaml.Controls.Primitives;
 
 namespace TFG_Worldbuilder_Application
 {
@@ -33,6 +34,155 @@ namespace TFG_Worldbuilder_Application
             return a;
         }
 
+    }
+
+    public class SubtypeArchive
+    {
+        protected List<Tuple<int, LevelType, string>> subtypes;
+
+        public int Count
+        {
+            get
+            {
+                if (subtypes == null)
+                    return -1;
+                return subtypes.Count;
+            }
+        }
+
+        public SubtypeArchive()
+        {
+            subtypes = new List<Tuple<int, LevelType, string>>();
+        }
+
+        public SubtypeArchive(List<Tuple<int, LevelType, string>> list) : this()
+        {
+            foreach(Tuple<int, LevelType, string> item in list)
+            {
+                Add(item);
+            }
+        }
+
+        public SubtypeArchive(SubtypeArchive o) : this(o.subtypes)
+        {
+            ;
+        }
+
+        public bool Add(Tuple<int, LevelType, string> item)
+        {
+            if (item.Item1 < 1 || item.Item1 > 6)
+                return false;
+            if (item.Item2 == LevelType.Invalid)
+                return false;
+            if (Has(item.Item3))
+                return false;
+            subtypes.Add(new Tuple<int, LevelType, string>(item.Item1, item.Item2, Capitalize(item.Item3)));
+            return true;
+        }
+
+        public bool Has(string str)
+        {
+            str = Capitalize(str);
+            foreach(Tuple<int, LevelType, string> item in subtypes)
+            {
+                if (string.Equals(item.Item3, str))
+                    return true;
+            }
+            return false;
+        }
+
+        public Tuple<int, LevelType, string> Get(string str)
+        {
+            str = Capitalize(str);
+            if (Has(str))
+            {
+                foreach(Tuple<int, LevelType, string> item in subtypes)
+                {
+                    if (string.Equals(str, item.Item2))
+                        return item;
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Returns the type of the given subtype, or Invalid
+        /// </summary>
+        public LevelType GetType(string str)
+        {
+            Tuple<int, LevelType, string> output = Get(str);
+            if (output != null)
+            {
+                return output.Item2;
+            }
+            return LevelType.Invalid;
+        }
+
+        /// <summary>
+        /// Returns the level of the given subtype, or -1
+        /// </summary>
+        public int GetLevel(string str)
+        {
+            Tuple<int, LevelType, string> output = Get(str);
+            if (output != null)
+            {
+                return output.Item1;
+            }
+            return -1;
+        }
+
+        /// <summary>
+        /// Returns a list of strings consisting of all subtypes of that type
+        /// </summary>
+        public List<string> GetSubtypes(int level, LevelType leveltype)
+        {
+            List<string> output = new List<string>();
+            if(leveltype != LevelType.Invalid)
+            {
+                foreach (Tuple<int, LevelType, string> item in subtypes)
+                {
+                    if (item.Item1 == level && item.Item2 == leveltype)
+                        output.Add(item.Item3);
+                }
+            }
+            return output;
+        }
+
+        public int CountType(int level, LevelType leveltype)
+        {
+            return GetSubtypes(level, leveltype).Count;
+        }
+
+        /// <summary>
+        /// Capitalizes the first letter of each word, and de-capitalizes all other letters of each word, and trims extraneous whitespace
+        /// </summary>
+        public static string Capitalize(string str)
+        {
+            string output = "";
+            bool last_space = true;
+            foreach(char c in str)
+            {
+                if(c == ' ' || c == '\t' || c == '\n')
+                {
+                    if (!last_space)
+                    {
+                        output += ' ';
+                    }
+                    last_space = true;
+                } else
+                {
+                    if (last_space)
+                    {
+                        output += char.ToUpper(c);
+                    } else
+                    {
+                        output += char.ToLower(c);
+                    }
+                    last_space = false;
+                }
+            }
+            return output.Trim();
+        }
     }
 
     /// <summary>
@@ -110,9 +260,8 @@ namespace TFG_Worldbuilder_Application
                 return null;
             }
         }
-        private string BaseLevelColor = "#F2F2F2";
-        private string BasePointColor = "LightCoral";
-        private string BaseLineColor = "Black";
+        private readonly string BasePointColor = "LightCoral";
+        private readonly string BaseLineColor = "Black";
         public string BackButtonName
         {
             get
@@ -284,7 +433,7 @@ namespace TFG_Worldbuilder_Application
         {
             if (SelectedLevel != null)
             {
-                SelectedLevel.color = BaseLevelColor;
+                SelectedLevel.color = SelectedLevel.basecolor;
                 SelectedLevel = null;
                 RaisePropertyChanged("Shapes");
             }
