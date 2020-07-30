@@ -519,6 +519,7 @@ namespace TFG_Worldbuilder_Application
             {
                 SetActive(new Level1(name, subtype));
                 Global.ActiveFile.Worlds.Add((Level1)Context.ActiveLevel);
+                Context.SubtypeList.Add(new Tuple<int, LevelType, string>(1, LevelType.World, subtype));
             }
             ActiveJob = Job.None;
             UpdateSaveState();
@@ -541,6 +542,7 @@ namespace TFG_Worldbuilder_Application
                 } else
                 {
                     Context.UpdateAll();
+                    Context.SubtypeList.Add(new Tuple<int, LevelType, string>(2, type, subtype));
                 }
             }
             ActiveJob = Job.None;
@@ -567,6 +569,7 @@ namespace TFG_Worldbuilder_Application
                 else
                 {
                     Context.UpdateAll();
+                    Context.SubtypeList.Add(new Tuple<int, LevelType, string>(3, type, subtype));
                 }
             }
             ActiveJob = Job.None;
@@ -593,6 +596,7 @@ namespace TFG_Worldbuilder_Application
                 else
                 {
                     Context.UpdateAll();
+                    Context.SubtypeList.Add(new Tuple<int, LevelType, string>(4, type, subtype));
                 }
             }
             ActiveJob = Job.None;
@@ -619,6 +623,7 @@ namespace TFG_Worldbuilder_Application
                 else
                 {
                     Context.UpdateAll();
+                    Context.SubtypeList.Add(new Tuple<int, LevelType, string>(5, type, subtype));
                 }
             }
             ActiveJob = Job.None;
@@ -645,6 +650,7 @@ namespace TFG_Worldbuilder_Application
                 else
                 {
                     Context.UpdateAll();
+                    Context.SubtypeList.Add(new Tuple<int, LevelType, string>(6, type, subtype));
                 }
             }
             ActiveJob = Job.None;
