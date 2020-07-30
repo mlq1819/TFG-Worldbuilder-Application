@@ -351,6 +351,14 @@ namespace TFG_Worldbuilder_Application
         }
 
         /// <summary>
+        /// Returns a point with the same X:Y ratio, but of length 1
+        /// </summary>
+        public static Point2D Normalize(Point2D point)
+        {
+            return point.Normalize();
+        }
+
+        /// <summary>
         /// Returns the distance between this point and the passed point
         /// </summary>
         public double Distance(Point2D o)
@@ -640,6 +648,14 @@ namespace TFG_Worldbuilder_Application
         {
             return new RenderedPoint(s / a.X, s / a.Y);
         }
+        
+        /// <summary>
+        /// Returns a point with the same X:Y ratio, but of length 1
+        /// </summary>
+        public static RenderedPoint Normalize(RenderedPoint point)
+        {
+            return point / point.Length();
+        }
 
         /// <summary>
         /// Returns the distance between this point and the passed point
@@ -839,6 +855,14 @@ namespace TFG_Worldbuilder_Application
         public static AbsolutePoint operator /(double s, AbsolutePoint a)
         {
             return new AbsolutePoint(s / a.X, s / a.Y);
+        }
+
+        /// <summary>
+        /// Returns a point with the same X:Y ratio, but of length 1
+        /// </summary>
+        public static AbsolutePoint Normalize(AbsolutePoint point)
+        {
+            return point / point.Length();
         }
         
         /// <summary>

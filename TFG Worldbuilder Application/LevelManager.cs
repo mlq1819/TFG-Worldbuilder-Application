@@ -1738,7 +1738,7 @@ namespace TFG_Worldbuilder_Application
         {
             if (!PointInRadius(point.ToAbsolutePoint()))
             {
-                RenderedPoint output = (RenderedPoint)(center.ToRenderedPoint() - point).Normalize();
+                RenderedPoint output = RenderedPoint.Normalize(center.ToRenderedPoint() - point);
                 output = output * radius_r;
                 output = output + center.ToRenderedPoint();
                 return output;

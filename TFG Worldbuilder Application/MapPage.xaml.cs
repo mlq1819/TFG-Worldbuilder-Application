@@ -952,11 +952,11 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         private void WorldCanvas_ClickLevel6(Level6 level, RenderedPoint point)
         {
-            foreach (object child in CirclesControl.Items)
+            foreach (object child in PointsControl.Items)
             {
                 try
                 {
-                    MyLevel6 circle = FindVisualChild<MyLevel6>(CirclesControl.ContainerFromItem(child) as DependencyObject);
+                    MyLevel6 circle = FindVisualChild<MyLevel6>(PointsControl.ContainerFromItem(child) as DependencyObject);
                     if (circle != null)
                     {
                         FlyoutBase flyout = FlyoutBase.GetAttachedFlyout(circle as FrameworkElement);
@@ -964,7 +964,7 @@ namespace TFG_Worldbuilder_Application
                         {
                             FlyoutShowOptions show_options = new FlyoutShowOptions();
                             show_options.Position = point.ToWindowsPoint();
-                            flyout.ShowAt(CirclesControl, show_options);
+                            flyout.ShowAt(PointsControl, show_options);
                             Context.SetSelected(level);
                             return;
                         }
@@ -976,6 +976,7 @@ namespace TFG_Worldbuilder_Application
                 }
             }
         }
+
         /// <summary>
         /// Displays a flyout menu of options when a BorderLevel object is clicked
         /// </summary>
