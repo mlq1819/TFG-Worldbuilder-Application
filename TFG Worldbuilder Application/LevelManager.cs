@@ -1578,12 +1578,19 @@ namespace TFG_Worldbuilder_Application
                 return radius * Global.Zoom;
             }
         }
-
         public string radius_str
         {
             get
             {
                 return radius_r.ToString();
+            }
+        }
+
+        public Level5 thisLevel5
+        {
+            get
+            {
+                return this;
             }
         }
 
