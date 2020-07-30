@@ -985,7 +985,7 @@ namespace TFG_Worldbuilder_Application
             {
                 try
                 {
-                    Polygon shape = FindVisualChild<Polygon>(ShapesControl.ContainerFromItem(child) as DependencyObject);
+                    MyBorderLevel shape = FindVisualChild<MyBorderLevel>(ShapesControl.ContainerFromItem(child) as DependencyObject);
                     if (shape != null)
                     {
                         FlyoutBase flyout = FlyoutBase.GetAttachedFlyout(shape as FrameworkElement);
