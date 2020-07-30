@@ -50,7 +50,7 @@ namespace TFG_Worldbuilder_Application
             }
         }
 
-        public SuperLevel _this
+        public SuperLevel thisSuperLevel
         {
             get
             {
@@ -848,6 +848,14 @@ namespace TFG_Worldbuilder_Application
     {
         public Polygon2D border;
         
+        public BorderLevel thisBorderLevel
+        {
+            get
+            {
+                return this;
+            }
+        }
+
         public PointCollection truepoints
         {
             get

@@ -141,7 +141,7 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="local:BorderLevel">
-                            <local:MyBorderLevel Level="{x:Bind Path=_this, Mode=OneWay}" StrokeThickness="0" Name="{x:Bind Path=name, Mode=OneWay}" Visibility="{x:Bind Path=visibility, Mode=OneWay}" FlyoutBase.AttachedFlyout="{StaticResource ShapesControlFlyout}"/>
+                            <local:MyBorderLevel Level="{x:Bind Path=thisBorderLevel, Mode=OneWay}" StrokeThickness="0" Name="{x:Bind Path=name, Mode=OneWay}" Visibility="{x:Bind Path=visibility, Mode=OneWay}" FlyoutBase.AttachedFlyout="{StaticResource ShapesControlFlyout}"/>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>

@@ -27,7 +27,7 @@ namespace TFG_Worldbuilder_Application
             }
             set
             {
-                SetValue(levelproperty, value);
+                SetValue(levelproperty, (BorderLevel) value);
             }
         }
 
