@@ -105,6 +105,9 @@
     <Compile Include="MyBorderLevel.xaml.cs">
       <DependentUpon>MyBorderLevel.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MyLevel5.xaml.cs">
+      <DependentUpon>MyLevel5.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PointManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -138,6 +141,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MyBorderLevel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MyLevel5.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
