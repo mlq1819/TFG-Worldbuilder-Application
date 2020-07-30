@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.ApplicationModel.Core;
 using Windows.Foundation;
@@ -359,9 +360,15 @@ namespace TFG_Worldbuilder_Application
                     switch (this.LevelStep) // Control for level step
                     {
                         case 2:
-                            this.subtype = prompt_text;
-                            this.LevelStep++;
-                            OpenTextPrompt("Name your " + this.subtype + ":");
+                            if(Context.SubtypeList.Conflicts(new Tuple<int, LevelType, string>(this.LevelNum, this.type, prompt_text))){
+                                Tuple<int, LevelType, string> actual = Context.SubtypeList.Get(prompt_text);
+                                OpenPopupAlert("Invalid subtype; conflicts with existing Subtype definition for level " + actual.Item1 + " of type " + Enum.GetName(typeof(LevelType), actual.Item2));
+                            } else
+                            {
+                                this.subtype = prompt_text;
+                                this.LevelStep++;
+                                OpenTextPrompt("Name your " + this.subtype + ":");
+                            }
                             break;
                         case 3:
                             this.name = prompt_text;
