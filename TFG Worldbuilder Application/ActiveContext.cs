@@ -255,6 +255,26 @@ namespace TFG_Worldbuilder_Application
         }
 
         /// <summary>
+        /// Sets the color of the given subtype to the given color; returns true on success
+        /// </summary>
+        public bool SetColor(string subtype, string color)
+        {
+            subtype = Capitalize(subtype);
+            if (Has(subtype))
+            {
+                for(int i=0; i<subtypes.Count; i++)
+                {
+                    if (string.Equals(subtypes[i].Item3, subtype))
+                    {
+                        subtypes[i] = new Tuple<int, LevelType, string, string>(subtypes[i].Item1,subtypes[i].Item2, subtypes[i].Item3, color);
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
         /// Returns a list of strings consisting of all subtypes of that type
         /// </summary>
         public ObservableCollection<StringContainer> GetSubtypes(int level, LevelType leveltype)
@@ -781,6 +801,19 @@ namespace TFG_Worldbuilder_Application
                     UpdateAll();
                     return true;
                 }
+            }
+            return false;
+        }
+
+        public bool SetColor(string subtype, string color)
+        {
+            if(SetColor(subtype, color))
+            {
+                foreach (Level1 world in Worlds)
+                {
+                    world.Recolor(subtype);
+                }
+                return true;
             }
             return false;
         }

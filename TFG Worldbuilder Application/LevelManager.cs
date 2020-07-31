@@ -209,6 +209,7 @@ namespace TFG_Worldbuilder_Application
             }
             set
             {
+                bool update_color = string.Equals(color, basecolor);
                 if (!string.Equals(_basecolor, SuperLevel.DefaultColor))
                 {
                     _basecolor = value;
@@ -223,6 +224,8 @@ namespace TFG_Worldbuilder_Application
                         _basecolor = value;
                     }
                 }
+                if (update_color)
+                    color = basecolor;
                 RaisePropertyChanged("basecolor");
             }
         }
@@ -326,6 +329,28 @@ namespace TFG_Worldbuilder_Application
         ~SuperLevel()
         {
             this.sublevels.Clear();
+        }
+
+        /// <summary>
+        /// Recolors any level of the given subtype
+        /// </summary>
+        public void Recolor(string subtype)
+        {
+            if(string.Equals(this.subtype.ToLower(), subtype.ToLower()))
+            {
+                bool update_color = string.Equals(color, basecolor);
+                _basecolor = Global.Subtypes.GetColor(subtype);
+                RaisePropertyChanged("basecolor");
+                if (update_color)
+                    color = basecolor;
+            }
+            else
+            {
+                foreach (SuperLevel sublevel in sublevels)
+                {
+                    sublevel.Recolor(subtype);
+                }
+            }
         }
 
         /// <summary>

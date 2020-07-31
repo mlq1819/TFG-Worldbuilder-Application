@@ -45,7 +45,8 @@ namespace TFG_Worldbuilder_Application
             Rename = 11,
             Open = 12,
             Resize = 13,
-            MoveLevel = 14
+            MoveLevel = 14,
+            Recolor = 15
         }
 
         private Canvas _mapcanvas;
@@ -1654,7 +1655,7 @@ namespace TFG_Worldbuilder_Application
         {
             if (ActiveJob == Job.Create)
             {
-                subtype = ((MenuFlyoutItem)sender).Text.Trim();
+                subtype = ((MenuFlyoutSubItem)(((MenuFlyoutItem)sender).Parent)).Text.Trim();
                 SubtypePrompt.Visibility = Visibility.Collapsed;
                 LevelStep++;
                 OpenTextPrompt("Name your " + subtype + ":");
@@ -1679,6 +1680,13 @@ namespace TFG_Worldbuilder_Application
                 this.LevelStep++;
                 Global.Subtypes.Add(new Tuple<int, LevelType, string, string>(3, type, subtype, color));
                 OpenTextPrompt("Name your " + this.subtype + ":");
+            } else if (ActiveJob == Job.Recolor)
+            {
+                ActiveJob = Job.Create;
+                color = ColorPrompt_ColorPicker.Color.ToString();
+                Context.SetColor(subtype, color);
+                this.LevelStep++;
+                OpenTextPrompt("Name your " + this.subtype + ":");
             }
         }
 
@@ -1686,6 +1694,17 @@ namespace TFG_Worldbuilder_Application
         {
             ActiveJob = Job.None;
             ColorPrompt.Visibility = Visibility.Collapsed;
+        }
+
+        private void Recolor_Subtype_Click(object sender, RoutedEventArgs e)
+        {
+            if(ActiveJob == Job.Create)
+            {
+                subtype = ((MenuFlyoutSubItem)(((MenuFlyoutItem)sender).Parent)).Text.Trim();
+                SubtypePrompt.Visibility = Visibility.Collapsed;
+                ActiveJob = Job.Recolor;
+                OpenColorPicker("Set the new color for all " + subtype + "s:");
+            }
         }
     }
 }
