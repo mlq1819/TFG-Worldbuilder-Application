@@ -107,7 +107,7 @@ namespace TFG_Worldbuilder_Application
             }
             set
             {
-                Context.WorkingType = type;
+                Context.WorkingType = value;
             }
         }
         private string subtype = "";

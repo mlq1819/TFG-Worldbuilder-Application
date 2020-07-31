@@ -95,12 +95,14 @@
         </Flyout>
         <MenuFlyout x:Name="ShapesControlFlyout" x:Key="ShapesControlFlyout" Closed="ShapesControlFlyout_Closed">
             <MenuFlyoutItem Text="{x:Bind Path=Context.SelectedLevel.name, Mode=OneWay}" IsEnabled="False"/>
+            <MenuFlyoutItem Text="{x:Bind Path=Context.SelectedLevel.subtype, Mode=OneWay}" IsEnabled="False"/>
             <MenuFlyoutItem Text="Rename" x:Name="Shapes_Control_Rename" Click="Shapes_Control_Rename_Click"/>
             <MenuFlyoutItem Text="Focus" x:Name="Shapes_Control_Focus" Click="Shapes_Control_Focus_Click"/>
             <MenuFlyoutItem Text="Delete" x:Name="Shapes_Control_Delete" Click="Shapes_Control_Delete_Click"/>
         </MenuFlyout>
         <MenuFlyout x:Name="VerticesControlFlyout" x:Key="VerticesControlFlyout" Closed="VerticesControlFlyout_Closed">
             <MenuFlyoutItem Text="{x:Bind Path=Context.CurrentPoint.str, Mode=OneWay}" IsEnabled="False"/>
+            <MenuFlyoutItem Text="{x:Bind Path=Context.SelectedLevel.subtype, Mode=OneWay}" IsEnabled="False"/>
             <MenuFlyoutItem Text="Move" x:Name="Vertices_Control_Move" Click="Vertices_Control_Move_Click"/>
             <MenuFlyoutItem Text="Delete" x:Name="Vertices_Control_Delete" Click="Vertices_Control_Delete_Click"/>
         </MenuFlyout>
@@ -118,6 +120,7 @@
         </MenuFlyout>
         <MenuFlyout x:Name="PointsControlFlyout" x:Key="PointsControlFlyout" Closed="PointsControlFlyout_Closed">
             <MenuFlyoutItem Text="{x:Bind Path=Context.SelectedLevel.name, Mode=OneWay}" IsEnabled="False"/>
+            <MenuFlyoutItem Text="{x:Bind Path=Context.SelectedLevel.subtype, Mode=OneWay}" IsEnabled="False"/>
             <MenuFlyoutItem Text="Rename" x:Name="Points_Control_Rename" Click="Points_Control_Rename_Click"/>
             <MenuFlyoutItem Text="Move" x:Name="Points_Control_Move" Click="Points_Control_Move_Click"/>
             <MenuFlyoutItem Text="Delete" x:Name="Points_Control_Delete" Click="Points_Control_Delete_Click"/>
