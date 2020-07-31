@@ -1352,7 +1352,7 @@ namespace TFG_Worldbuilder_Application
             AbsolutePoint abs_center = new AbsolutePoint((minX + maxX) / 2, (minY + maxY) / 2);
             AbsolutePoint avg_center = new AbsolutePoint(sumX / vertices.Count, sumY / vertices.Count);
             if (PointInPolygon(abs_center))
-            return abs_center;
+                return abs_center;
             else if (PointInPolygon(avg_center))
             {
                 AbsolutePoint inc_center = new AbsolutePoint(abs_center);
@@ -1390,7 +1390,7 @@ namespace TFG_Worldbuilder_Application
                 if (PointInPolygon(bl) && double.Equals(distance, abs_center.Distance(bl)))
                     return bl;
             }
-            return GetClosestPoint(point);
+            return GetClosestPoint(abs_center);
         }
 
         /// <summary>
