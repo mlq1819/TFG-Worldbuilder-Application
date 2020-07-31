@@ -6,10 +6,60 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
+    x:Name="ThisViewMenuControl"
     d:DesignHeight="300"
     d:DesignWidth="400">
+    <UserControl.Resources>
+        <Flyout x:Key="TypedFlyout">
+            <StackPanel>
+                <MenuFlyoutItem Text="Greater Region Subtypes" IsEnabled="False"/>
+                <ListView ItemsSource="{x:Bind Path=Level2, Mode=OneWay}" Width="160">
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="local:StringContainer">
+                            <ToggleMenuFlyoutItem Text="{x:Bind Data, Mode=OneWay}" Background="#F2F2F2" Click="UpdateView_Click" Width="160"/>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+                <MenuFlyoutSeparator/>
+                <MenuFlyoutItem Text="Region Subtypes" IsEnabled="False"/>
+                <ListView ItemsSource="{x:Bind Path=Level3, Mode=OneWay}" Width="160">
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="local:StringContainer">
+                            <ToggleMenuFlyoutItem Text="{x:Bind Data, Mode=OneWay}" Background="#F2F2F2" Click="UpdateView_Click" Width="160"/>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+                <MenuFlyoutSeparator/>
+                <MenuFlyoutItem Text="Subregion Subtypes" IsEnabled="False"/>
+                <ListView ItemsSource="{x:Bind Path=Level4, Mode=OneWay}" Width="160">
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="local:StringContainer">
+                            <ToggleMenuFlyoutItem Text="{x:Bind Data, Mode=OneWay}" Background="#F2F2F2" Click="UpdateView_Click" Width="160"/>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+                <MenuFlyoutSeparator/>
+                <MenuFlyoutItem Text="Location Subtypes" IsEnabled="False"/>
+                <ListView ItemsSource="{x:Bind Path=Level5, Mode=OneWay}" Width="160">
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="local:StringContainer">
+                            <ToggleMenuFlyoutItem Text="{x:Bind Data, Mode=OneWay}" Background="#F2F2F2" Click="UpdateView_Click" Width="160"/>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+                <MenuFlyoutSeparator/>
+                <MenuFlyoutItem Text="Structure Subtypes" IsEnabled="False"/>
+                <ListView ItemsSource="{x:Bind Path=Level6, Mode=OneWay}" Width="160">
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="local:StringContainer">
+                            <ToggleMenuFlyoutItem Text="{x:Bind Data, Mode=OneWay}" Background="#F2F2F2" Click="UpdateView_Click" Width="160"/>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </StackPanel>
+        </Flyout>
+    </UserControl.Resources>
 
-    <Grid>
-        
-    </Grid>
+    <Button Width="160" Height="40" VerticalAlignment="Center" HorizontalAlignment="Center" Content="{Binding SubMenuName, ElementName=ThisViewMenuControl}" Flyout="{StaticResource TypedFlyout}"/>
+
 </UserControl>
