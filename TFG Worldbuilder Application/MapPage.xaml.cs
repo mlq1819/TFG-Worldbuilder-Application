@@ -579,8 +579,6 @@ namespace TFG_Worldbuilder_Application
             } else
             {
                 Level2 new_level = new Level2(name, type, subtype, (Level1)Context.ActiveLevel, border);
-                if (!string.Equals(color, SuperLevel.DefaultColor))
-                    new_level.basecolor = color;
                 if (!Context.ActiveLevel.AddSublevel(new_level))
                 {
                     OpenPopupAlert("Error: unknown error adding level");
