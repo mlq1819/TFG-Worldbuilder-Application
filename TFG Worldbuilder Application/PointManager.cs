@@ -1370,8 +1370,9 @@ namespace TFG_Worldbuilder_Application
             {
                 medY = Ys[Ys.Count / 2];
             }
-            //AbsolutePoint abs_center = new AbsolutePoint((minX + maxX) / 2, (minY + maxY) / 2);
-            AbsolutePoint abs_center = new AbsolutePoint(medX, medY);
+            AbsolutePoint abs_center = new AbsolutePoint((minX + maxX) / 2, (minY + maxY) / 2);
+            AbsolutePoint med_center = new AbsolutePoint(medX, medY);
+            abs_center = (abs_center + med_center) / 2;
             AbsolutePoint avg_center = new AbsolutePoint(sumX / vertices.Count, sumY / vertices.Count);
             if (PointInPolygon(abs_center))
                 return abs_center;
