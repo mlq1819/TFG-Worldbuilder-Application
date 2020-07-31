@@ -234,20 +234,7 @@ namespace TFG_Worldbuilder_Application
             set
             {
                 bool update_color = string.Equals(color, basecolor);
-                if (!string.Equals(_basecolor, SuperLevel.DefaultColor))
-                {
-                    _basecolor = value;
-                } else
-                {
-                    string newcolor = Global.Subtypes.GetColor(subtype);
-                    if(!string.Equals(newcolor, SuperLevel.DefaultColor))
-                    {
-                        _basecolor = newcolor;
-                    } else
-                    {
-                        _basecolor = value;
-                    }
-                }
+                _basecolor = value;
                 if (update_color)
                     color = basecolor;
                 RaisePropertyChanged("basecolor");
@@ -362,11 +349,7 @@ namespace TFG_Worldbuilder_Application
         {
             if(string.Equals(this.subtype.ToLower(), subtype.ToLower()))
             {
-                bool update_color = string.Equals(color, basecolor);
-                _basecolor = Global.Subtypes.GetColor(subtype);
-                RaisePropertyChanged("basecolor");
-                if (update_color)
-                    color = basecolor;
+                basecolor = Global.Subtypes.GetColor(subtype);
             }
             else
             {
