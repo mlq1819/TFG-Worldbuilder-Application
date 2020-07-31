@@ -104,7 +104,6 @@
         </MenuFlyout>
         <MenuFlyout x:Name="VerticesControlFlyout" x:Key="VerticesControlFlyout" Closed="VerticesControlFlyout_Closed">
             <MenuFlyoutItem Text="{x:Bind Path=Context.CurrentPoint.str, Mode=OneWay}" IsEnabled="False"/>
-            <MenuFlyoutItem Text="{x:Bind Path=Context.SelectedLevel.subtype, Mode=OneWay}" IsEnabled="False"/>
             <MenuFlyoutItem Text="Move" x:Name="Vertices_Control_Move" Click="Vertices_Control_Move_Click"/>
             <MenuFlyoutItem Text="Delete" x:Name="Vertices_Control_Delete" Click="Vertices_Control_Delete_Click"/>
         </MenuFlyout>
