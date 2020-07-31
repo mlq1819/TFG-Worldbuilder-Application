@@ -20,7 +20,7 @@
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
                 <DataTemplate x:DataType="local:BorderLevel">
-                    <Polygon Points="{x:Bind Path=points, Mode=OneWay}" Fill="White" Stroke="Gray" StrokeThickness="1" Visibility="{x:Bind visibility}"/>
+                    <Polygon Points="{x:Bind Path=points, Mode=OneWay}" Fill="{x:Bind Path=color, Mode=OneWay}" Stroke="Gray" StrokeThickness="1" Visibility="{x:Bind visibility}"/>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
@@ -32,7 +32,7 @@
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
                 <DataTemplate x:DataType="local:Level5">
-                    <Path Fill="White" StrokeThickness="1" Stroke="Gray">
+                    <Path Fill="{x:Bind Path=color, Mode=OneWay}" StrokeThickness="1" Stroke="Gray">
                         <Path.Data>
                             <EllipseGeometry Center="{x:Bind Path=center_r, Mode=OneWay}" RadiusX="{x:Bind Path=radius_str, Mode=OneWay}" RadiusY="{x:Bind Path=radius_str, Mode=OneWay}"/>
                         </Path.Data>
@@ -48,7 +48,7 @@
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
                 <DataTemplate x:DataType="local:Level6">
-                    <Path Fill="White" StrokeThickness="1" Stroke="Gray">
+                    <Path Fill="{x:Bind Path=color, Mode=OneWay}" StrokeThickness="1" Stroke="Gray">
                         <Path.Data>
                             <EllipseGeometry Center="{x:Bind Path=center_r, Mode=OneWay}" RadiusX="5" RadiusY="5"/>
                         </Path.Data>

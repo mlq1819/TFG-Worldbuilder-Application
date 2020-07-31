@@ -50,6 +50,7 @@ namespace TFG_Worldbuilder_Application
             if(string.Equals(str, "Data"))
             {
                 RaisePropertyChanged("recolordata");
+                RaisePropertyChanged("selectdata");
             }
         }
 
@@ -58,6 +59,14 @@ namespace TFG_Worldbuilder_Application
             get
             {
                 return "Recolor " + Data;
+            }
+        }
+
+        public string selectdata
+        {
+            get
+            {
+                return "Select " + Data;
             }
         }
 

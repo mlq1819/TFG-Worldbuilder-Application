@@ -1657,7 +1657,7 @@ namespace TFG_Worldbuilder_Application
             if (ActiveJob == Job.Create)
             {
                 subtype = ((MenuFlyoutItem)sender).Text.Trim();
-                subtype = subtype.Substring(subtype.IndexOf("Recolor ") + "Recolor ".Length).Trim();
+                subtype = subtype.Substring(subtype.IndexOf("Select ") + "Select ".Length).Trim();
                 SubtypePrompt.Visibility = Visibility.Collapsed;
                 LevelStep++;
                 OpenTextPrompt("Name your " + subtype + ":");
@@ -1669,8 +1669,17 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         private void OpenColorPicker(string message)
         {
+            OpenColorPicker(message, SuperLevel.DefaultColor);
+        }
+
+        /// <summary>
+        /// Opens the color picker with the given message and to the given color
+        /// </summary>
+        private void OpenColorPicker(string message, string color)
+        {
             ColorPromptTab.Text = message;
             ColorPrompt.Visibility = Visibility.Visible;
+            ColorPrompt_ColorPicker.Color = (Windows.UI.Color) Windows.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof(Windows.UI.Color), color);
         }
 
         private void Color_Prompt_Confirm_Click(object sender, RoutedEventArgs e)
@@ -1685,11 +1694,13 @@ namespace TFG_Worldbuilder_Application
             {
                 ActiveJob = Job.Create;
                 Context.SetColor(subtype, color);
+                UpdateSaveState();
                 this.LevelStep++;
                 OpenTextPrompt("Name your " + this.subtype + ":");
             } else if (ActiveJob == Job.BasicRecolor)
             {
                 Context.SetColor(subtype, color);
+                UpdateSaveState();
                 ActiveJob = Job.None;
             }
             ColorPrompt.Visibility = Visibility.Collapsed;
@@ -1705,10 +1716,11 @@ namespace TFG_Worldbuilder_Application
         {
             if(ActiveJob == Job.Create)
             {
-                subtype = ((MenuFlyoutSubItem)(((MenuFlyoutItem)sender).Parent)).Text.Trim();
+                subtype = ((MenuFlyoutItem)sender).Text.Trim();
+                subtype = subtype.Substring(subtype.IndexOf("Recolor ") + "Recolor ".Length).Trim();
                 SubtypePrompt.Visibility = Visibility.Collapsed;
                 ActiveJob = Job.Recolor;
-                OpenColorPicker("Set the new color for all " + subtype + "s:");
+                OpenColorPicker("Set the new color for all " + subtype + "s:", Global.Subtypes.GetColor(subtype));
             }
         }
 
@@ -1716,11 +1728,10 @@ namespace TFG_Worldbuilder_Application
         {
             if(ActiveJob == Job.None)
             {
-                ActiveJob = Job.BasicRecolor;
                 subtype = ((MenuFlyoutItem)sender).Text.Trim();
                 subtype = subtype.Substring(subtype.IndexOf("Recolor ") + "Recolor ".Length).Trim();
-                ActiveJob = Job.Recolor;
-                OpenColorPicker("Set the new color for all " + subtype + "s:");
+                ActiveJob = Job.BasicRecolor;
+                OpenColorPicker("Set the new color for all " + subtype + "s:", Global.Subtypes.GetColor(subtype));
             }
         }
     }
