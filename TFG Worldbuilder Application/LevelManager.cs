@@ -966,6 +966,10 @@ namespace TFG_Worldbuilder_Application
 
         public virtual AbsolutePoint GetCenter()
         {
+            if (Level_MaxX > Level_MinX && Level_MaxY > Level_MinY)
+            {
+                return new AbsolutePoint((Level_MaxX + Level_MinX) / 2, (Level_MaxY + Level_MinY) / 2);
+            }
             return new AbsolutePoint(Global.CanvasSize.X / 2, Global.CanvasSize.Y / 2);
         }
     };
