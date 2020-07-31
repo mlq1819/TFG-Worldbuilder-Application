@@ -1207,6 +1207,28 @@ namespace TFG_Worldbuilder_Application
         }
 
         /// <summary>
+        /// Attempts to retrieve the closest available point
+        /// </summary>
+        public AbsolutePoint GetClosestPoint(AbsolutePoint point)
+        {
+            if (PointInPolygon(point))
+                return point;
+            List<AbsolutePoint> closestpoints = new List<AbsolutePoint>();
+            double distance = double.MaxValue;
+            foreach (Line2D line in edges)
+            {
+                closestpoints.Add(line.GetClosestPoint(point));
+                distance = Math.Min(distance, point.Distance(closestpoints.Last()));
+            }
+            foreach(AbsolutePoint possible in closestpoints)
+            {
+                if (double.Equals(distance, point.Distance(possible)))
+                    return possible;
+            }
+            return point;
+        }
+
+        /// <summary>
         /// Checks whether a given polygon is constrained by a polygon
         /// </summary>
         public bool PolygonInPolygon(Polygon2D polygon)
@@ -1368,7 +1390,7 @@ namespace TFG_Worldbuilder_Application
                 if (PointInPolygon(bl) && double.Equals(distance, abs_center.Distance(bl)))
                     return bl;
             }
-            return abs_center;
+            return GetClosestPoint(point);
         }
 
         /// <summary>
