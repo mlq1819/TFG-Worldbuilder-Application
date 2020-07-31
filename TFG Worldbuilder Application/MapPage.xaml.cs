@@ -1662,6 +1662,7 @@ namespace TFG_Worldbuilder_Application
                 subtype = ((MenuFlyoutItem)sender).Text.Trim();
                 SubtypePrompt.Visibility = Visibility.Collapsed;
                 LevelStep++;
+                color = Global.Subtypes.GetColor(subtype);
                 OpenTextPrompt("Name your " + subtype + ":");
                 SubtypesFlyout.Hide();
             }
