@@ -39,6 +39,28 @@ namespace TFG_Worldbuilder_Application
 
     public class StringContainer : Container<string>
     {
+        public override event PropertyChangedEventHandler PropertyChanged;
+
+        protected override void RaisePropertyChanged(string str)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(str));
+            }
+            if(string.Equals(str, "Data"))
+            {
+                RaisePropertyChanged("recolordata");
+            }
+        }
+
+        public string recolordata
+        {
+            get
+            {
+                return "Recolor " + Data;
+            }
+        }
+
         public StringContainer() : base()
         {
             ;
@@ -66,18 +88,13 @@ namespace TFG_Worldbuilder_Application
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void RaisePropertyChanged(string str)
+        public virtual event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void RaisePropertyChanged(string str)
         {
             if (PropertyChanged != null)
             {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(str));
             }
-        }
-
-        public void RaisePropertyChanged()
-        {
-            RaisePropertyChanged("Data");
         }
 
         public Container()

@@ -96,7 +96,7 @@
         <MenuFlyout x:Name="ShapesControlFlyout" x:Key="ShapesControlFlyout" Closed="ShapesControlFlyout_Closed">
             <MenuFlyoutItem Text="{x:Bind Path=Context.SelectedLevel.name, Mode=OneWay}" IsEnabled="False"/>
             <MenuFlyoutSubItem Text="{x:Bind Path=Context.SelectedLevel.subtype, Mode=OneWay}">
-                <MenuFlyoutItem Text="Recolor" Click="Recolor_Level_Subtype_Click"/>
+                <MenuFlyoutItem Text="{x:Bind Path=Context.SelectedLevel.recolorsubtype, Mode=OneWay}" Click="Recolor_Level_Subtype_Click"/>
             </MenuFlyoutSubItem>
             <MenuFlyoutItem Text="Rename" x:Name="Shapes_Control_Rename" Click="Shapes_Control_Rename_Click"/>
             <MenuFlyoutItem Text="Focus" x:Name="Shapes_Control_Focus" Click="Shapes_Control_Focus_Click"/>
@@ -115,7 +115,7 @@
         <MenuFlyout x:Name="CirclesControlFlyout" x:Key="CirclesControlFlyout" Closed="CirclesControlFlyout_Closed">
             <MenuFlyoutItem Text="{x:Bind Path=Context.SelectedLevel.name, Mode=OneWay}" IsEnabled="False"/>
             <MenuFlyoutSubItem Text="{x:Bind Path=Context.SelectedLevel.subtype, Mode=OneWay}">
-                <MenuFlyoutItem Text="Recolor" Click="Recolor_Level_Subtype_Click"/>
+                <MenuFlyoutItem Text="{x:Bind Path=Context.SelectedLevel.recolorsubtype, Mode=OneWay}" Click="Recolor_Level_Subtype_Click"/>
             </MenuFlyoutSubItem>
             <MenuFlyoutItem Text="Rename" x:Name="Circles_Control_Rename" Click="Circles_Control_Rename_Click"/>
             <MenuFlyoutItem Text="Focus" x:Name="Circles_Control_Focus" Click="Circles_Control_Focus_Click"/>
@@ -126,7 +126,7 @@
         <MenuFlyout x:Name="PointsControlFlyout" x:Key="PointsControlFlyout" Closed="PointsControlFlyout_Closed">
             <MenuFlyoutItem Text="{x:Bind Path=Context.SelectedLevel.name, Mode=OneWay}" IsEnabled="False"/>
             <MenuFlyoutSubItem Text="{x:Bind Path=Context.SelectedLevel.subtype, Mode=OneWay}">
-                <MenuFlyoutItem Text="Recolor" Click="Recolor_Level_Subtype_Click"/>
+                <MenuFlyoutItem Text="{x:Bind Path=Context.SelectedLevel.recolorsubtype, Mode=OneWay}" Click="Recolor_Level_Subtype_Click"/>
             </MenuFlyoutSubItem>
             <MenuFlyoutItem Text="Rename" x:Name="Points_Control_Rename" Click="Points_Control_Rename_Click"/>
             <MenuFlyoutItem Text="Move" x:Name="Points_Control_Move" Click="Points_Control_Move_Click"/>
@@ -143,7 +143,7 @@
                     <DataTemplate x:DataType="local:StringContainer">
                         <MenuFlyoutSubItem Text="{x:Bind Data, Mode=OneWay}" Background="#F2F2F2" Width="160">
                             <MenuFlyoutItem Text="Select" Click="Select_Subtype_Click"/>
-                            <MenuFlyoutItem Text="Recolor" Click="Recolor_Subtype_Click"/>
+                            <MenuFlyoutItem Text="{x:Bind recolordata, Mode=OneWay}" Click="Recolor_Subtype_Click"/>
                         </MenuFlyoutSubItem>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>

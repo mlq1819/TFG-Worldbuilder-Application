@@ -198,6 +198,14 @@ namespace TFG_Worldbuilder_Application
             {
                 _subtype = value;
                 RaisePropertyChanged("subtype");
+                RaisePropertyChanged("recolorsubtype");
+            }
+        }
+        public string recolorsubtype
+        {
+            get
+            {
+                return "Recolor " + subtype;
             }
         }
         private string _basecolor;
