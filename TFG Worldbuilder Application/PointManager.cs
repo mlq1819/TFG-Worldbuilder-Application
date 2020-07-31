@@ -1336,10 +1336,12 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         public AbsolutePoint GetContextualCenter()
         {
-            double minX, maxX, minY, maxY, sumX, sumY;
+            double minX, maxX, minY, maxY, sumX, sumY, medX, medY;
             minX = minY = Double.MaxValue;
             maxX = maxY = Double.MinValue;
             sumX = sumY = 0;
+            List<double> Xs = new List<double>();
+            List<double> Ys = new List<double>();
             for (int i = 0; i < vertices.Count; i++)
             {
                 minX = Math.Min(minX, vertices[i].X);
@@ -1348,8 +1350,26 @@ namespace TFG_Worldbuilder_Application
                 maxY = Math.Max(maxY, vertices[i].Y);
                 sumX += vertices[i].X;
                 sumY += vertices[i].Y;
+                Xs.Add(vertices[i].X);
+                Ys.Add(vertices[i].Y);
             }
-            AbsolutePoint abs_center = new AbsolutePoint((minX + maxX) / 2, (minY + maxY) / 2);
+            if(Xs.Count % 2 == 0)
+            {
+                medX = (Xs[(Xs.Count - 1) / 2] + Xs[Xs.Count / 2]) / 2;
+            } else
+            {
+                medX = Xs[Xs.Count / 2];
+            }
+            if (Ys.Count % 2 == 0)
+            {
+                medY = (Ys[(Ys.Count - 1) / 2] + Ys[Ys.Count / 2]) / 2;
+            }
+            else
+            {
+                medY = Ys[Ys.Count / 2];
+            }
+            //AbsolutePoint abs_center = new AbsolutePoint((minX + maxX) / 2, (minY + maxY) / 2);
+            AbsolutePoint abs_center = new AbsolutePoint(medX, medY);
             AbsolutePoint avg_center = new AbsolutePoint(sumX / vertices.Count, sumY / vertices.Count);
             if (PointInPolygon(abs_center))
                 return abs_center;
