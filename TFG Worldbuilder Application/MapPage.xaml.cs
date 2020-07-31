@@ -1645,12 +1645,14 @@ namespace TFG_Worldbuilder_Application
         {
             ActiveJob = Job.None;
             SubtypePrompt.Visibility = Visibility.Collapsed;
+            SubtypesFlyout.Hide();
         }
 
         private void Subtype_Prompt_New_Click(object sender, RoutedEventArgs e)
         {
             OpenTextPrompt("What type of " + Enum.GetName(typeof(LevelType), type) + " " + level_type_name + " are you creating?\nEnter a subtype:");
             SubtypePrompt.Visibility = Visibility.Collapsed;
+            SubtypesFlyout.Hide();
         }
 
         private void Select_Subtype_Click(object sender, RoutedEventArgs e)
@@ -1662,6 +1664,7 @@ namespace TFG_Worldbuilder_Application
                 SubtypePrompt.Visibility = Visibility.Collapsed;
                 LevelStep++;
                 OpenTextPrompt("Name your " + subtype + ":");
+                SubtypesFlyout.Hide();
             }
         }
 
@@ -1722,6 +1725,7 @@ namespace TFG_Worldbuilder_Application
                 SubtypePrompt.Visibility = Visibility.Collapsed;
                 ActiveJob = Job.Recolor;
                 OpenColorPicker("Set the new color for all " + subtype + "s:", Global.Subtypes.GetColor(subtype));
+                SubtypesFlyout.Hide();
             }
         }
 
