@@ -117,6 +117,83 @@ namespace TFG_Worldbuilder_Application
         }
     }
 
+    public class SubtypeContainer : ObservableCollection<StringContainer>
+    {
+        public SubtypeContainer() : base()
+        {
+            ;
+        }
+
+        public SubtypeContainer(ObservableCollection<StringContainer> o) : base()
+        {
+            foreach(StringContainer obj in o)
+            {
+                Add(obj);
+            }
+        }
+    }
+
+    public class Level2Subtypes : SubtypeContainer
+    {
+        public Level2Subtypes() : base()
+        {
+            ;
+        }
+
+        public Level2Subtypes(ObservableCollection<StringContainer> o) : base(o)
+        {
+            ;
+        }
+    }
+    public class Level3Subtypes : SubtypeContainer
+    {
+        public Level3Subtypes() : base()
+        {
+            ;
+        }
+
+        public Level3Subtypes(ObservableCollection<StringContainer> o) : base(o)
+        {
+            ;
+        }
+    }
+    public class Level4Subtypes : SubtypeContainer
+    {
+        public Level4Subtypes() : base()
+        {
+            ;
+        }
+
+        public Level4Subtypes(ObservableCollection<StringContainer> o) : base(o)
+        {
+            ;
+        }
+    }
+    public class Level5Subtypes : SubtypeContainer
+    {
+        public Level5Subtypes() : base()
+        {
+            ;
+        }
+
+        public Level5Subtypes(ObservableCollection<StringContainer> o) : base(o)
+        {
+            ;
+        }
+    }
+    public class Level6Subtypes : SubtypeContainer
+    {
+        public Level6Subtypes() : base()
+        {
+            ;
+        }
+
+        public Level6Subtypes(ObservableCollection<StringContainer> o) : base(o)
+        {
+            ;
+        }
+    }
+
     public class SubtypeArchive
     {
         public ObservableCollection<Tuple<int, LevelType, string, string>> subtypes;
@@ -580,214 +657,214 @@ namespace TFG_Worldbuilder_Application
             }
         }
 
-        public ObservableCollection<StringContainer> NationalLevel2
+        public Level2Subtypes NationalLevel2
         {
             get
             {
-                return Global.Subtypes.GetSubtypes(2, LevelType.National);
+                return new Level2Subtypes(Global.Subtypes.GetSubtypes(2, LevelType.National));
             }
         }
-        public ObservableCollection<StringContainer> NationalLevel3
+        public Level3Subtypes NationalLevel3
         {
             get
             {
-                return Global.Subtypes.GetSubtypes(3, LevelType.National);
+                return new Level3Subtypes(Global.Subtypes.GetSubtypes(3, LevelType.National));
             }
         }
-        public ObservableCollection<StringContainer> NationalLevel4
+        public Level4Subtypes NationalLevel4
         {
             get
             {
-                return Global.Subtypes.GetSubtypes(4, LevelType.National);
+                return new Level4Subtypes(Global.Subtypes.GetSubtypes(4, LevelType.National));
             }
         }
-        public ObservableCollection<StringContainer> NationalLevel5
+        public Level5Subtypes NationalLevel5
         {
             get
             {
-                return Global.Subtypes.GetSubtypes(5, LevelType.National);
+                return new Level5Subtypes(Global.Subtypes.GetSubtypes(5, LevelType.National));
             }
         }
-        public ObservableCollection<StringContainer> NationalLevel6
+        public Level6Subtypes NationalLevel6
         {
             get
             {
-                return Global.Subtypes.GetSubtypes(6, LevelType.National);
+                return new Level6Subtypes(Global.Subtypes.GetSubtypes(6, LevelType.National));
             }
         }
-        public ObservableCollection<StringContainer> GeographicalLevel2
+        public Level2Subtypes GeographicalLevel2
         {
             get
             {
-                return Global.Subtypes.GetSubtypes(2, LevelType.Geographical);
+                return new Level2Subtypes(Global.Subtypes.GetSubtypes(2, LevelType.Geographical));
             }
         }
-        public ObservableCollection<StringContainer> GeographicalLevel3
+        public Level3Subtypes GeographicalLevel3
         {
             get
             {
-                return Global.Subtypes.GetSubtypes(3, LevelType.Geographical);
+                return new Level3Subtypes(Global.Subtypes.GetSubtypes(3, LevelType.Geographical));
             }
         }
-        public ObservableCollection<StringContainer> GeographicalLevel4
+        public Level4Subtypes GeographicalLevel4
         {
             get
             {
-                return Global.Subtypes.GetSubtypes(4, LevelType.Geographical);
+                return new Level4Subtypes(Global.Subtypes.GetSubtypes(4, LevelType.Geographical));
             }
         }
-        public ObservableCollection<StringContainer> GeographicalLevel5
+        public Level5Subtypes GeographicalLevel5
         {
             get
             {
-                return Global.Subtypes.GetSubtypes(5, LevelType.Geographical);
+                return new Level5Subtypes(Global.Subtypes.GetSubtypes(5, LevelType.Geographical));
             }
         }
-        public ObservableCollection<StringContainer> GeographicalLevel6
+        public Level6Subtypes GeographicalLevel6
         {
             get
             {
-                return Global.Subtypes.GetSubtypes(6, LevelType.Geographical);
+                return new Level6Subtypes(Global.Subtypes.GetSubtypes(6, LevelType.Geographical));
             }
         }
-        public ObservableCollection<StringContainer> ClimateLevel2
+        public Level2Subtypes ClimateLevel2
         {
             get
             {
-                return Global.Subtypes.GetSubtypes(2, LevelType.Climate);
+                return new Level2Subtypes(Global.Subtypes.GetSubtypes(2, LevelType.Climate));
             }
         }
-        public ObservableCollection<StringContainer> ClimateLevel3
+        public Level3Subtypes ClimateLevel3
         {
             get
             {
-                return Global.Subtypes.GetSubtypes(3, LevelType.Climate);
+                return new Level3Subtypes(Global.Subtypes.GetSubtypes(3, LevelType.Climate));
             }
         }
-        public ObservableCollection<StringContainer> ClimateLevel4
+        public Level4Subtypes ClimateLevel4
         {
             get
             {
-                return Global.Subtypes.GetSubtypes(4, LevelType.Climate);
+                return new Level4Subtypes(Global.Subtypes.GetSubtypes(4, LevelType.Climate));
             }
         }
-        public ObservableCollection<StringContainer> ClimateLevel5
+        public Level5Subtypes ClimateLevel5
         {
             get
             {
-                return Global.Subtypes.GetSubtypes(5, LevelType.Climate);
+                return new Level5Subtypes(Global.Subtypes.GetSubtypes(5, LevelType.Climate));
             }
         }
-        public ObservableCollection<StringContainer> ClimateLevel6
+        public Level6Subtypes ClimateLevel6
         {
             get
             {
-                return Global.Subtypes.GetSubtypes(6, LevelType.Climate);
+                return new Level6Subtypes(Global.Subtypes.GetSubtypes(6, LevelType.Climate));
             }
         }
-        public ObservableCollection<StringContainer> FactionalLevel2
+        public Level2Subtypes FactionalLevel2
         {
             get
             {
-                return Global.Subtypes.GetSubtypes(2, LevelType.Factional);
+                return new Level2Subtypes(Global.Subtypes.GetSubtypes(2, LevelType.Factional));
             }
         }
-        public ObservableCollection<StringContainer> FactionalLevel3
+        public Level3Subtypes FactionalLevel3
         {
             get
             {
-                return Global.Subtypes.GetSubtypes(3, LevelType.Factional);
+                return new Level3Subtypes(Global.Subtypes.GetSubtypes(3, LevelType.Factional));
             }
         }
-        public ObservableCollection<StringContainer> FactionalLevel4
+        public Level4Subtypes FactionalLevel4
         {
             get
             {
-                return Global.Subtypes.GetSubtypes(4, LevelType.Factional);
+                return new Level4Subtypes(Global.Subtypes.GetSubtypes(4, LevelType.Factional));
             }
         }
-        public ObservableCollection<StringContainer> FactionalLevel5
+        public Level5Subtypes FactionalLevel5
         {
             get
             {
-                return Global.Subtypes.GetSubtypes(5, LevelType.Factional);
+                return new Level5Subtypes(Global.Subtypes.GetSubtypes(5, LevelType.Factional));
             }
         }
-        public ObservableCollection<StringContainer> FactionalLevel6
+        public Level6Subtypes FactionalLevel6
         {
             get
             {
-                return Global.Subtypes.GetSubtypes(6, LevelType.Factional);
+                return new Level6Subtypes(Global.Subtypes.GetSubtypes(6, LevelType.Factional));
             }
         }
-        public ObservableCollection<StringContainer> CulturalLevel2
+        public Level2Subtypes CulturalLevel2
         {
             get
             {
-                return Global.Subtypes.GetSubtypes(2, LevelType.Cultural);
+                return new Level2Subtypes(Global.Subtypes.GetSubtypes(2, LevelType.Cultural));
             }
         }
-        public ObservableCollection<StringContainer> CulturalLevel3
+        public Level3Subtypes CulturalLevel3
         {
             get
             {
-                return Global.Subtypes.GetSubtypes(3, LevelType.Cultural);
+                return new Level3Subtypes(Global.Subtypes.GetSubtypes(3, LevelType.Cultural));
             }
         }
-        public ObservableCollection<StringContainer> CulturalLevel4
+        public Level4Subtypes CulturalLevel4
         {
             get
             {
-                return Global.Subtypes.GetSubtypes(4, LevelType.Cultural);
+                return new Level4Subtypes(Global.Subtypes.GetSubtypes(4, LevelType.Cultural));
             }
         }
-        public ObservableCollection<StringContainer> CulturalLevel5
+        public Level5Subtypes CulturalLevel5
         {
             get
             {
-                return Global.Subtypes.GetSubtypes(5, LevelType.Cultural);
+                return new Level5Subtypes(Global.Subtypes.GetSubtypes(5, LevelType.Cultural));
             }
         }
-        public ObservableCollection<StringContainer> CulturalLevel6
+        public Level6Subtypes CulturalLevel6
         {
             get
             {
-                return Global.Subtypes.GetSubtypes(6, LevelType.Cultural);
+                return new Level6Subtypes(Global.Subtypes.GetSubtypes(6, LevelType.Cultural));
             }
         }
-        public ObservableCollection<StringContainer> BiologicalLevel2
+        public Level2Subtypes BiologicalLevel2
         {
             get
             {
-                return Global.Subtypes.GetSubtypes(2, LevelType.Biological);
+                return new Level2Subtypes(Global.Subtypes.GetSubtypes(2, LevelType.Biological));
             }
         }
-        public ObservableCollection<StringContainer> BiologicalLevel3
+        public Level3Subtypes BiologicalLevel3
         {
             get
             {
-                return Global.Subtypes.GetSubtypes(3, LevelType.Biological);
+                return new Level3Subtypes(Global.Subtypes.GetSubtypes(3, LevelType.Biological));
             }
         }
-        public ObservableCollection<StringContainer> BiologicalLevel4
+        public Level4Subtypes BiologicalLevel4
         {
             get
             {
-                return Global.Subtypes.GetSubtypes(4, LevelType.Biological);
+                return new Level4Subtypes(Global.Subtypes.GetSubtypes(4, LevelType.Biological));
             }
         }
-        public ObservableCollection<StringContainer> BiologicalLevel5
+        public Level5Subtypes BiologicalLevel5
         {
             get
             {
-                return Global.Subtypes.GetSubtypes(5, LevelType.Biological);
+                return new Level5Subtypes(Global.Subtypes.GetSubtypes(5, LevelType.Biological));
             }
         }
-        public ObservableCollection<StringContainer> BiologicalLevel6
+        public Level6Subtypes BiologicalLevel6
         {
             get
             {
-                return Global.Subtypes.GetSubtypes(6, LevelType.Biological);
+                return new Level6Subtypes(Global.Subtypes.GetSubtypes(6, LevelType.Biological));
             }
         }
 
