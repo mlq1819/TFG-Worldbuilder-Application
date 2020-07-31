@@ -46,7 +46,8 @@ namespace TFG_Worldbuilder_Application
             Open = 12,
             Resize = 13,
             MoveLevel = 14,
-            Recolor = 15
+            Recolor = 15,
+            BasicRecolor = 16
         }
 
         private Canvas _mapcanvas;
@@ -1673,21 +1674,24 @@ namespace TFG_Worldbuilder_Application
 
         private void Color_Prompt_Confirm_Click(object sender, RoutedEventArgs e)
         {
-            if(ActiveJob == Job.Create)
+            color = ColorPrompt_ColorPicker.Color.ToString();
+            if (ActiveJob == Job.Create)
             {
-                color = ColorPrompt_ColorPicker.Color.ToString();
-                ColorPrompt.Visibility = Visibility.Collapsed;
                 this.LevelStep++;
                 Global.Subtypes.Add(new Tuple<int, LevelType, string, string>(3, type, subtype, color));
                 OpenTextPrompt("Name your " + this.subtype + ":");
             } else if (ActiveJob == Job.Recolor)
             {
                 ActiveJob = Job.Create;
-                color = ColorPrompt_ColorPicker.Color.ToString();
                 Context.SetColor(subtype, color);
                 this.LevelStep++;
                 OpenTextPrompt("Name your " + this.subtype + ":");
+            } else if (ActiveJob == Job.BasicRecolor)
+            {
+                Context.SetColor(subtype, color);
+                ActiveJob = Job.None;
             }
+            ColorPrompt.Visibility = Visibility.Collapsed;
         }
 
         private void Color_Prompt_Cancel_Click(object sender, RoutedEventArgs e)
@@ -1702,6 +1706,17 @@ namespace TFG_Worldbuilder_Application
             {
                 subtype = ((MenuFlyoutSubItem)(((MenuFlyoutItem)sender).Parent)).Text.Trim();
                 SubtypePrompt.Visibility = Visibility.Collapsed;
+                ActiveJob = Job.Recolor;
+                OpenColorPicker("Set the new color for all " + subtype + "s:");
+            }
+        }
+
+        private void Recolor_Level_Subtype_Click(object sender, RoutedEventArgs e)
+        {
+            if(ActiveJob == Job.None)
+            {
+                ActiveJob = Job.BasicRecolor;
+                subtype = ((MenuFlyoutSubItem)(((MenuFlyoutItem)sender).Parent)).Text.Trim();
                 ActiveJob = Job.Recolor;
                 OpenColorPicker("Set the new color for all " + subtype + "s:");
             }
