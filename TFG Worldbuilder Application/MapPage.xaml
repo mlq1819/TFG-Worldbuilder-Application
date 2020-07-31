@@ -330,6 +330,22 @@
                 </Grid>
             </Grid>
         </Grid>
+        <Grid x:Name="ColorPrompt" HorizontalAlignment="Center" VerticalAlignment="Top" Width="Auto" Height="Auto" Visibility="Collapsed">
+            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="50">
+                <Rectangle Fill="#FFF4F4F5" HorizontalAlignment="Stretch" Margin="0,0,0,0" Stroke="Black" VerticalAlignment="Stretch"/>
+                <TextBlock x:Name="ColorPromptTab" Text="Name Me!" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" Margin="10,5,10,5"/>
+            </Grid>
+            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,50,0,0">
+                <Rectangle Fill="#FFFFFFFF" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Stroke="Black"/>
+                <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="10,10,10,60">
+                    <ColorPicker x:Name="ColorPrompt_ColorPicker"/>
+                </Grid>
+                <Grid HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Height="50" Margin="10">
+                    <Button x:Name="Color_Prompt_Cancel" Content="Cancel" HorizontalAlignment="Left" VerticalAlignment="Center" Width="100" Click="Color_Prompt_Cancel_Click"/>
+                    <Button x:Name="Color_Prompt_Confirm" Content="New" HorizontalAlignment="Right" VerticalAlignment="Center" Width="100" Click="Color_Prompt_Confirm_Click"/>
+                </Grid>
+            </Grid>
+        </Grid>
         <Grid HorizontalAlignment="Center" x:Name="UnsavedWorkAlert" Visibility="Collapsed" Height="100" Width="300" Margin="100,100,100,100" VerticalAlignment="Top">
             <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="50">
                 <Rectangle Fill="#FFF4F4F5" HorizontalAlignment="Stretch" Margin="0,0,0,0" Stroke="Black" VerticalAlignment="Stretch"/>

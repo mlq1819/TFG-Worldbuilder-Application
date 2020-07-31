@@ -75,6 +75,28 @@ namespace TFG_Worldbuilder_Application
         private int LevelStep = 0;
         private string name = "";
         private string label = "";
+        private string level_type_name
+        {
+            get
+            {
+                switch (LevelNum)
+                {
+                    case 1:
+                        return "world";
+                    case 2:
+                        return "greater region";
+                    case 3:
+                        return "region";
+                    case 4:
+                        return "subregion";
+                    case 5:
+                        return "location";
+                    case 6:
+                        return "structure";
+                }
+                return "<UNDEFINED>";
+            }
+        }
         private string color = SuperLevel.DefaultColor;
         private Polygon2D vertices = new Polygon2D();
         private LevelType type
@@ -387,9 +409,7 @@ namespace TFG_Worldbuilder_Application
                             } else
                             {
                                 this.subtype = prompt_text;
-                                this.LevelStep++;
-                                Global.Subtypes.Add(new Tuple<int, LevelType, string, string>(3, type, subtype, color));
-                                OpenTextPrompt("Name your " + this.subtype + ":");
+                                OpenColorPicker("Pick a color to represent " + subtype + "s:");
                             }
                             break;
                         case 3:
@@ -1240,27 +1260,6 @@ namespace TFG_Worldbuilder_Application
                             center = vertices[0];
                         TapPrompt.Visibility = Visibility.Collapsed;
                         LevelStep++;
-                        string level_type_name = "<UNDEFINED>";
-                        switch (LevelNum)
-                        {
-                            case 2:
-                                level_type_name = "greater region";
-                                break;
-                            case 3:
-                                level_type_name = "region";
-                                break;
-                            case 4:
-                                level_type_name = "subregion";
-                                break;
-                            case 5:
-                                level_type_name = "location";
-                                break;
-                            case 6:
-                                level_type_name = "structure";
-                                break;
-                            default:
-                                break;
-                        }
                         if(LevelNum >= 2 && LevelNum <= 6)
                         {
                             ActiveJob = Job.Create;
@@ -1631,6 +1630,9 @@ namespace TFG_Worldbuilder_Application
             TypePrompt.Visibility = Visibility.Collapsed;
         }
 
+        /// <summary>
+        /// Opens the subtype prompt with the given message
+        /// </summary>
         private void OpenSubtypePrompt(string message)
         {
             SubtypePromptTab.Text = message;
@@ -1645,9 +1647,7 @@ namespace TFG_Worldbuilder_Application
 
         private void Subtype_Prompt_New_Click(object sender, RoutedEventArgs e)
         {
-
-
-            //"What type of " + Enum.GetName(typeof(LevelType), type) + " " + level_type_name + " are you creating?\nEnter a subtype:"
+            OpenTextPrompt("What type of " + Enum.GetName(typeof(LevelType), type) + " " + level_type_name + " are you creating?\nEnter a subtype:");
         }
 
         private void Select_Subtype_Click(object sender, RoutedEventArgs e)
@@ -1658,6 +1658,33 @@ namespace TFG_Worldbuilder_Application
                 LevelStep++;
                 OpenTextPrompt("Name your " + subtype + ":");
             }
+        }
+
+        /// <summary>
+        /// Opens the color picker with the given message
+        /// </summary>
+        private void OpenColorPicker(string message)
+        {
+            ColorPromptTab.Text = message;
+            ColorPrompt.Visibility = Visibility.Visible;
+        }
+
+        private void Color_Prompt_Confirm_Click(object sender, RoutedEventArgs e)
+        {
+            if(ActiveJob == Job.Create)
+            {
+                color = ColorPrompt_ColorPicker.Color.ToString();
+                ColorPrompt.Visibility = Visibility.Collapsed;
+                this.LevelStep++;
+                Global.Subtypes.Add(new Tuple<int, LevelType, string, string>(3, type, subtype, color));
+                OpenTextPrompt("Name your " + this.subtype + ":");
+            }
+        }
+
+        private void Color_Prompt_Cancel_Click(object sender, RoutedEventArgs e)
+        {
+            ActiveJob = Job.None;
+            ColorPrompt.Visibility = Visibility.Collapsed;
         }
     }
 }
