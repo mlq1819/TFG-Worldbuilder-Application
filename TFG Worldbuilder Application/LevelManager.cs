@@ -209,7 +209,20 @@ namespace TFG_Worldbuilder_Application
             }
             set
             {
-                _basecolor = value;
+                if (!string.Equals(_basecolor, SuperLevel.DefaultColor))
+                {
+                    _basecolor = value;
+                } else
+                {
+                    string newcolor = Global.Subtypes.GetColor(subtype);
+                    if(!string.Equals(newcolor, SuperLevel.DefaultColor))
+                    {
+                        _basecolor = newcolor;
+                    } else
+                    {
+                        _basecolor = value;
+                    }
+                }
                 RaisePropertyChanged("basecolor");
             }
         }
@@ -449,6 +462,8 @@ namespace TFG_Worldbuilder_Application
                 }
                 catch (InvalidCastException) { }
             }
+            if(!string.Equals(basecolor, SuperLevel.DefaultColor))
+                Text += "Level Color" + inner_delimiter + basecolor + outer_delimiter;
             //Now done with the special properties of each level
             for (int i = 0; i < leveldata.Count; i++) //Add the leveldata
             {

@@ -1611,5 +1611,14 @@ namespace TFG_Worldbuilder_Application
             TypePrompt.Visibility = Visibility.Collapsed;
         }
 
+        private void Subtype_Prompt_Cancel_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Subtype_Prompt_New_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

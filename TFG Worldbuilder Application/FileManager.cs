@@ -122,6 +122,7 @@ namespace TFG_Worldbuilder_Application
             Keywords.Add("Border Vertex");
             Keywords.Add("Center");
             Keywords.Add("Radius");
+            Keywords.Add("Level Color");
             Keywords.Add("End Level");
             Keywords.Add("Level Type");
             Keywords.Add("Level Subtype");
@@ -694,6 +695,37 @@ namespace TFG_Worldbuilder_Application
             }
             return text;
         }
+
+        /// <summary>
+        /// Given text, gets the Color within the text and returns a ParseContainer holding it
+        /// </summary>
+        private ParseContainer<string> ParseColor(ParseContainer<string> text)
+        {
+            string ActiveText = text.ActiveText;
+            int length = Math.Max(text.length, 0);
+            int index = Math.Max(text.index, 0);
+            string line = "";
+            while (index < ActiveText.Length - 1)
+            {
+                length = Math.Max(ActiveText.Substring(index).IndexOf(outer_delimiter), 0);
+                if (length <= 0)
+                {
+                    length = Math.Max(0, ActiveText.Substring(index).Length);
+                }
+                line = ActiveText.Substring(index, length).Trim();
+                if (line.IndexOf("Level Color") == 0)
+                {
+                    line = line.Substring("Level Color".Length + 1).Trim();
+                    text = new ParseContainer<string>(length, index + length + 1, ActiveText, line);
+                }
+                else if (line.IndexOf("Start Level") == 0)
+                {
+                    return text;
+                }
+                index += length + 1;
+            }
+            return text;
+        }
         
         /// <summary>
         /// Parses the text passed from GetDirectories to produce level objects; should not include the start and end lines for the level, and the level number should be passed as well
@@ -704,6 +736,7 @@ namespace TFG_Worldbuilder_Application
             LevelType level_type = LevelType.Invalid;
             string level_subtype = "";
             string line = "";
+            string color = "";
             Polygon2D border = null;
             AbsolutePoint center = null;
             double radius = 0;
@@ -797,6 +830,17 @@ namespace TFG_Worldbuilder_Application
                     radius = 0;
                 }
             }
+            if (continue_parse)
+            {
+                ParseContainer<string> container = new ParseContainer<string>(length, index, ActiveText, null);
+                container = ParseColor(container);
+                if(container.Valid && container.Data.Length > 0)
+                {
+                    color = container.Data;
+                    length = container.length;
+                    index = container.index;
+                }
+            }
             if (!continue_parse)
                 return null;
             switch (level_num) //Level constructor
@@ -840,7 +884,12 @@ namespace TFG_Worldbuilder_Application
                 default:
                     return null;
             }
+           if(color.Length > 0)
+            {
+                level.basecolor = color;
+            }
             
+
             //Main loop; processes sublevels and other level data
             while (continue_parse && index < ActiveText.Length - 1)
             {
