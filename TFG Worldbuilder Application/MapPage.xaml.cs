@@ -1120,7 +1120,7 @@ namespace TFG_Worldbuilder_Application
                 }
                 if (Context.ActiveLevel != null)
                 {
-                    if (Context.ActiveLevel.CanFitPoint(point) && !Context.Conflicts(point, LevelNum) && (Context.SelectedLevel == null || Context.SelectedLevel.CanFitPoint(point)))
+                    if (Context.ActiveLevel.CanFitPoint(point) && !Context.Conflicts(point, LevelNum, type) && (Context.SelectedLevel == null || Context.SelectedLevel.CanFitPoint(point)))
                     {
                         if(ActiveJob == Job.CreatePolygon || vertices.Count == 0)
                         {
@@ -1133,7 +1133,7 @@ namespace TFG_Worldbuilder_Application
                         }
                         Context.RaisePropertyChanged("ExtraPoints");
                     }
-                    else if(Context.Conflicts(point, LevelNum))
+                    else if(Context.Conflicts(point, LevelNum, type))
                     {
                         OpenPopupAlert("Point " + point.ToString() + " within an existing object");
                     }

@@ -1050,13 +1050,13 @@ namespace TFG_Worldbuilder_Application
         }
 
         /// <summary>
-        /// Checks whether a given point fits within any existing sublevels of the activelevel
+        /// Checks whether a given point fits within any existing sublevels of the activelevel of the same general type
         /// </summary>
         /// <param name="point">The point to check against</param>
         /// <param name="levelnum">The current level number to check for</param>
         /// <param name="activelevel">The activelevel to check the sublevels of</param>
         /// <returns></returns>
-        private static bool Conflicts(AbsolutePoint point, int levelnum, SuperLevel activelevel)
+        private static bool Conflicts(AbsolutePoint point, int levelnum, LevelType leveltype, SuperLevel activelevel)
         {
             if (levelnum > 1 && levelnum < 6 && activelevel != null)
             {
@@ -1067,7 +1067,7 @@ namespace TFG_Worldbuilder_Application
                 }
                 for (int i = 0; i < activelevel.sublevels.Count; i++)
                 {
-                    if (activelevel.sublevels[i].level == levelnum)
+                    if (activelevel.sublevels[i].level == levelnum && activelevel.sublevels[i].leveltype == leveltype)
                     {
                         try
                         {
@@ -1101,9 +1101,9 @@ namespace TFG_Worldbuilder_Application
         /// <param name="point">The point to check against</param>
         /// <param name="levelnum">The current level number to check for</param>
         /// <returns></returns>
-        public bool Conflicts(AbsolutePoint point, int levelnum)
+        public bool Conflicts(AbsolutePoint point, int levelnum, LevelType leveltype)
         {
-            return Conflicts(point, levelnum, ActiveLevel);
+            return Conflicts(point, levelnum, leveltype, ActiveLevel);
         }
 
         /// <summary>
