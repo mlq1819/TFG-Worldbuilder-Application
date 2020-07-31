@@ -24,12 +24,12 @@
         </MenuFlyout>
         <Flyout x:Name= "ViewMenu" x:Key="ViewMenu">
             <StackPanel>
-                <local:ViewMenuControl SubMenuName="National" Level2="{x:Bind Context.NationalLevel2, Mode=OneWay}" Level3="{x:Bind Context.NationalLevel3, Mode=OneWay}" Level4="{x:Bind Context.NationalLevel4, Mode=OneWay}" Level5="{x:Bind Context.NationalLevel5, Mode=OneWay}" Level6="{x:Bind Context.NationalLevel6, Mode=OneWay}"/>
-                <local:ViewMenuControl SubMenuName="Geographical" Level2="{x:Bind Context.GeographicalLevel2, Mode=OneWay}" Level3="{x:Bind Context.GeographicalLevel3, Mode=OneWay}" Level4="{x:Bind Context.GeographicalLevel4, Mode=OneWay}" Level5="{x:Bind Context.GeographicalLevel5, Mode=OneWay}" Level6="{x:Bind Context.GeographicalLevel6, Mode=OneWay}"/>
-                <local:ViewMenuControl SubMenuName="Climate" Level2="{x:Bind Context.ClimateLevel2, Mode=OneWay}" Level3="{x:Bind Context.ClimateLevel3, Mode=OneWay}" Level4="{x:Bind Context.ClimateLevel4, Mode=OneWay}" Level5="{x:Bind Context.ClimateLevel5, Mode=OneWay}" Level6="{x:Bind Context.ClimateLevel6, Mode=OneWay}"/>
-                <local:ViewMenuControl SubMenuName="Factional" Level2="{x:Bind Context.FactionalLevel2, Mode=OneWay}" Level3="{x:Bind Context.FactionalLevel3, Mode=OneWay}" Level4="{x:Bind Context.FactionalLevel4, Mode=OneWay}" Level5="{x:Bind Context.FactionalLevel5, Mode=OneWay}" Level6="{x:Bind Context.FactionalLevel6, Mode=OneWay}"/>
-                <local:ViewMenuControl SubMenuName="Cultural" Level2="{x:Bind Context.CulturalLevel2, Mode=OneWay}" Level3="{x:Bind Context.CulturalLevel3, Mode=OneWay}" Level4="{x:Bind Context.CulturalLevel4, Mode=OneWay}" Level5="{x:Bind Context.CulturalLevel5, Mode=OneWay}" Level6="{x:Bind Context.CulturalLevel6, Mode=OneWay}"/>
-                <local:ViewMenuControl SubMenuName="Biological" Level2="{x:Bind Context.BiologicalLevel2, Mode=OneWay}" Level3="{x:Bind Context.BiologicalLevel3, Mode=OneWay}" Level4="{x:Bind Context.BiologicalLevel4, Mode=OneWay}" Level5="{x:Bind Context.BiologicalLevel5, Mode=OneWay}" Level6="{x:Bind Context.BiologicalLevel6, Mode=OneWay}"/>
+                <local:ViewMenuControl SubMenuName="National" Levels="{x:Bind Context.NationalLevels, Mode=OneWay}"/>
+                <local:ViewMenuControl SubMenuName="Geographical" Levels="{x:Bind Context.GeographicalLevels, Mode=OneWay}"/>
+                <local:ViewMenuControl SubMenuName="Climate" Levels="{x:Bind Context.ClimateLevels, Mode=OneWay}"/>
+                <local:ViewMenuControl SubMenuName="Factional" Levels="{x:Bind Context.FactionalLevels, Mode=OneWay}"/>
+                <local:ViewMenuControl SubMenuName="Cultural" Levels="{x:Bind Context.CulturalLevels, Mode=OneWay}"/>
+                <local:ViewMenuControl SubMenuName="Biological" Levels="{x:Bind Context.BiologicalLevels, Mode=OneWay}"/>
             </StackPanel>
         </Flyout>
         <MenuFlyout x:Name="CreateMenu" x:Key="CreateMenu" Closed="CreateMenu_Closed">

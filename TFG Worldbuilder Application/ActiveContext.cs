@@ -11,6 +11,7 @@ using Windows.ApplicationModel.Contacts;
 using Windows.UI.Xaml.Shapes;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.Devices.Perception;
+using Windows.Storage.Streams;
 
 namespace TFG_Worldbuilder_Application
 {
@@ -114,6 +115,122 @@ namespace TFG_Worldbuilder_Application
         public Container(T data)
         {
             this.Data = data;
+        }
+    }
+
+    public class SubtypesContainer : INotifyPropertyChanged
+    {
+        public event PropertyChangedEventHandler PropertyChanged;
+        public void RaisePropertyChanged(string str)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(str));
+                if(!string.Equals(str, "Count") && !string.Equals(str, "Enabled"))
+                {
+                    RaisePropertyChanged("Count");
+                    RaisePropertyChanged("Enabled");
+                }
+            }
+        }
+
+        private Level2Subtypes _level2 = null;
+        public Level2Subtypes Level2
+        {
+            get
+            {
+                return _level2;
+            }
+            set
+            {
+                _level2 = value;
+                RaisePropertyChanged("Level2");
+            }
+        }
+        private Level3Subtypes _level3 = null;
+        public Level3Subtypes Level3
+        {
+            get
+            {
+                return _level3;
+            }
+            set
+            {
+                _level3 = value;
+                RaisePropertyChanged("Level3");
+            }
+        }
+        private Level4Subtypes _level4 = null;
+        public Level4Subtypes Level4
+        {
+            get
+            {
+                return _level4;
+            }
+            set
+            {
+                _level4 = value;
+                RaisePropertyChanged("Level4");
+            }
+        }
+        private Level5Subtypes _level5 = null;
+        public Level5Subtypes Level5
+        {
+            get
+            {
+                return _level5;
+            }
+            set
+            {
+                _level5 = value;
+                RaisePropertyChanged("Level5");
+            }
+        }
+        private Level6Subtypes _level6 = null;
+        public Level6Subtypes Level6
+        {
+            get
+            {
+                return _level6;
+            }
+            set
+            {
+                _level6 = value;
+                RaisePropertyChanged("Level6");
+            }
+        }
+
+        public int Count
+        {
+            get
+            {
+                int output = 0;
+                if (Level2 != null)
+                    output += Level2.Count;
+                if (Level3 != null)
+                    output += Level3.Count;
+                if (Level4 != null)
+                    output += Level4.Count;
+                if (Level5 != null)
+                    output += Level5.Count;
+                if (Level6 != null)
+                    output += Level6.Count;
+                return output;
+            }
+        }
+        public string Enabled
+        {
+            get
+            {
+                if (Count > 0)
+                    return "Visible";
+                return "Collapsed";
+            }
+        }
+
+        public SubtypesContainer()
+        {
+
         }
     }
 
@@ -667,6 +784,84 @@ namespace TFG_Worldbuilder_Application
             }
         }
 
+        public SubtypesContainer NationalLevels
+        {
+            get
+            {
+                SubtypesContainer output = new SubtypesContainer();
+                output.Level2 = NationalLevel2;
+                output.Level3 = NationalLevel3;
+                output.Level4 = NationalLevel4;
+                output.Level5 = NationalLevel5;
+                output.Level6 = NationalLevel6;
+                return output;
+            }
+        }
+        public SubtypesContainer GeographicalLevels
+        {
+            get
+            {
+                SubtypesContainer output = new SubtypesContainer();
+                output.Level2 = GeographicalLevel2;
+                output.Level3 = GeographicalLevel3;
+                output.Level4 = GeographicalLevel4;
+                output.Level5 = GeographicalLevel5;
+                output.Level6 = GeographicalLevel6;
+                return output;
+            }
+        }
+        public SubtypesContainer ClimateLevels
+        {
+            get
+            {
+                SubtypesContainer output = new SubtypesContainer();
+                output.Level2 = ClimateLevel2;
+                output.Level3 = ClimateLevel3;
+                output.Level4 = ClimateLevel4;
+                output.Level5 = ClimateLevel5;
+                output.Level6 = ClimateLevel6;
+                return output;
+            }
+        }
+        public SubtypesContainer FactionalLevels
+        {
+            get
+            {
+                SubtypesContainer output = new SubtypesContainer();
+                output.Level2 = FactionalLevel2;
+                output.Level3 = FactionalLevel3;
+                output.Level4 = FactionalLevel4;
+                output.Level5 = FactionalLevel5;
+                output.Level6 = FactionalLevel6;
+                return output;
+            }
+        }
+        public SubtypesContainer CulturalLevels
+        {
+            get
+            {
+                SubtypesContainer output = new SubtypesContainer();
+                output.Level2 = CulturalLevel2;
+                output.Level3 = CulturalLevel3;
+                output.Level4 = CulturalLevel4;
+                output.Level5 = CulturalLevel5;
+                output.Level6 = CulturalLevel6;
+                return output;
+            }
+        }
+        public SubtypesContainer BiologicalLevels
+        {
+            get
+            {
+                SubtypesContainer output = new SubtypesContainer();
+                output.Level2 = BiologicalLevel2;
+                output.Level3 = BiologicalLevel3;
+                output.Level4 = BiologicalLevel4;
+                output.Level5 = BiologicalLevel5;
+                output.Level6 = BiologicalLevel6;
+                return output;
+            }
+        }
         public Level2Subtypes NationalLevel2
         {
             get
@@ -1141,22 +1336,27 @@ namespace TFG_Worldbuilder_Application
                     {
                         case 2:
                             RaisePropertyChanged("NationalLevel2");
+                            RaisePropertyChanged("NationalLevels");
                             return true;
                             break;
                         case 3:
                             RaisePropertyChanged("NationalLevel3");
+                            RaisePropertyChanged("NationalLevels");
                             return true;
                             break;
                         case 4:
                             RaisePropertyChanged("NationalLevel4");
+                            RaisePropertyChanged("NationalLevels");
                             return true;
                             break;
                         case 5:
                             RaisePropertyChanged("NationalLevel5");
+                            RaisePropertyChanged("NationalLevels");
                             return true;
                             break;
                         case 6:
                             RaisePropertyChanged("NationalLevel6");
+                            RaisePropertyChanged("NationalLevels");
                             return true;
                             break;
                     }
@@ -1166,22 +1366,27 @@ namespace TFG_Worldbuilder_Application
                     {
                         case 2:
                             RaisePropertyChanged("GeographicalLevel2");
+                            RaisePropertyChanged("GeographicalLevels");
                             return true;
                             break;
                         case 3:
                             RaisePropertyChanged("GeographicalLevel3");
+                            RaisePropertyChanged("GeographicalLevels");
                             return true;
                             break;
                         case 4:
                             RaisePropertyChanged("GeographicalLevel4");
+                            RaisePropertyChanged("GeographicalLevels");
                             return true;
                             break;
                         case 5:
                             RaisePropertyChanged("GeographicalLevel5");
+                            RaisePropertyChanged("GeographicalLevels");
                             return true;
                             break;
                         case 6:
                             RaisePropertyChanged("GeographicalLevel6");
+                            RaisePropertyChanged("GeographicalLevels");
                             return true;
                             break;
                     }
@@ -1191,22 +1396,27 @@ namespace TFG_Worldbuilder_Application
                     {
                         case 2:
                             RaisePropertyChanged("ClimateLevel2");
+                            RaisePropertyChanged("ClimateLevels");
                             return true;
                             break;
                         case 3:
                             RaisePropertyChanged("ClimateLevel3");
+                            RaisePropertyChanged("ClimateLevels");
                             return true;
                             break;
                         case 4:
                             RaisePropertyChanged("ClimateLevel4");
+                            RaisePropertyChanged("ClimateLevels");
                             return true;
                             break;
                         case 5:
                             RaisePropertyChanged("ClimateLevel5");
+                            RaisePropertyChanged("ClimateLevels");
                             return true;
                             break;
                         case 6:
                             RaisePropertyChanged("ClimateLevel6");
+                            RaisePropertyChanged("ClimateLevels");
                             return true;
                             break;
                     }
@@ -1216,22 +1426,27 @@ namespace TFG_Worldbuilder_Application
                     {
                         case 2:
                             RaisePropertyChanged("FactionalLevel2");
+                            RaisePropertyChanged("FactionalLevels");
                             return true;
                             break;
                         case 3:
                             RaisePropertyChanged("FactionalLevel3");
+                            RaisePropertyChanged("FactionalLevels");
                             return true;
                             break;
                         case 4:
                             RaisePropertyChanged("FactionalLevel4");
+                            RaisePropertyChanged("FactionalLevels");
                             return true;
                             break;
                         case 5:
                             RaisePropertyChanged("FactionalLevel5");
+                            RaisePropertyChanged("FactionalLevels");
                             return true;
                             break;
                         case 6:
                             RaisePropertyChanged("FactionalLevel6");
+                            RaisePropertyChanged("FactionalLevels");
                             return true;
                             break;
                     }
@@ -1241,22 +1456,27 @@ namespace TFG_Worldbuilder_Application
                     {
                         case 2:
                             RaisePropertyChanged("CulturalLevel2");
+                            RaisePropertyChanged("CulturalLevels");
                             return true;
                             break;
                         case 3:
                             RaisePropertyChanged("CulturalLevel3");
+                            RaisePropertyChanged("CulturalLevels");
                             return true;
                             break;
                         case 4:
                             RaisePropertyChanged("CulturalLevel4");
+                            RaisePropertyChanged("CulturalLevels");
                             return true;
                             break;
                         case 5:
                             RaisePropertyChanged("CulturalLevel5");
+                            RaisePropertyChanged("CulturalLevels");
                             return true;
                             break;
                         case 6:
                             RaisePropertyChanged("CulturalLevel6");
+                            RaisePropertyChanged("CulturalLevels");
                             return true;
                             break;
                     }
@@ -1266,22 +1486,27 @@ namespace TFG_Worldbuilder_Application
                     {
                         case 2:
                             RaisePropertyChanged("BiologicalLevel2");
+                            RaisePropertyChanged("BiologicalLevels");
                             return true;
                             break;
                         case 3:
                             RaisePropertyChanged("BiologicalLevel3");
+                            RaisePropertyChanged("BiologicalLevels");
                             return true;
                             break;
                         case 4:
                             RaisePropertyChanged("BiologicalLevel4");
+                            RaisePropertyChanged("BiologicalLevels");
                             return true;
                             break;
                         case 5:
                             RaisePropertyChanged("BiologicalLevel5");
+                            RaisePropertyChanged("BiologicalLevels");
                             return true;
                             break;
                         case 6:
                             RaisePropertyChanged("BiologicalLevel6");
+                            RaisePropertyChanged("BiologicalLevels");
                             return true;
                             break;
                     }

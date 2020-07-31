@@ -60,6 +60,6 @@
         </Flyout>
     </UserControl.Resources>
 
-    <Button Width="160" Height="40" Background="#F2F2F2" VerticalAlignment="Center" HorizontalAlignment="Center" Content="{Binding SubMenuName, ElementName=ThisViewMenuControl}" Flyout="{StaticResource TypedFlyout}" IsEnabled="{Binding Enabled, ElementName=ThisViewMenuControl}"/>
+    <Button Width="160" Height="40" Background="#F2F2F2" VerticalAlignment="Center" HorizontalAlignment="Center" Content="{Binding SubMenuName, ElementName=ThisViewMenuControl}" Flyout="{StaticResource TypedFlyout}" IsEnabled="{Binding Levels.Enabled, ElementName=ThisViewMenuControl}"/>
 
 </UserControl>
