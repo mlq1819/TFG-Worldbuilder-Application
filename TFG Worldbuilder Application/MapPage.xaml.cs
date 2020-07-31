@@ -61,13 +61,33 @@ namespace TFG_Worldbuilder_Application
                 Global.RenderCanvas = value;
             }
         }
-        private int LevelNum = 0;
+        private int LevelNum
+        {
+            get
+            {
+                return Context.WorkingLevelnum;
+            }
+            set
+            {
+                Context.WorkingLevelnum = value;
+            }
+        }
         private int LevelStep = 0;
         private string name = "";
         private string label = "";
         private string color = SuperLevel.DefaultColor;
         private Polygon2D vertices = new Polygon2D();
-        private LevelType type = LevelType.Invalid;
+        private LevelType type
+        {
+            get
+            {
+                return Context.WorkingType;
+            }
+            set
+            {
+                Context.WorkingType = type;
+            }
+        }
         private string subtype = "";
         private AbsolutePoint center = null;
         private double radius = -1;
@@ -489,7 +509,7 @@ namespace TFG_Worldbuilder_Application
             LevelStep = 2;
             type = LevelType.World;
             ActiveJob = Job.Create;
-            OpenTextPrompt("What type of world are you creating?\nEnter a subtype:");
+            OpenSubtypePrompt("What type of world are you creating?\nSelect a subtype:");
         }
 
         /// <summary>
@@ -1244,7 +1264,7 @@ namespace TFG_Worldbuilder_Application
                         if(LevelNum >= 2 && LevelNum <= 6)
                         {
                             ActiveJob = Job.Create;
-                            OpenTextPrompt("What type of " + Enum.GetName(typeof(LevelType), type) + " " + level_type_name + " are you creating?\nEnter a subtype:");
+                            OpenSubtypePrompt("What type of " + Enum.GetName(typeof(LevelType), type) + " " + level_type_name + " are you creating?\nSelect a subtype:");
                         }
                     }
                 }
@@ -1611,14 +1631,33 @@ namespace TFG_Worldbuilder_Application
             TypePrompt.Visibility = Visibility.Collapsed;
         }
 
+        private void OpenSubtypePrompt(string message)
+        {
+            SubtypePromptTab.Text = message;
+            SubtypePrompt.Visibility = Visibility.Visible;
+        }
+
         private void Subtype_Prompt_Cancel_Click(object sender, RoutedEventArgs e)
         {
-
+            ActiveJob = Job.None;
+            SubtypePrompt.Visibility = Visibility.Collapsed;
         }
 
         private void Subtype_Prompt_New_Click(object sender, RoutedEventArgs e)
         {
 
+
+            //"What type of " + Enum.GetName(typeof(LevelType), type) + " " + level_type_name + " are you creating?\nEnter a subtype:"
+        }
+
+        private void Select_Subtype_Click(object sender, RoutedEventArgs e)
+        {
+            if (ActiveJob == Job.Create)
+            {
+                subtype = ((MenuFlyoutItem)sender).Text.Trim();
+                LevelStep++;
+                OpenTextPrompt("Name your " + subtype + ":");
+            }
         }
     }
 }

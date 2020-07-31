@@ -84,7 +84,7 @@
                 </ListView>
                 <MenuFlyoutSeparator/>
                 <MenuFlyoutItem Text="Sublevels" IsEnabled="False"/>
-                <ListView ItemsSource="{x:Bind Context.ActiveLevel.sublevels, Mode=OneWay}" Width="160">
+                <ListView ItemsSource="{x:Bind Path=Context.ActiveLevel.sublevels, Mode=OneWay}" Width="160">
                     <ListView.ItemTemplate>
                         <DataTemplate x:DataType="local:SuperLevel">
                             <MenuFlyoutItem Text="{x:Bind name, Mode=OneWay}" Background="#F2F2F2" Click="Open_Sublevel_Click" Width="160"/>
@@ -123,8 +123,17 @@
             <MenuFlyoutItem Text="Delete" x:Name="Points_Control_Delete" Click="Points_Control_Delete_Click"/>
         </MenuFlyout>
         <Flyout x:Name="SubtypesFlyout" x:Key="SubtypesFlyout">
-            <ItemsControl ItemsSource="">
-                
+            <ItemsControl ItemsSource="{x:Bind Path=Context.WorkingSubtypes, Mode=OneWay}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Vertical"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="local:StringContainer">
+                        <MenuFlyoutItem Text="{x:Bind Data, Mode=OneWay}" Background="#F2F2F2" Click="Select_Subtype_Click" Width="160"/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
             </ItemsControl>
         </Flyout>
     </Page.Resources>
@@ -305,7 +314,7 @@
                 </Grid>
             </Grid>
         </Grid>
-        <Grid x:Name="SubtypePrompt" HorizontalAlignment="Center" VerticalAlignment="Top" Width="500" Height="200" Visibility="Visible">
+        <Grid x:Name="SubtypePrompt" HorizontalAlignment="Center" VerticalAlignment="Top" Width="500" Height="200" Visibility="Collapsed">
             <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="50">
                 <Rectangle Fill="#FFF4F4F5" HorizontalAlignment="Stretch" Margin="0,0,0,0" Stroke="Black" VerticalAlignment="Stretch"/>
                 <TextBlock x:Name="SubtypePromptTab" Text="Name Me!" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" Margin="10,5,10,5"/>

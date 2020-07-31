@@ -19,7 +19,7 @@ namespace TFG_Worldbuilder_Application
     {
         public static IList<T> Concat(IList<T> a, IList<T> b)
         {
-            foreach(T item in b)
+            foreach (T item in b)
             {
                 a.Add(item);
             }
@@ -28,7 +28,7 @@ namespace TFG_Worldbuilder_Application
 
         public static IList<Object> Concat(IList<Object> a, IList<T> b)
         {
-            foreach(T item in b)
+            foreach (T item in b)
             {
                 a.Add(item as Object);
             }
@@ -37,9 +37,63 @@ namespace TFG_Worldbuilder_Application
 
     }
 
+    public class StringContainer : Container<string>
+    {
+        public StringContainer() : base()
+        {
+            ;
+        }
+
+        public StringContainer(string data) : base(data)
+        {
+            ;
+        }
+    }
+
+    public class Container<T> : INotifyPropertyChanged
+    {
+        private T _data;
+        public T Data
+        {
+            get
+            {
+                return _data;
+            }
+            set
+            {
+                _data = value;
+                RaisePropertyChanged("Data");
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void RaisePropertyChanged(string str)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(str));
+            }
+        }
+
+        public void RaisePropertyChanged()
+        {
+            RaisePropertyChanged("Data");
+        }
+
+        public Container()
+        {
+            ;
+        }
+
+        public Container(T data)
+        {
+            this.Data = data;
+        }
+    }
+
     public class SubtypeArchive
     {
-        public List<Tuple<int, LevelType, string, string>> subtypes;
+        public ObservableCollection<Tuple<int, LevelType, string, string>> subtypes;
 
         public int Count
         {
@@ -53,10 +107,10 @@ namespace TFG_Worldbuilder_Application
 
         public SubtypeArchive()
         {
-            subtypes = new List<Tuple<int, LevelType, string, string>>();
+            subtypes = new ObservableCollection<Tuple<int, LevelType, string, string>>();
         }
 
-        public SubtypeArchive(List<Tuple<int, LevelType, string, string>> list) : this()
+        public SubtypeArchive(IList<Tuple<int, LevelType, string, string>> list) : this()
         {
             foreach(Tuple<int, LevelType, string, string> item in list)
             {
@@ -203,15 +257,15 @@ namespace TFG_Worldbuilder_Application
         /// <summary>
         /// Returns a list of strings consisting of all subtypes of that type
         /// </summary>
-        public List<string> GetSubtypes(int level, LevelType leveltype)
+        public ObservableCollection<StringContainer> GetSubtypes(int level, LevelType leveltype)
         {
-            List<string> output = new List<string>();
+            ObservableCollection<StringContainer> output = new ObservableCollection<StringContainer>();
             if(leveltype != LevelType.Invalid)
             {
                 foreach (Tuple<int, LevelType, string, string> item in subtypes)
                 {
                     if (item.Item1 == level && item.Item2 == leveltype)
-                        output.Add(item.Item3);
+                        output.Add(new StringContainer(item.Item3));
                 }
             }
             return output;
@@ -443,6 +497,42 @@ namespace TFG_Worldbuilder_Application
             }
         }
         public double snap_range = 10;
+
+        public ObservableCollection<StringContainer> WorkingSubtypes
+        {
+            get
+            {
+                return Global.Subtypes.GetSubtypes(WorkingLevelnum, WorkingType);
+            }
+        }
+        private LevelType workingtype = LevelType.Invalid;
+        public LevelType WorkingType
+        {
+            get
+            {
+                return workingtype;
+            }
+            set
+            {
+                workingtype = value;
+                RaisePropertyChanged("WorkingType");
+                RaisePropertyChanged("WorkingSubtypes");
+            }
+        }
+        private int workinglevelnum = 0;
+        public int WorkingLevelnum
+        {
+            get
+            {
+                return workinglevelnum;
+            }
+            set
+            {
+                workinglevelnum = value;
+                RaisePropertyChanged("WorkingLevelnum");
+                RaisePropertyChanged("WorkingSubtypes");
+            }
+        }
 
         public string CenterX
         {
