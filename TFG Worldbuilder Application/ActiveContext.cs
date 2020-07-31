@@ -119,6 +119,16 @@ namespace TFG_Worldbuilder_Application
 
     public class SubtypeContainer : ObservableCollection<StringContainer>
     {
+        public string IsEnabled
+        {
+            get
+            {
+                if (Count > 0)
+                    return "Visible";
+                return "Collapsed";
+            }
+        }
+
         public SubtypeContainer() : base()
         {
             ;

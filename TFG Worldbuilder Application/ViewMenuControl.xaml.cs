@@ -86,52 +86,6 @@ namespace TFG_Worldbuilder_Application
                 SetValue(submenunameproperty, (string)value);
             }
         }
-        public string Enabled2
-        {
-            get
-            {
-                if (Level2.Count > 0)
-                    return "Visible";
-                return "Collapsed";
-            }
-        }
-        public string Enabled3
-        {
-            get
-            {
-                if(Level3.Count > 0)
-                    return "Visible";
-                return "Collapsed";
-            }
-        }
-        public string Enabled4
-        {
-            get
-            {
-                if (Level4.Count > 0)
-                    return "Visible";
-                return "Collapsed";
-            }
-        }
-        public string Enabled5
-        {
-            get
-            {
-                if (Level5.Count > 0)
-                    return "Visible";
-                return "Collapsed";
-            }
-        }
-        public string Enabled6
-        {
-            get
-            {
-                if (Level6.Count > 0)
-                    return "Visible";
-                return "Collapsed";
-            }
-        }
-
         public string Enabled
         {
             get

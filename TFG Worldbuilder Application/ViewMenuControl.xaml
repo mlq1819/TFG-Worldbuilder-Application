@@ -12,7 +12,7 @@
     <UserControl.Resources>
         <Flyout x:Key="TypedFlyout">
             <StackPanel>
-                <MenuFlyoutItem Text="Greater Region Subtypes" IsEnabled="False" Visibility="{Binding Enabled2, ElementName=ThisViewMenuControl}"/>
+                <MenuFlyoutItem Text="Greater Region Subtypes" IsEnabled="False" Visibility="{Binding Level2.IsEnabled, ElementName=ThisViewMenuControl}"/>
                 <ListView ItemsSource="{x:Bind Path=Level2, Mode=OneWay}" Width="160">
                     <ListView.ItemTemplate>
                         <DataTemplate x:DataType="local:StringContainer">
@@ -20,8 +20,8 @@
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
-                <MenuFlyoutSeparator Visibility="{Binding Enabled3, ElementName=ThisViewMenuControl}"/>
-                <MenuFlyoutItem Text="Region Subtypes" IsEnabled="False" Visibility="{Binding Enabled3, ElementName=ThisViewMenuControl}"/>
+                <MenuFlyoutSeparator Visibility="{Binding Level3.IsEnabled, ElementName=ThisViewMenuControl}"/>
+                <MenuFlyoutItem Text="Region Subtypes" IsEnabled="False" Visibility="{Binding Level3.IsEnabled, ElementName=ThisViewMenuControl}"/>
                 <ListView ItemsSource="{x:Bind Path=Level3, Mode=OneWay}" Width="160">
                     <ListView.ItemTemplate>
                         <DataTemplate x:DataType="local:StringContainer">
@@ -29,8 +29,8 @@
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
-                <MenuFlyoutSeparator Visibility="{Binding Enabled4, ElementName=ThisViewMenuControl}"/>
-                <MenuFlyoutItem Text="Subregion Subtypes" IsEnabled="False" Visibility="{Binding Enabled4, ElementName=ThisViewMenuControl}"/>
+                <MenuFlyoutSeparator Visibility="{Binding Level4.IsEnabled, ElementName=ThisViewMenuControl}"/>
+                <MenuFlyoutItem Text="Subregion Subtypes" IsEnabled="False" Visibility="{Binding Level4.IsEnabled, ElementName=ThisViewMenuControl}"/>
                 <ListView ItemsSource="{x:Bind Path=Level4, Mode=OneWay}" Width="160">
                     <ListView.ItemTemplate>
                         <DataTemplate x:DataType="local:StringContainer">
@@ -38,8 +38,8 @@
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
-                <MenuFlyoutSeparator Visibility="{Binding Enabled5, ElementName=ThisViewMenuControl}"/>
-                <MenuFlyoutItem Text="Location Subtypes" IsEnabled="False" Visibility="{Binding Enabled5, ElementName=ThisViewMenuControl}"/>
+                <MenuFlyoutSeparator Visibility="{Binding Level5.IsEnabled, ElementName=ThisViewMenuControl}"/>
+                <MenuFlyoutItem Text="Location Subtypes" IsEnabled="False" Visibility="{Binding Level5.IsEnabled, ElementName=ThisViewMenuControl}"/>
                 <ListView ItemsSource="{x:Bind Path=Level5, Mode=OneWay}" Width="160">
                     <ListView.ItemTemplate>
                         <DataTemplate x:DataType="local:StringContainer">
@@ -47,8 +47,8 @@
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
-                <MenuFlyoutSeparator Visibility="{Binding Enabled6, ElementName=ThisViewMenuControl}"/>
-                <MenuFlyoutItem Text="Structure Subtypes" IsEnabled="False" Visibility="{Binding Enabled6, ElementName=ThisViewMenuControl}"/>
+                <MenuFlyoutSeparator Visibility="{Binding Level6.IsEnabled, ElementName=ThisViewMenuControl}"/>
+                <MenuFlyoutItem Text="Structure Subtypes" IsEnabled="False" Visibility="{Binding Level6.IsEnabled, ElementName=ThisViewMenuControl}"/>
                 <ListView ItemsSource="{x:Bind Path=Level6, Mode=OneWay}" Width="160">
                     <ListView.ItemTemplate>
                         <DataTemplate x:DataType="local:StringContainer">
