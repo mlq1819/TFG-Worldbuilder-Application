@@ -1470,6 +1470,7 @@ namespace TFG_Worldbuilder_Application
         public override void ForceUpdatePoints()
         {
             RaisePropertyChanged("center");
+            RaisePropertyChanged("center_r");
             base.ForceUpdatePoints();
         }
 
