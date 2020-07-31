@@ -824,7 +824,7 @@ namespace TFG_Worldbuilder_Application
 
         public bool SetColor(string subtype, string color)
         {
-            if(SetColor(subtype, color))
+            if(Global.Subtypes.SetColor(subtype, color))
             {
                 foreach (Level1 world in Worlds)
                 {

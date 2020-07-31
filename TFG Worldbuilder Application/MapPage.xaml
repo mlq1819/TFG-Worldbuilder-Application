@@ -355,7 +355,7 @@
                 </Grid>
                 <Grid HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Height="50" Margin="10">
                     <Button x:Name="Color_Prompt_Cancel" Content="Cancel" HorizontalAlignment="Left" VerticalAlignment="Center" Width="100" Click="Color_Prompt_Cancel_Click"/>
-                    <Button x:Name="Color_Prompt_Confirm" Content="New" HorizontalAlignment="Right" VerticalAlignment="Center" Width="100" Click="Color_Prompt_Confirm_Click"/>
+                    <Button x:Name="Color_Prompt_Confirm" Content="Confirm" HorizontalAlignment="Right" VerticalAlignment="Center" Width="100" Click="Color_Prompt_Confirm_Click"/>
                 </Grid>
             </Grid>
         </Grid>

@@ -1679,7 +1679,7 @@ namespace TFG_Worldbuilder_Application
             if (ActiveJob == Job.Create)
             {
                 this.LevelStep++;
-                Global.Subtypes.Add(new Tuple<int, LevelType, string, string>(3, type, subtype, color));
+                Global.Subtypes.Add(new Tuple<int, LevelType, string, string>(LevelNum, type, subtype, color));
                 OpenTextPrompt("Name your " + this.subtype + ":");
             } else if (ActiveJob == Job.Recolor)
             {
