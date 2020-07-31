@@ -134,7 +134,7 @@ namespace TFG_Worldbuilder_Application
                 return false;
             if (Has(item.Item3))
                 return false;
-            subtypes.Add(new Tuple<int, LevelType, string, string>(item.Item1, item.Item2, Capitalize(item.Item3), SuperLevel.DefaultColor));
+            subtypes.Add(new Tuple<int, LevelType, string, string>(item.Item1, item.Item2, Capitalize(item.Item3), item.Item4));
             return true;
         }
 

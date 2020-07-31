@@ -1655,6 +1655,7 @@ namespace TFG_Worldbuilder_Application
             if (ActiveJob == Job.Create)
             {
                 subtype = ((MenuFlyoutItem)sender).Text.Trim();
+                SubtypePrompt.Visibility = Visibility.Collapsed;
                 LevelStep++;
                 OpenTextPrompt("Name your " + subtype + ":");
             }
