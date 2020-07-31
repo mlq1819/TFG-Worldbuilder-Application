@@ -98,5 +98,13 @@ namespace TFG_Worldbuilder_Application
         public static readonly DependencyProperty level5property = DependencyProperty.Register("Level5", typeof(Level5Subtypes), typeof(ViewMenuControl), new PropertyMetadata(0));
         public static readonly DependencyProperty level6property = DependencyProperty.Register("Level6", typeof(Level6Subtypes), typeof(ViewMenuControl), new PropertyMetadata(0));
         public static readonly DependencyProperty submenunameproperty = DependencyProperty.Register("SubMenuName", typeof(string), typeof(ViewMenuControl), new PropertyMetadata(0));
+
+        private void UpdateView_Click(object sender, RoutedEventArgs e)
+        {
+            if(Global.mappage!=null)
+            {
+                Global.mappage.UpdateView_Click(sender, e);
+            }
+        }
     }
 }

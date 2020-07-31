@@ -141,6 +141,7 @@ namespace TFG_Worldbuilder_Application
             this.Worlds = Global.ActiveFile.Worlds;
             this.Context = new ActiveContext(Global.ActiveFile.Worlds);
             this.DataContext = this.Context;
+            Global.mappage = this; 
         }
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
@@ -1727,7 +1728,7 @@ namespace TFG_Worldbuilder_Application
             }
         }
 
-        private void UpdateView_Click(object sender, RoutedEventArgs e)
+        public void UpdateView_Click(object sender, RoutedEventArgs e)
         {
 
         }

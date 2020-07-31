@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
 namespace TFG_Worldbuilder_Application
@@ -112,5 +113,7 @@ namespace TFG_Worldbuilder_Application
         }
 
         public static SubtypeArchive Subtypes = new SubtypeArchive();
+
+        public static MapPage mappage = null;
     }
 }
