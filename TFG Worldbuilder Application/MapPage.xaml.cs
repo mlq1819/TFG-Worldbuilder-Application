@@ -1660,7 +1660,6 @@ namespace TFG_Worldbuilder_Application
             if (ActiveJob == Job.Create)
             {
                 subtype = ((MenuFlyoutItem)sender).Text.Trim();
-                subtype = subtype.Substring(subtype.IndexOf("Select ") + "Select ".Length).Trim();
                 SubtypePrompt.Visibility = Visibility.Collapsed;
                 LevelStep++;
                 OpenTextPrompt("Name your " + subtype + ":");
@@ -1714,19 +1713,6 @@ namespace TFG_Worldbuilder_Application
         {
             ActiveJob = Job.None;
             ColorPrompt.Visibility = Visibility.Collapsed;
-        }
-
-        private void Recolor_Subtype_Click(object sender, RoutedEventArgs e)
-        {
-            if(ActiveJob == Job.Create)
-            {
-                subtype = ((MenuFlyoutItem)sender).Text.Trim();
-                subtype = subtype.Substring(subtype.IndexOf("Recolor ") + "Recolor ".Length).Trim();
-                SubtypePrompt.Visibility = Visibility.Collapsed;
-                ActiveJob = Job.Recolor;
-                OpenColorPicker("Set the new color for all " + subtype + "s:", Global.Subtypes.GetColor(subtype));
-                SubtypesFlyout.Hide();
-            }
         }
 
         private void Recolor_Level_Subtype_Click(object sender, RoutedEventArgs e)

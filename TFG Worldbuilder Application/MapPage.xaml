@@ -140,10 +140,7 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate x:DataType="local:StringContainer">
-                        <MenuFlyoutSubItem Text="{x:Bind Data, Mode=OneWay}" Background="#F2F2F2" Width="160">
-                            <MenuFlyoutItem Text="{x:Bind selectdata, Mode=OneWay}" Click="Select_Subtype_Click"/>
-                            <MenuFlyoutItem Text="{x:Bind recolordata, Mode=OneWay}" Click="Recolor_Subtype_Click"/>
-                        </MenuFlyoutSubItem>
+                        <MenuFlyoutItem Text="{x:Bind Data, Mode=OneWay}" Background="#F2F2F2" Width="160" Click="Select_Subtype_Click"/>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
