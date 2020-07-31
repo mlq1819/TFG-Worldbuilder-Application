@@ -89,8 +89,6 @@ namespace TFG_Worldbuilder_Application
             }
             set
             {
-                if (!string.Equals(value, "#F2F2F2"))
-                    _color = value;
                 _color = value;
                 RaisePropertyChanged("color");
             }

@@ -228,6 +228,7 @@
             <Grid x:Name="FileGrid" HorizontalAlignment="Stretch" Height="25" VerticalAlignment="Top">
                 <Rectangle Fill="White" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
                 <TextBlock x:Name="FileNameBlock" Text="" Height="25" Width="300" HorizontalAlignment="Left" Margin="100,0,0,0"/>
+                <TextBlock x:Name="LevelNameBlock" Text="{x:Bind Path=Context.ActiveLevel.name, Mode=OneWay}" Height="25" MinWidth="100" HorizontalAlignment="Center" Margin="100,0,100,0"/>
             </Grid>
             <Grid x:Name="ToolbarGrid" HorizontalAlignment="Stretch" Height="50" VerticalAlignment="Bottom">
                 <Rectangle Fill="#FFF4F4F5" HorizontalAlignment="Stretch" Stroke="Black" VerticalAlignment="Stretch"/>
