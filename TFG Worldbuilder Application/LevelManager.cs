@@ -1471,6 +1471,8 @@ namespace TFG_Worldbuilder_Application
         {
             RaisePropertyChanged("center");
             RaisePropertyChanged("center_r");
+            RaisePropertyChanged("margin");
+            RaisePropertyChanged("name_visibility");
             base.ForceUpdatePoints();
         }
 
