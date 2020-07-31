@@ -1294,6 +1294,22 @@ namespace TFG_Worldbuilder_Application
         }
 
         /// <summary>
+        /// Slowely nudges the start towards the center
+        /// </summary>
+        private AbsolutePoint ContextualCenterHelper(AbsolutePoint start, AbsolutePoint center)
+        {
+            AbsolutePoint output = new AbsolutePoint(start);
+            while (!PointInPolygon(start) && center.Distance(start) > 5)
+                start = ((start * 4) + center) / 5;
+            while (PointInPolygon(start))
+            {
+                output = new AbsolutePoint(start);
+                start = ((start * 4) + center) / 5;
+            }
+            return start;
+        }
+
+        /// <summary>
         /// Creates and returns a centerpoint for the polygon, within the boundaries of the polygon, preferably
         /// </summary>
         public AbsolutePoint GetContextualCenter()
@@ -1323,6 +1339,34 @@ namespace TFG_Worldbuilder_Application
                     inc_center = ((9 * inc_center) + avg_center) / 10;
                 }
                 return inc_center;
+            }
+            AbsolutePoint tl = new AbsolutePoint(minX, minY);
+            AbsolutePoint tr = new AbsolutePoint(maxX, minY);
+            AbsolutePoint br = new AbsolutePoint(maxX, maxY);
+            AbsolutePoint bl = new AbsolutePoint(minX, maxY);
+            tl = ContextualCenterHelper(tl, abs_center);
+            tr = ContextualCenterHelper(tr, abs_center);
+            br = ContextualCenterHelper(br, abs_center);
+            bl = ContextualCenterHelper(bl, abs_center);
+            double distance = double.MaxValue;
+            if (PointInPolygon(tl))
+                distance = Math.Min(distance, abs_center.Distance(tl));
+            if (PointInPolygon(tr))
+                distance = Math.Min(distance, abs_center.Distance(tr));
+            if (PointInPolygon(br))
+                distance = Math.Min(distance, abs_center.Distance(br));
+            if (PointInPolygon(bl))
+                distance = Math.Min(distance, abs_center.Distance(bl));
+            if(distance < double.MaxValue)
+            {
+                if (PointInPolygon(tl) && double.Equals(distance, abs_center.Distance(tl)))
+                    return tl;
+                if (PointInPolygon(tr) && double.Equals(distance, abs_center.Distance(tr)))
+                    return tr;
+                if (PointInPolygon(br) && double.Equals(distance, abs_center.Distance(br)))
+                    return br;
+                if (PointInPolygon(bl) && double.Equals(distance, abs_center.Distance(bl)))
+                    return bl;
             }
             return abs_center;
         }
