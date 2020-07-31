@@ -58,6 +58,11 @@ namespace TFG_Worldbuilder_Application
         {
             get
             {
+                if(mappage != null)
+                {
+                    if (mappage.Context.ActiveLevel != null && mappage.Context.ActiveLevel.level == 1)
+                        return Math.Max(DefaultZoom, 1.0f) * 10;
+                }
                 if (DefaultZoom > 1.0f)
                     return DefaultZoom * 10;
                 return DefaultZoom * 5;

@@ -50,6 +50,56 @@ namespace TFG_Worldbuilder_Application
             }
         }
 
+        public virtual double Level_MaxX
+        {
+            get
+            {
+                double output = double.MinValue;
+                foreach(SuperLevel sublevel in sublevels)
+                {
+                    output = Math.Max(output, sublevel.Level_MaxX);
+                }
+                return output;
+            }
+        }
+        public virtual double Level_MaxY
+        {
+            get
+            {
+                double output = double.MinValue;
+                foreach (SuperLevel sublevel in sublevels)
+                {
+                    output = Math.Max(output, sublevel.Level_MaxY);
+                }
+                return output;
+            }
+        }
+        public virtual double Level_MinX
+        {
+            get
+            {
+                double output = double.MaxValue;
+                foreach (SuperLevel sublevel in sublevels)
+                {
+                    output = Math.Min(output, sublevel.Level_MinX);
+                }
+                return output;
+            }
+        }
+        public virtual double Level_MinY
+        {
+            get
+            {
+                double output = double.MaxValue;
+                foreach (SuperLevel sublevel in sublevels)
+                {
+                    output = Math.Min(output, sublevel.Level_MinY);
+                }
+                return output;
+            }
+        }
+
+
         public SuperLevel thisSuperLevel
         {
             get
@@ -882,6 +932,10 @@ namespace TFG_Worldbuilder_Application
         public virtual void ForceUpdatePoints()
         {
             RaisePropertyChanged("Opacity");
+            RaisePropertyChanged("Level_MaxX");
+            RaisePropertyChanged("Level_MinX");
+            RaisePropertyChanged("Level_MaxY");
+            RaisePropertyChanged("Level_MinY");
             if (sublevels != null)
             {
                 for(int i=0; i<sublevels.Count; i++)
@@ -913,7 +967,56 @@ namespace TFG_Worldbuilder_Application
     public class BorderLevel : SuperLevel
     {
         public Polygon2D border;
-        
+
+        public override double Level_MaxX
+        {
+            get
+            {
+                double output = base.Level_MaxX;
+                foreach(AbsolutePoint vertex in border.vertices)
+                {
+                    output = Math.Max(output, vertex.X);
+                }
+                return output;
+            }
+        }
+        public override double Level_MaxY
+        {
+            get
+            {
+                double output = base.Level_MaxY;
+                foreach (AbsolutePoint vertex in border.vertices)
+                {
+                    output = Math.Max(output, vertex.Y);
+                }
+                return output;
+            }
+        }
+        public override double Level_MinX
+        {
+            get
+            {
+                double output = base.Level_MinX;
+                foreach (AbsolutePoint vertex in border.vertices)
+                {
+                    output = Math.Min(output, vertex.X);
+                }
+                return output;
+            }
+        }
+        public override double Level_MinY
+        {
+            get
+            {
+                double output = base.Level_MinY;
+                foreach (AbsolutePoint vertex in border.vertices)
+                {
+                    output = Math.Min(output, vertex.Y);
+                }
+                return output;
+            }
+        }
+
         public BorderLevel thisBorderLevel
         {
             get
@@ -1326,6 +1429,35 @@ namespace TFG_Worldbuilder_Application
             }
         }
 
+        public override double Level_MaxX
+        {
+            get
+            {
+                return Math.Max(base.Level_MaxX, center.X);
+            }
+        }
+        public override double Level_MaxY
+        {
+            get
+            {
+                return Math.Max(base.Level_MaxY, center.Y);
+            }
+        }
+        public override double Level_MinX
+        {
+            get
+            {
+                return Math.Min(base.Level_MinX, center.X);
+            }
+        }
+        public override double Level_MinY
+        {
+            get
+            {
+                return Math.Min(base.Level_MinY, center.Y);
+            }
+        }
+
         public Point center_r
         {
             get
@@ -1652,6 +1784,35 @@ namespace TFG_Worldbuilder_Application
             get
             {
                 return radius_r.ToString();
+            }
+        }
+
+        public override double Level_MaxX
+        {
+            get
+            {
+                return Math.Max(base.Level_MaxX, center.X + radius);
+            }
+        }
+        public override double Level_MaxY
+        {
+            get
+            {
+                return Math.Max(base.Level_MaxY, center.Y + radius);
+            }
+        }
+        public override double Level_MinX
+        {
+            get
+            {
+                return Math.Min(base.Level_MinX, center.X - radius);
+            }
+        }
+        public override double Level_MinY
+        {
+            get
+            {
+                return Math.Min(base.Level_MinY, center.Y - radius);
             }
         }
 

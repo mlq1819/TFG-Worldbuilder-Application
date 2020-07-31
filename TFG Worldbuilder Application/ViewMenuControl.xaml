@@ -11,7 +11,7 @@
     d:DesignWidth="400">
     <UserControl.Resources>
         <Flyout x:Key="TypedFlyout">
-            <StackPanel>
+            <StackPanel Width="160">
                 <MenuFlyoutItem Text="Greater Region Subtypes" IsEnabled="False" Visibility="{Binding Level2.IsEnabled, ElementName=ThisViewMenuControl}"/>
                 <ListView ItemsSource="{x:Bind Path=Level2, Mode=OneWay}" Width="160">
                     <ListView.ItemTemplate>
