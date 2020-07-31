@@ -1006,12 +1006,12 @@ namespace TFG_Worldbuilder_Application
             {
                 int intended_width = 50;
                 int intended_height = 20;
-                Point _center = center;
+                Point contextual_center = border.GetContextualCenter().ToRenderedPoint().ToWindowsPoint();
                 string left, top, right, bottom;
-                left = (_center.X - intended_width).ToString();
-                top = (_center.Y - intended_height).ToString();
-                right = ((Global.CanvasSize.X - _center.X) - intended_width).ToString();
-                bottom = ((Global.CanvasSize.Y - _center.Y) - intended_height).ToString();
+                left = (contextual_center.X - intended_width).ToString();
+                top = (contextual_center.Y - intended_height).ToString();
+                right = ((Global.CanvasSize.X - contextual_center.X) - intended_width).ToString();
+                bottom = ((Global.CanvasSize.Y - contextual_center.Y) - intended_height).ToString();
                 return left + ',' + top + ',' + right + ',' + bottom;
             }
         }
