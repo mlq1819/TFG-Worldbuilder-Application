@@ -154,7 +154,7 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         public bool Add(Tuple<int, LevelType, string, string> item)
         {
-            if (item.Item1 < 1 || item.Item1 > 6)
+            if (item.Item1 <= 1 || item.Item1 > 6)
                 return false;
             if (item.Item2 == LevelType.Invalid)
                 return false;
@@ -167,7 +167,7 @@ namespace TFG_Worldbuilder_Application
         private int Add(SuperLevel level)
         {
             int count = 0;
-            if (Add(new Tuple<int, LevelType, string, string>(level.level, level.leveltype, level.subtype, SuperLevel.DefaultColor)))
+            if (Add(new Tuple<int, LevelType, string, string>(level.level, level.leveltype, level.subtype, level.basecolor)))
                 count++;
             foreach (SuperLevel sublevel in level.sublevels) {
                 count += Add(sublevel);

@@ -311,7 +311,6 @@ namespace TFG_Worldbuilder_Application
         {
             this.subtype = subtype;
             basecolor = Global.Subtypes.GetColor(subtype);
-            color = basecolor;
         }
 
         /// <summary>
