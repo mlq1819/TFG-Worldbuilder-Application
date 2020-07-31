@@ -1650,6 +1650,7 @@ namespace TFG_Worldbuilder_Application
         private void Subtype_Prompt_New_Click(object sender, RoutedEventArgs e)
         {
             OpenTextPrompt("What type of " + Enum.GetName(typeof(LevelType), type) + " " + level_type_name + " are you creating?\nEnter a subtype:");
+            SubtypePrompt.Visibility = Visibility.Collapsed;
         }
 
         private void Select_Subtype_Click(object sender, RoutedEventArgs e)
