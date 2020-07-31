@@ -950,9 +950,18 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         public virtual double GetMedZoom()
         {
+            double output = 1.0f;
+            if(Level_MaxX > Level_MinX && Level_MaxY > Level_MinY)
+            {
+                double zoom_x = Global.CanvasSize.X / (Level_MaxX - Level_MinX);
+                double zoom_y = Global.CanvasSize.Y / (Level_MaxY - Level_MinY);
+                output = Math.Min(Math.Min(zoom_x, zoom_y), output);
+                if (output <= 0)
+                    output = 1.0f;
+            }
             if (parent == null)
-                return 1.0f;
-            return Math.Max(1.0f, parent.GetMedZoom());
+                return output;
+            return Math.Max(output, parent.GetMedZoom());
         }
 
         public virtual AbsolutePoint GetCenter()
