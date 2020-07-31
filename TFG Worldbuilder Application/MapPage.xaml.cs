@@ -1656,7 +1656,7 @@ namespace TFG_Worldbuilder_Application
         {
             if (ActiveJob == Job.Create)
             {
-                subtype = ((MenuFlyoutSubItem)(((MenuFlyoutItem)sender).Parent)).Text.Trim();
+                subtype = ((MenuFlyoutSubItem)VisualTreeHelper.GetParent((MenuFlyoutItem)sender)).Text.Trim();
                 SubtypePrompt.Visibility = Visibility.Collapsed;
                 LevelStep++;
                 OpenTextPrompt("Name your " + subtype + ":");
@@ -1716,7 +1716,7 @@ namespace TFG_Worldbuilder_Application
             if(ActiveJob == Job.None)
             {
                 ActiveJob = Job.BasicRecolor;
-                subtype = ((MenuFlyoutSubItem)(((MenuFlyoutItem)sender).Parent)).Text.Trim();
+                subtype = ((MenuFlyoutSubItem)VisualTreeHelper.GetParent((MenuFlyoutItem)sender)).Text.Trim();
                 ActiveJob = Job.Recolor;
                 OpenColorPicker("Set the new color for all " + subtype + "s:");
             }
