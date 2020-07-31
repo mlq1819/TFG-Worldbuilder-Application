@@ -11,7 +11,7 @@
     d:DesignWidth="400">
 
     <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-        <Polygon Points="{Binding Level.points, ElementName=ThisBorderLevel}" Fill="{Binding Level.color, ElementName=ThisBorderLevel}" Stroke="{Binding Stroke, ElementName=ThisBorderLevel}" StrokeThickness="{Binding StrokeThickness, ElementName=ThisBorderLevel}" Opacity="0.5"/>
+        <Polygon Points="{Binding Level.points, ElementName=ThisBorderLevel}" Fill="{Binding Level.color, ElementName=ThisBorderLevel}" Stroke="{Binding Stroke, ElementName=ThisBorderLevel}" StrokeThickness="{Binding StrokeThickness, ElementName=ThisBorderLevel}" Opacity="{Binding Level.Opacity, ElementName=ThisBorderLevel}"/>
         <ItemsControl ItemsSource="{x:Bind Path=Level.SubShapes, Mode=OneWay}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>

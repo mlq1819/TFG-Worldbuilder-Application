@@ -11,7 +11,7 @@
     d:DesignWidth="400">
 
     <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-        <Path Fill="{Binding Level.color, ElementName=ThisLevel6}" StrokeThickness="{Binding StrokeThickness, ElementName=ThisLevel6}" Stroke="{Binding Stroke, ElementName=ThisLevel6}" Opacity="0.5">
+        <Path Fill="{Binding Level.color, ElementName=ThisLevel6}" StrokeThickness="{Binding StrokeThickness, ElementName=ThisLevel6}" Stroke="{Binding Stroke, ElementName=ThisLevel6}" Opacity="{Binding Level.Opacity, ElementName=ThisLevel6}">
             <Path.Data>
                 <EllipseGeometry Center="{Binding Level.center_r, ElementName=ThisLevel6}" RadiusX="5" RadiusY="5"/>
             </Path.Data>
