@@ -580,6 +580,217 @@ namespace TFG_Worldbuilder_Application
             }
         }
 
+        public ObservableCollection<StringContainer> NationalLevel2
+        {
+            get
+            {
+                return Global.Subtypes.GetSubtypes(2, LevelType.National);
+            }
+        }
+        public ObservableCollection<StringContainer> NationalLevel3
+        {
+            get
+            {
+                return Global.Subtypes.GetSubtypes(3, LevelType.National);
+            }
+        }
+        public ObservableCollection<StringContainer> NationalLevel4
+        {
+            get
+            {
+                return Global.Subtypes.GetSubtypes(4, LevelType.National);
+            }
+        }
+        public ObservableCollection<StringContainer> NationalLevel5
+        {
+            get
+            {
+                return Global.Subtypes.GetSubtypes(5, LevelType.National);
+            }
+        }
+        public ObservableCollection<StringContainer> NationalLevel6
+        {
+            get
+            {
+                return Global.Subtypes.GetSubtypes(6, LevelType.National);
+            }
+        }
+        public ObservableCollection<StringContainer> GeographicalLevel2
+        {
+            get
+            {
+                return Global.Subtypes.GetSubtypes(2, LevelType.Geographical);
+            }
+        }
+        public ObservableCollection<StringContainer> GeographicalLevel3
+        {
+            get
+            {
+                return Global.Subtypes.GetSubtypes(3, LevelType.Geographical);
+            }
+        }
+        public ObservableCollection<StringContainer> GeographicalLevel4
+        {
+            get
+            {
+                return Global.Subtypes.GetSubtypes(4, LevelType.Geographical);
+            }
+        }
+        public ObservableCollection<StringContainer> GeographicalLevel5
+        {
+            get
+            {
+                return Global.Subtypes.GetSubtypes(5, LevelType.Geographical);
+            }
+        }
+        public ObservableCollection<StringContainer> GeographicalLevel6
+        {
+            get
+            {
+                return Global.Subtypes.GetSubtypes(6, LevelType.Geographical);
+            }
+        }
+        public ObservableCollection<StringContainer> ClimateLevel2
+        {
+            get
+            {
+                return Global.Subtypes.GetSubtypes(2, LevelType.Climate);
+            }
+        }
+        public ObservableCollection<StringContainer> ClimateLevel3
+        {
+            get
+            {
+                return Global.Subtypes.GetSubtypes(3, LevelType.Climate);
+            }
+        }
+        public ObservableCollection<StringContainer> ClimateLevel4
+        {
+            get
+            {
+                return Global.Subtypes.GetSubtypes(4, LevelType.Climate);
+            }
+        }
+        public ObservableCollection<StringContainer> ClimateLevel5
+        {
+            get
+            {
+                return Global.Subtypes.GetSubtypes(5, LevelType.Climate);
+            }
+        }
+        public ObservableCollection<StringContainer> ClimateLevel6
+        {
+            get
+            {
+                return Global.Subtypes.GetSubtypes(6, LevelType.Climate);
+            }
+        }
+        public ObservableCollection<StringContainer> FactionalLevel2
+        {
+            get
+            {
+                return Global.Subtypes.GetSubtypes(2, LevelType.Factional);
+            }
+        }
+        public ObservableCollection<StringContainer> FactionalLevel3
+        {
+            get
+            {
+                return Global.Subtypes.GetSubtypes(3, LevelType.Factional);
+            }
+        }
+        public ObservableCollection<StringContainer> FactionalLevel4
+        {
+            get
+            {
+                return Global.Subtypes.GetSubtypes(4, LevelType.Factional);
+            }
+        }
+        public ObservableCollection<StringContainer> FactionalLevel5
+        {
+            get
+            {
+                return Global.Subtypes.GetSubtypes(5, LevelType.Factional);
+            }
+        }
+        public ObservableCollection<StringContainer> FactionalLevel6
+        {
+            get
+            {
+                return Global.Subtypes.GetSubtypes(6, LevelType.Factional);
+            }
+        }
+        public ObservableCollection<StringContainer> CulturalLevel2
+        {
+            get
+            {
+                return Global.Subtypes.GetSubtypes(2, LevelType.Cultural);
+            }
+        }
+        public ObservableCollection<StringContainer> CulturalLevel3
+        {
+            get
+            {
+                return Global.Subtypes.GetSubtypes(3, LevelType.Cultural);
+            }
+        }
+        public ObservableCollection<StringContainer> CulturalLevel4
+        {
+            get
+            {
+                return Global.Subtypes.GetSubtypes(4, LevelType.Cultural);
+            }
+        }
+        public ObservableCollection<StringContainer> CulturalLevel5
+        {
+            get
+            {
+                return Global.Subtypes.GetSubtypes(5, LevelType.Cultural);
+            }
+        }
+        public ObservableCollection<StringContainer> CulturalLevel6
+        {
+            get
+            {
+                return Global.Subtypes.GetSubtypes(6, LevelType.Cultural);
+            }
+        }
+        public ObservableCollection<StringContainer> BiologicalLevel2
+        {
+            get
+            {
+                return Global.Subtypes.GetSubtypes(2, LevelType.Biological);
+            }
+        }
+        public ObservableCollection<StringContainer> BiologicalLevel3
+        {
+            get
+            {
+                return Global.Subtypes.GetSubtypes(3, LevelType.Biological);
+            }
+        }
+        public ObservableCollection<StringContainer> BiologicalLevel4
+        {
+            get
+            {
+                return Global.Subtypes.GetSubtypes(4, LevelType.Biological);
+            }
+        }
+        public ObservableCollection<StringContainer> BiologicalLevel5
+        {
+            get
+            {
+                return Global.Subtypes.GetSubtypes(5, LevelType.Biological);
+            }
+        }
+        public ObservableCollection<StringContainer> BiologicalLevel6
+        {
+            get
+            {
+                return Global.Subtypes.GetSubtypes(6, LevelType.Biological);
+            }
+        }
+
         public string CenterX
         {
             get
@@ -831,10 +1042,184 @@ namespace TFG_Worldbuilder_Application
             return false;
         }
 
+        /// <summary>
+        /// Raises arguments for the specified subtype list property by the given levelnum and type
+        /// </summary>
+        private bool RaiseArgumentColor(int LevelNum, LevelType type)
+        {
+            switch (type)
+            {
+                case LevelType.National:
+                    switch (LevelNum)
+                    {
+                        case 2:
+                            RaisePropertyChanged("NationalLevel2");
+                            return true;
+                            break;
+                        case 3:
+                            RaisePropertyChanged("NationalLevel3");
+                            return true;
+                            break;
+                        case 4:
+                            RaisePropertyChanged("NationalLevel4");
+                            return true;
+                            break;
+                        case 5:
+                            RaisePropertyChanged("NationalLevel5");
+                            return true;
+                            break;
+                        case 6:
+                            RaisePropertyChanged("NationalLevel6");
+                            return true;
+                            break;
+                    }
+                    break;
+                case LevelType.Geographical:
+                    switch (LevelNum)
+                    {
+                        case 2:
+                            RaisePropertyChanged("GeographicalLevel2");
+                            return true;
+                            break;
+                        case 3:
+                            RaisePropertyChanged("GeographicalLevel3");
+                            return true;
+                            break;
+                        case 4:
+                            RaisePropertyChanged("GeographicalLevel4");
+                            return true;
+                            break;
+                        case 5:
+                            RaisePropertyChanged("GeographicalLevel5");
+                            return true;
+                            break;
+                        case 6:
+                            RaisePropertyChanged("GeographicalLevel6");
+                            return true;
+                            break;
+                    }
+                    break;
+                case LevelType.Climate:
+                    switch (LevelNum)
+                    {
+                        case 2:
+                            RaisePropertyChanged("ClimateLevel2");
+                            return true;
+                            break;
+                        case 3:
+                            RaisePropertyChanged("ClimateLevel3");
+                            return true;
+                            break;
+                        case 4:
+                            RaisePropertyChanged("ClimateLevel4");
+                            return true;
+                            break;
+                        case 5:
+                            RaisePropertyChanged("ClimateLevel5");
+                            return true;
+                            break;
+                        case 6:
+                            RaisePropertyChanged("ClimateLevel6");
+                            return true;
+                            break;
+                    }
+                    break;
+                case LevelType.Factional:
+                    switch (LevelNum)
+                    {
+                        case 2:
+                            RaisePropertyChanged("FactionalLevel2");
+                            return true;
+                            break;
+                        case 3:
+                            RaisePropertyChanged("FactionalLevel3");
+                            return true;
+                            break;
+                        case 4:
+                            RaisePropertyChanged("FactionalLevel4");
+                            return true;
+                            break;
+                        case 5:
+                            RaisePropertyChanged("FactionalLevel5");
+                            return true;
+                            break;
+                        case 6:
+                            RaisePropertyChanged("FactionalLevel6");
+                            return true;
+                            break;
+                    }
+                    break;
+                case LevelType.Cultural:
+                    switch (LevelNum)
+                    {
+                        case 2:
+                            RaisePropertyChanged("CulturalLevel2");
+                            return true;
+                            break;
+                        case 3:
+                            RaisePropertyChanged("CulturalLevel3");
+                            return true;
+                            break;
+                        case 4:
+                            RaisePropertyChanged("CulturalLevel4");
+                            return true;
+                            break;
+                        case 5:
+                            RaisePropertyChanged("CulturalLevel5");
+                            return true;
+                            break;
+                        case 6:
+                            RaisePropertyChanged("CulturalLevel6");
+                            return true;
+                            break;
+                    }
+                    break;
+                case LevelType.Biological:
+                    switch (LevelNum)
+                    {
+                        case 2:
+                            RaisePropertyChanged("BiologicalLevel2");
+                            return true;
+                            break;
+                        case 3:
+                            RaisePropertyChanged("BiologicalLevel3");
+                            return true;
+                            break;
+                        case 4:
+                            RaisePropertyChanged("BiologicalLevel4");
+                            return true;
+                            break;
+                        case 5:
+                            RaisePropertyChanged("BiologicalLevel5");
+                            return true;
+                            break;
+                        case 6:
+                            RaisePropertyChanged("BiologicalLevel6");
+                            return true;
+                            break;
+                    }
+                    break;
+            }
+            return false;
+        }
+        /// <summary>
+        /// Raises arguments for the specified subtype list property
+        /// </summary>
+        private bool RaiseArgumentColor(string subtype)
+        {
+            int LevelNum = Global.Subtypes.GetLevel(subtype);
+            LevelType type = Global.Subtypes.GetType(subtype);
+            return RaiseArgumentColor(LevelNum, type);
+        }
+
+        /// <summary>
+        /// Updates the specified subtype in the archive for its new color, and updates any existing levels using it
+        /// </summary>
         public bool SetColor(string subtype, string color)
         {
             if(Global.Subtypes.SetColor(subtype, color))
             {
+                RaiseArgumentColor(subtype);
                 foreach (Level1 world in Worlds)
                 {
                     world.Recolor(subtype);
@@ -842,6 +1227,19 @@ namespace TFG_Worldbuilder_Application
                 return true;
             }
             return false;
+        }
+
+        /// <summary>
+        /// Adds the specified color to the archive to be associated with its proper levelnum, type, and subtype
+        /// </summary>
+        public bool AddColor(int LevelNum, LevelType type, string subtype, string color)
+        {
+            bool output = Global.Subtypes.Add(new Tuple<int, LevelType, string, string>(LevelNum, type, subtype, color));
+            if (output)
+            {
+                RaiseArgumentColor(LevelNum, type);
+            }
+            return output;
         }
 
         /// <summary>

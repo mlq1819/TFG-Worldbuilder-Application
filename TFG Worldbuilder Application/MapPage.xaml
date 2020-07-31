@@ -24,25 +24,16 @@
         </MenuFlyout>
         <MenuFlyout x:Name= "ViewMenu" x:Key="ViewMenu">
             <MenuFlyoutSubItem Text="National">
-                <ToggleMenuFlyoutItem Text="Countries"/>
-                <ToggleMenuFlyoutItem Text="Territories"/>
-                <ToggleMenuFlyoutItem Text="Major Cities"/>
-                <ToggleMenuFlyoutItem Text="Minor Cities"/>
-                <MenuFlyoutSeparator/>
-                <ToggleMenuFlyoutItem Text="Country Labels"/>
-                <ToggleMenuFlyoutItem Text="Territory Labels"/>
-                <ToggleMenuFlyoutItem Text="Major City Labels"/>
-                <ToggleMenuFlyoutItem Text="Minor City Labels"/>
+                <ToggleMenuFlyoutItem Text="Countries" Click="UpdateView_Click"/>
+                <ToggleMenuFlyoutItem Text="Territories" Click="UpdateView_Click"/>
+                <ToggleMenuFlyoutItem Text="Major Cities" Click="UpdateView_Click"/>
+                <ToggleMenuFlyoutItem Text="Minor Cities" Click="UpdateView_Click"/>
             </MenuFlyoutSubItem>
             <MenuFlyoutSubItem Text="Geographical">
-                <ToggleMenuFlyoutItem Text="Mountains"/>
-                <ToggleMenuFlyoutItem Text="Rivers"/>
+                <ToggleMenuFlyoutItem Text="Continents" Click="UpdateView_Click"/>
+                <ToggleMenuFlyoutItem Text="Mountains" Click="UpdateView_Click"/>
+                <ToggleMenuFlyoutItem Text="Rivers" Click="UpdateView_Click"/>
                 <ToggleMenuFlyoutItem Text="Oceans"/>
-                <MenuFlyoutSeparator/>
-                <ToggleMenuFlyoutItem Text="Mountain Labels"/>
-                <ToggleMenuFlyoutItem Text="Continent Labels"/>
-                <ToggleMenuFlyoutItem Text="River Labels"/>
-                <ToggleMenuFlyoutItem Text="Ocean/Sea Labels"/>
             </MenuFlyoutSubItem>
             <MenuFlyoutSubItem Text="Climate">
                 <ToggleMenuFlyoutItem Text="Biomes"/>

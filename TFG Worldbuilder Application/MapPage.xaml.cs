@@ -1692,7 +1692,7 @@ namespace TFG_Worldbuilder_Application
             if (ActiveJob == Job.Create)
             {
                 this.LevelStep++;
-                Global.Subtypes.Add(new Tuple<int, LevelType, string, string>(LevelNum, type, subtype, color));
+                Context.AddColor(LevelNum, type, subtype, color);
                 OpenTextPrompt("Name your " + this.subtype + ":");
             } else if (ActiveJob == Job.Recolor)
             {
@@ -1725,6 +1725,11 @@ namespace TFG_Worldbuilder_Application
                 ActiveJob = Job.BasicRecolor;
                 OpenColorPicker("Set the new color for all " + subtype + "s:", Global.Subtypes.GetColor(subtype));
             }
+        }
+
+        private void UpdateView_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
