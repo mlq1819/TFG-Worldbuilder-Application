@@ -1353,6 +1353,8 @@ namespace TFG_Worldbuilder_Application
                 Xs.Add(vertices[i].X);
                 Ys.Add(vertices[i].Y);
             }
+            Xs.Sort();
+            Ys.Sort();
             if(Xs.Count % 2 == 0)
             {
                 medX = (Xs[(Xs.Count - 1) / 2] + Xs[Xs.Count / 2]) / 2;
