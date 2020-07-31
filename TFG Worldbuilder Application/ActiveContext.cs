@@ -12,6 +12,7 @@ using Windows.UI.Xaml.Shapes;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.Devices.Perception;
 using Windows.Storage.Streams;
+using Microsoft.Graphics.Canvas.Geometry;
 
 namespace TFG_Worldbuilder_Application
 {
@@ -1102,6 +1103,14 @@ namespace TFG_Worldbuilder_Application
             }
         }
 
+        public string ScaleString
+        {
+            get
+            {
+                return Math.Round((200 / Global.Zoom), 2).ToString();
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
         public void RaisePropertyChanged(string str)
         {
@@ -1852,6 +1861,7 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         public void ForceUpdatePoints()
         {
+            RaisePropertyChanged("ScaleString");
             if (ActiveLevel != null)
             {
                 ActiveLevel.ForceUpdatePoints();

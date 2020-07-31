@@ -908,7 +908,6 @@ namespace TFG_Worldbuilder_Application
             return null;
         }
 
-
         /// <summary>
         /// Displays a flyout menu of options when a Vertex is clicked
         /// </summary>
