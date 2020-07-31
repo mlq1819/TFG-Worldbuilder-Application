@@ -22,35 +22,16 @@
             <MenuFlyoutSeparator/>
             <MenuFlyoutItem Text="Exit" x:Name="File_Exit" Click="File_Exit_Click"/>
         </MenuFlyout>
-        <MenuFlyout x:Name= "ViewMenu" x:Key="ViewMenu">
-            <MenuFlyoutSubItem Text="National">
-                <ToggleMenuFlyoutItem Text="Countries" Click="UpdateView_Click"/>
-                <ToggleMenuFlyoutItem Text="Territories" Click="UpdateView_Click"/>
-                <ToggleMenuFlyoutItem Text="Major Cities" Click="UpdateView_Click"/>
-                <ToggleMenuFlyoutItem Text="Minor Cities" Click="UpdateView_Click"/>
-            </MenuFlyoutSubItem>
-            <MenuFlyoutSubItem Text="Geographical">
-                <ToggleMenuFlyoutItem Text="Continents" Click="UpdateView_Click"/>
-                <ToggleMenuFlyoutItem Text="Mountains" Click="UpdateView_Click"/>
-                <ToggleMenuFlyoutItem Text="Rivers" Click="UpdateView_Click"/>
-                <ToggleMenuFlyoutItem Text="Oceans"/>
-            </MenuFlyoutSubItem>
-            <MenuFlyoutSubItem Text="Climate">
-                <ToggleMenuFlyoutItem Text="Biomes"/>
-                <ToggleMenuFlyoutItem Text="Rainfall"/>
-                <ToggleMenuFlyoutItem Text="Agrictultural Potential"/>
-                <ToggleMenuFlyoutItem Text="Resource Potential"/>
-            </MenuFlyoutSubItem>
-            <MenuFlyoutSubItem Text="Factional"/>
-            <MenuFlyoutSubItem Text="Cultural">
-                <ToggleMenuFlyoutItem Text="Conservative Heatmap"/>
-                <ToggleMenuFlyoutItem Text="Liberal Heatmap"/>
-                <ToggleMenuFlyoutItem Text="Authoritarian Heatmap"/>
-                <ToggleMenuFlyoutItem Text="Anarchist Heatmap"/>
-                <ToggleMenuFlyoutItem Text="Major Exports"/>
-            </MenuFlyoutSubItem>
-            <MenuFlyoutSubItem Text="Biological"/>
-        </MenuFlyout>
+        <Flyout x:Name= "ViewMenu" x:Key="ViewMenu">
+            <StackPanel>
+                <local:ViewMenuControl SubMenuName="National" Level2="{x:Bind Context.NationalLevel2, Mode=OneWay}" Level3="{x:Bind Context.NationalLevel3, Mode=OneWay}" Level4="{x:Bind Context.NationalLevel4, Mode=OneWay}" Level5="{x:Bind Context.NationalLevel5, Mode=OneWay}" Level6="{x:Bind Context.NationalLevel6, Mode=OneWay}"/>
+                <local:ViewMenuControl SubMenuName="Geographical" Level2="{x:Bind Context.GeographicalLevel2, Mode=OneWay}" Level3="{x:Bind Context.GeographicalLevel3, Mode=OneWay}" Level4="{x:Bind Context.GeographicalLevel4, Mode=OneWay}" Level5="{x:Bind Context.GeographicalLevel5, Mode=OneWay}" Level6="{x:Bind Context.GeographicalLevel6, Mode=OneWay}"/>
+                <local:ViewMenuControl SubMenuName="Climate" Level2="{x:Bind Context.ClimateLevel2, Mode=OneWay}" Level3="{x:Bind Context.ClimateLevel3, Mode=OneWay}" Level4="{x:Bind Context.ClimateLevel4, Mode=OneWay}" Level5="{x:Bind Context.ClimateLevel5, Mode=OneWay}" Level6="{x:Bind Context.ClimateLevel6, Mode=OneWay}"/>
+                <local:ViewMenuControl SubMenuName="Factional" Level2="{x:Bind Context.FactionalLevel2, Mode=OneWay}" Level3="{x:Bind Context.FactionalLevel3, Mode=OneWay}" Level4="{x:Bind Context.FactionalLevel4, Mode=OneWay}" Level5="{x:Bind Context.FactionalLevel5, Mode=OneWay}" Level6="{x:Bind Context.FactionalLevel6, Mode=OneWay}"/>
+                <local:ViewMenuControl SubMenuName="Cultural" Level2="{x:Bind Context.CulturalLevel2, Mode=OneWay}" Level3="{x:Bind Context.CulturalLevel3, Mode=OneWay}" Level4="{x:Bind Context.CulturalLevel4, Mode=OneWay}" Level5="{x:Bind Context.CulturalLevel5, Mode=OneWay}" Level6="{x:Bind Context.CulturalLevel6, Mode=OneWay}"/>
+                <local:ViewMenuControl SubMenuName="Biological" Level2="{x:Bind Context.BiologicalLevel2, Mode=OneWay}" Level3="{x:Bind Context.BiologicalLevel3, Mode=OneWay}" Level4="{x:Bind Context.BiologicalLevel4, Mode=OneWay}" Level5="{x:Bind Context.BiologicalLevel5, Mode=OneWay}" Level6="{x:Bind Context.BiologicalLevel6, Mode=OneWay}"/>
+            </StackPanel>
+        </Flyout>
         <MenuFlyout x:Name="CreateMenu" x:Key="CreateMenu" Closed="CreateMenu_Closed">
             <MenuFlyoutItem x:Name="Create_World_Flyout" Text="New World" Click="Create_World_Click"/>
             <MenuFlyoutItem x:Name="Create_Greater_Region_Flyout" Text="New Greater Region" Click="Create_Greater_Region_Click"/>
