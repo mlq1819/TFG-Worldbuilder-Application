@@ -136,6 +136,22 @@ namespace TFG_Worldbuilder_Application
             }
         }
 
+        public string Opacity
+        {
+            get
+            {
+                switch (leveltype)
+                {
+                    case LevelType.Geographical:
+                        return "1";
+                    case LevelType.National:
+                        return "0.8";
+                    default:
+                        return "0.5";
+                }
+            }
+        }
+
         public static readonly string DefaultColor = "#F2F2F2";
 
         public string prop_str
@@ -883,6 +899,7 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         public virtual void ForceUpdatePoints()
         {
+            RaisePropertyChanged("Opacity");
             if (sublevels != null)
             {
                 for(int i=0; i<sublevels.Count; i++)
