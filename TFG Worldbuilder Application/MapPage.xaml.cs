@@ -1656,7 +1656,7 @@ namespace TFG_Worldbuilder_Application
         {
             if (ActiveJob == Job.Create)
             {
-                subtype = ((MenuFlyoutSubItem)VisualTreeHelper.GetParent((MenuFlyoutItem)sender)).Text.Trim();
+                subtype = GetMenuFlyoutSubItemContainingMenuFlyoutItem((MenuFlyoutItem)sender).Text.Trim();
                 SubtypePrompt.Visibility = Visibility.Collapsed;
                 LevelStep++;
                 OpenTextPrompt("Name your " + subtype + ":");
@@ -1711,12 +1711,26 @@ namespace TFG_Worldbuilder_Application
             }
         }
 
+        private MenuFlyoutSubItem GetMenuFlyoutSubItemContainingMenuFlyoutItem(MenuFlyoutItem item)
+        {
+            DependencyObject greater_container = VisualTreeHelper.GetParent(item);
+            foreach(MenuFlyoutSubItem subitem in greater_container.FindDescendants<MenuFlyoutSubItem>())
+            {
+                foreach(MenuFlyoutItem sub_subitem in subitem.FindDescendants<MenuFlyoutItem>())
+                {
+                    if (MenuFlyoutItem.ReferenceEquals(sub_subitem, item))
+                        return subitem;
+                }
+            }
+            return null;
+        }
+
         private void Recolor_Level_Subtype_Click(object sender, RoutedEventArgs e)
         {
             if(ActiveJob == Job.None)
             {
                 ActiveJob = Job.BasicRecolor;
-                subtype = ((MenuFlyoutSubItem)VisualTreeHelper.GetParent((MenuFlyoutItem)sender)).Text.Trim();
+                subtype = GetMenuFlyoutSubItemContainingMenuFlyoutItem((MenuFlyoutItem)sender).Text.Trim();
                 ActiveJob = Job.Recolor;
                 OpenColorPicker("Set the new color for all " + subtype + "s:");
             }
