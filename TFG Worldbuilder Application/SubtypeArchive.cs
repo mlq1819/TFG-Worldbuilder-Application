@@ -60,14 +60,6 @@ namespace TFG_Worldbuilder_Application
             int count = 0;
             if (Add(new Tuple<int, LevelType, string, string>(level.level, level.leveltype, level.subtype, level.basecolor)))
                 count++;
-            else
-            {
-                Tuple<int, LevelType, string, string> current = Get(level.subtype);
-                if(current != null && current.Item1 == level.level && current.Item2 == level.leveltype)
-                {
-                    level.Recolor(level.subtype);
-                }
-            }
             foreach (SuperLevel sublevel in level.sublevels)
             {
                 count += Add(sublevel);

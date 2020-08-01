@@ -1630,6 +1630,7 @@ namespace TFG_Worldbuilder_Application
         {
             ActiveJob = Job.None;
             TypePrompt.Visibility = Visibility.Collapsed;
+            Context.ClearPoints();
         }
 
         /// <summary>
@@ -1714,6 +1715,7 @@ namespace TFG_Worldbuilder_Application
         {
             ActiveJob = Job.None;
             ColorPrompt.Visibility = Visibility.Collapsed;
+            Context.ClearPoints();
         }
 
         private void Recolor_Level_Subtype_Click(object sender, RoutedEventArgs e)
