@@ -159,6 +159,8 @@ namespace TFG_Worldbuilder_Application
             }
             else
             {
+                NavigationButton.IsEnabled = false;
+                ViewButton.IsEnabled = false;
                 Create_Greater_Region_Flyout.IsEnabled = false;
                 Create_Region_Flyout.IsEnabled = false;
                 Create_Subregion_Flyout.IsEnabled = false;
@@ -573,6 +575,8 @@ namespace TFG_Worldbuilder_Application
             {
                 SetActive(new Level1(name, subtype));
                 Global.ActiveFile.Worlds.Add((Level1)Context.ActiveLevel);
+                NavigationButton.IsEnabled = true;
+                ViewButton.IsEnabled = true;
             }
             ActiveJob = Job.None;
             UpdateSaveState();
