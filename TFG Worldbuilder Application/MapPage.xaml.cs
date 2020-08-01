@@ -405,7 +405,7 @@ namespace TFG_Worldbuilder_Application
                 {
                     switch (this.LevelStep) // Control for level step
                     {
-                        case 2:
+                        case 1:
                             if(Context.SubtypeList.Conflicts(new Tuple<int, LevelType, string, string>(this.LevelNum, this.type, prompt_text, SuperLevel.DefaultColor))){
                                 Tuple<int, LevelType, string, string> actual = Context.SubtypeList.Get(prompt_text);
                                 OpenPopupAlert("Invalid subtype; conflicts with existing Subtype definition for level " + actual.Item1 + " of type " + Enum.GetName(typeof(LevelType), actual.Item2));
@@ -819,10 +819,10 @@ namespace TFG_Worldbuilder_Application
             {
                 LevelNum = 2;
                 LevelStep = 1;
-                ActiveJob = Job.CreatePolygon;
+                ActiveJob = Job.Create;
                 vertices = new Polygon2D();
                 Context.ClearPoints();
-                OpenTapPrompt("Enter at least 3 points for Greater Region");
+                OpenSubtypePrompt("What type of " + Enum.GetName(typeof(LevelType), type) + " " + level_type_name + " are you creating?\nSelect a subtype:");
             }
         }
 
@@ -835,10 +835,9 @@ namespace TFG_Worldbuilder_Application
             {
                 LevelNum = 3;
                 LevelStep = 1;
-                ActiveJob = Job.CreatePolygon;
+                ActiveJob = Job.Create;
                 vertices = new Polygon2D();
-                Context.ClearPoints();
-                OpenTapPrompt("Enter at least 3 points for Region");
+                Context.ClearPoints(); OpenSubtypePrompt("What type of " + Enum.GetName(typeof(LevelType), type) + " " + level_type_name + " are you creating?\nSelect a subtype:");
             }
         }
 
@@ -851,10 +850,9 @@ namespace TFG_Worldbuilder_Application
             {
                 LevelNum = 4;
                 LevelStep = 1;
-                ActiveJob = Job.CreatePolygon;
+                ActiveJob = Job.Create;
                 vertices = new Polygon2D();
-                Context.ClearPoints();
-                OpenTapPrompt("Enter at least 3 points for Subregion");
+                Context.ClearPoints(); OpenSubtypePrompt("What type of " + Enum.GetName(typeof(LevelType), type) + " " + level_type_name + " are you creating?\nSelect a subtype:");
             }
         }
         /// <summary>
@@ -866,10 +864,10 @@ namespace TFG_Worldbuilder_Application
             {
                 LevelNum = 5;
                 LevelStep = 1;
-                ActiveJob = Job.CreatePoint;
+                ActiveJob = Job.Create;
                 vertices = new Polygon2D();
                 Context.ClearPoints();
-                OpenTapPrompt("Enter a point for the center");
+                OpenSubtypePrompt("What type of " + Enum.GetName(typeof(LevelType), type) + " " + level_type_name + " are you creating?\nSelect a subtype:");
             }
         }
 
@@ -882,10 +880,10 @@ namespace TFG_Worldbuilder_Application
             {
                 LevelNum = 6;
                 LevelStep = 1;
-                ActiveJob = Job.CreatePoint;
+                ActiveJob = Job.Create;
                 vertices = new Polygon2D();
                 Context.ClearPoints();
-                OpenTapPrompt("Enter a point for the center");
+                OpenSubtypePrompt("What type of " + Enum.GetName(typeof(LevelType), type) + " " + level_type_name + " are you creating?\nSelect a subtype:");
             }
         }
 
@@ -1265,7 +1263,7 @@ namespace TFG_Worldbuilder_Application
                         if(LevelNum >= 2 && LevelNum <= 6)
                         {
                             ActiveJob = Job.Create;
-                            OpenSubtypePrompt("What type of " + Enum.GetName(typeof(LevelType), type) + " " + level_type_name + " are you creating?\nSelect a subtype:");
+                            OpenTextPrompt("Name your " + subtype);
                         }
                     }
                 }
@@ -1657,6 +1655,37 @@ namespace TFG_Worldbuilder_Application
             SubtypesFlyout.Hide();
         }
 
+        private void Go_After_Subtype()
+        {
+            switch (LevelNum)
+            {
+                case 1:
+                    ActiveJob = Job.Create;
+                    OpenTextPrompt("Name your " + subtype + ":");
+                    break;
+                case 2:
+                    ActiveJob = Job.CreatePolygon;
+                    OpenTapPrompt("Enter at least 3 points for Greater Region");
+                    break;
+                case 3:
+                    ActiveJob = Job.CreatePolygon;
+                    OpenTapPrompt("Enter at least 3 points for Region");
+                    break;
+                case 4:
+                    ActiveJob = Job.CreatePolygon;
+                    OpenTapPrompt("Enter at least 3 points for Subregion");
+                    break;
+                case 5:
+                    ActiveJob = Job.CreatePoint;
+                    OpenTapPrompt("Enter a point for the center");
+                    break;
+                case 6:
+                    ActiveJob = Job.CreatePoint;
+                    OpenTapPrompt("Enter a point for the center");
+                    break;
+            }
+        }
+
         private void Select_Subtype_Click(object sender, RoutedEventArgs e)
         {
             if (ActiveJob == Job.Create)
@@ -1665,7 +1694,7 @@ namespace TFG_Worldbuilder_Application
                 SubtypePrompt.Visibility = Visibility.Collapsed;
                 LevelStep++;
                 color = Global.Subtypes.GetColor(subtype);
-                OpenTextPrompt("Name your " + subtype + ":");
+                Go_After_Subtype();
                 SubtypesFlyout.Hide();
             }
         }
@@ -1695,14 +1724,7 @@ namespace TFG_Worldbuilder_Application
             {
                 this.LevelStep++;
                 Context.AddColor(LevelNum, type, subtype, color);
-                OpenTextPrompt("Name your " + this.subtype + ":");
-            } else if (ActiveJob == Job.Recolor)
-            {
-                ActiveJob = Job.Create;
-                Context.SetColor(subtype, color);
-                UpdateSaveState();
-                this.LevelStep++;
-                OpenTextPrompt("Name your " + this.subtype + ":");
+                Go_After_Subtype();
             } else if (ActiveJob == Job.BasicRecolor)
             {
                 Context.SetColor(subtype, color);
