@@ -45,6 +45,8 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         public bool Add(Tuple<int, LevelType, string, string> item)
         {
+            if (item.Item3.Length == 0)
+                return false;
             if (item.Item1 < 1 || item.Item1 > 6)
                 return false;
             if (item.Item2 == LevelType.Invalid)

@@ -1674,6 +1674,7 @@ namespace TFG_Worldbuilder_Application
             {
                 case 1:
                     ActiveJob = Job.Create;
+                    LevelStep = 3;
                     OpenTextPrompt("Name your " + subtype + ":");
                     break;
                 case 2:
