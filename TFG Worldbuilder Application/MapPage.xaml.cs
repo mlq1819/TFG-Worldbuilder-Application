@@ -1647,6 +1647,7 @@ namespace TFG_Worldbuilder_Application
             ActiveJob = Job.None;
             SubtypePrompt.Visibility = Visibility.Collapsed;
             SubtypesFlyout.Hide();
+            Context.ClearPoints();
         }
 
         private void Subtype_Prompt_New_Click(object sender, RoutedEventArgs e)
