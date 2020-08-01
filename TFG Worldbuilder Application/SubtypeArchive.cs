@@ -45,13 +45,16 @@ namespace TFG_Worldbuilder_Application
         /// </summary>
         public bool Add(Tuple<int, LevelType, string, string> item)
         {
-            if (item.Item1 <= 1 || item.Item1 > 6)
+            if (item.Item1 < 1 || item.Item1 > 6)
                 return false;
             if (item.Item2 == LevelType.Invalid)
                 return false;
             if (Has(item.Item3))
                 return false;
-            subtypes.Add(new Tuple<int, LevelType, string, string>(item.Item1, item.Item2, Capitalize(item.Item3), item.Item4));
+            if(item.Item1 == 1)
+                subtypes.Add(new Tuple<int, LevelType, string, string>(1, LevelType.World, Capitalize(item.Item3), SuperLevel.DefaultColor));
+            else
+                subtypes.Add(new Tuple<int, LevelType, string, string>(item.Item1, item.Item2, Capitalize(item.Item3), item.Item4));
             return true;
         }
 
@@ -256,6 +259,13 @@ namespace TFG_Worldbuilder_Application
         public static SubtypeArchive DefaultSubtypes()
         {
             SubtypeArchive output = new SubtypeArchive();
+            //World
+            output.Add(new Tuple<int, LevelType, string, string>(1, LevelType.World, "World", SuperLevel.DefaultColor));
+            output.Add(new Tuple<int, LevelType, string, string>(1, LevelType.World, "Planet", SuperLevel.DefaultColor));
+            output.Add(new Tuple<int, LevelType, string, string>(1, LevelType.World, "Dimension", SuperLevel.DefaultColor));
+            output.Add(new Tuple<int, LevelType, string, string>(1, LevelType.World, "Plane", SuperLevel.DefaultColor));
+            output.Add(new Tuple<int, LevelType, string, string>(1, LevelType.World, "Demiplane", SuperLevel.DefaultColor));
+
             //National
             output.Add(new Tuple<int, LevelType, string, string>(2, LevelType.National, "Empire", "#FFCC00"));
 

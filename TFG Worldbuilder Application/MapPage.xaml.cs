@@ -412,7 +412,16 @@ namespace TFG_Worldbuilder_Application
                             } else
                             {
                                 this.subtype = prompt_text;
-                                OpenColorPicker("Pick a color to represent " + subtype + "s:");
+                                if (LevelNum == 1)
+                                {
+                                    this.LevelStep = 3;
+                                    Context.AddColor(1, LevelType.World, subtype, SuperLevel.DefaultColor);
+                                    OpenTextPrompt("Name your " + subtype + ":");
+                                }
+                                else
+                                {
+                                    OpenColorPicker("Pick a color to represent " + subtype + "s:");
+                                }
                             }
                             break;
                         case 3:
@@ -529,7 +538,7 @@ namespace TFG_Worldbuilder_Application
         private void Create_World_Click(object sender, RoutedEventArgs e)
         {
             LevelNum = 1;
-            LevelStep = 2;
+            LevelStep = 1;
             type = LevelType.World;
             ActiveJob = Job.Create;
             OpenSubtypePrompt("What type of world are you creating?\nSelect a subtype:");
