@@ -903,7 +903,7 @@ namespace TFG_Worldbuilder_Application
             this.Vertices = new MyPointCollection();
             this.Lines = new ObservableCollection<Line2D>();
             this.ExtraPoints = new MyPointCollection();
-            this.SubtypeList = new SubtypeArchive();
+            this.SubtypeList = SubtypeArchive.DefaultSubtypes();
             SetExtraLines();
         }
 
@@ -1287,6 +1287,7 @@ namespace TFG_Worldbuilder_Application
             }
             return false;
         }
+
         /// <summary>
         /// Raises arguments for the specified subtype list property
         /// </summary>
