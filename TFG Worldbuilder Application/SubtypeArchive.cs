@@ -257,28 +257,28 @@ namespace TFG_Worldbuilder_Application
         {
             SubtypeArchive output = new SubtypeArchive();
             //National
-            output.Add(new Tuple<int, LevelType, string, string>(2, LevelType.Geographical, "Empire", "#FFCC00"));
+            output.Add(new Tuple<int, LevelType, string, string>(2, LevelType.National, "Empire", "#FFCC00"));
 
-            output.Add(new Tuple<int, LevelType, string, string>(3, LevelType.Geographical, "Country", "#FF3385"));
-            output.Add(new Tuple<int, LevelType, string, string>(3, LevelType.Geographical, "Nation", "#FF3385"));
-            output.Add(new Tuple<int, LevelType, string, string>(3, LevelType.Geographical, "Kingdom", "#8533FF"));
+            output.Add(new Tuple<int, LevelType, string, string>(3, LevelType.National, "Country", "#FF3385"));
+            output.Add(new Tuple<int, LevelType, string, string>(3, LevelType.National, "Nation", "#FF3385"));
+            output.Add(new Tuple<int, LevelType, string, string>(3, LevelType.National, "Kingdom", "#8533FF"));
 
-            output.Add(new Tuple<int, LevelType, string, string>(4, LevelType.Geographical, "Territory", "#4747D1"));
-            output.Add(new Tuple<int, LevelType, string, string>(4, LevelType.Geographical, "State", "#4747D1"));
-            output.Add(new Tuple<int, LevelType, string, string>(4, LevelType.Geographical, "Province", "#4747D1"));
-            output.Add(new Tuple<int, LevelType, string, string>(4, LevelType.Geographical, "Commonwealth", "#4747D1"));
+            output.Add(new Tuple<int, LevelType, string, string>(4, LevelType.National, "Territory", "#4747D1"));
+            output.Add(new Tuple<int, LevelType, string, string>(4, LevelType.National, "State", "#4747D1"));
+            output.Add(new Tuple<int, LevelType, string, string>(4, LevelType.National, "Province", "#4747D1"));
+            output.Add(new Tuple<int, LevelType, string, string>(4, LevelType.National, "Commonwealth", "#4747D1"));
 
-            output.Add(new Tuple<int, LevelType, string, string>(5, LevelType.Geographical, "Capital", "#E6AC00"));
-            output.Add(new Tuple<int, LevelType, string, string>(5, LevelType.Geographical, "City", "#FF4D4D"));
-            output.Add(new Tuple<int, LevelType, string, string>(5, LevelType.Geographical, "Town", "#FF8080"));
-            output.Add(new Tuple<int, LevelType, string, string>(5, LevelType.Geographical, "Village", "#FFB366"));
+            output.Add(new Tuple<int, LevelType, string, string>(5, LevelType.National, "Capital", "#E6AC00"));
+            output.Add(new Tuple<int, LevelType, string, string>(5, LevelType.National, "City", "#FF4D4D"));
+            output.Add(new Tuple<int, LevelType, string, string>(5, LevelType.National, "Town", "#FF8080"));
+            output.Add(new Tuple<int, LevelType, string, string>(5, LevelType.National, "Village", "#FFB366"));
 
-            output.Add(new Tuple<int, LevelType, string, string>(6, LevelType.Geographical, "Courthouse", "#E6E6E6"));
-            output.Add(new Tuple<int, LevelType, string, string>(6, LevelType.Geographical, "Parliament", "#9999FF"));
-            output.Add(new Tuple<int, LevelType, string, string>(6, LevelType.Geographical, "Congress", "#9999FF"));
-            output.Add(new Tuple<int, LevelType, string, string>(6, LevelType.Geographical, "Town Hall", "#6666FF"));
-            output.Add(new Tuple<int, LevelType, string, string>(6, LevelType.Geographical, "Jail", "#002DB3"));
-            output.Add(new Tuple<int, LevelType, string, string>(6, LevelType.Geographical, "Prison", "#002DB3"));
+            output.Add(new Tuple<int, LevelType, string, string>(6, LevelType.National, "Courthouse", "#E6E6E6"));
+            output.Add(new Tuple<int, LevelType, string, string>(6, LevelType.National, "Parliament", "#9999FF"));
+            output.Add(new Tuple<int, LevelType, string, string>(6, LevelType.National, "Congress", "#9999FF"));
+            output.Add(new Tuple<int, LevelType, string, string>(6, LevelType.National, "Town Hall", "#6666FF"));
+            output.Add(new Tuple<int, LevelType, string, string>(6, LevelType.National, "Jail", "#002DB3"));
+            output.Add(new Tuple<int, LevelType, string, string>(6, LevelType.National, "Prison", "#002DB3"));
 
             //Geographical
             output.Add(new Tuple<int, LevelType, string, string>(2, LevelType.Geographical, "Continent", "#4D9900"));
