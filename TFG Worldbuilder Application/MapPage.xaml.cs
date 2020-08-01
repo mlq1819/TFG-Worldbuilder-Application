@@ -1665,23 +1665,23 @@ namespace TFG_Worldbuilder_Application
                     break;
                 case 2:
                     ActiveJob = Job.CreatePolygon;
-                    OpenTapPrompt("Enter at least 3 points for Greater Region");
+                    OpenTapPrompt("Enter at least 3 points for the border of your " + subtype + ":");
                     break;
                 case 3:
                     ActiveJob = Job.CreatePolygon;
-                    OpenTapPrompt("Enter at least 3 points for Region");
+                    OpenTapPrompt("Enter at least 3 points for the border of your " + subtype + ":");
                     break;
                 case 4:
                     ActiveJob = Job.CreatePolygon;
-                    OpenTapPrompt("Enter at least 3 points for Subregion");
+                    OpenTapPrompt("Enter at least 3 points for the border of your " + subtype + ":");
                     break;
                 case 5:
                     ActiveJob = Job.CreatePoint;
-                    OpenTapPrompt("Enter a point for the center");
+                    OpenTapPrompt("Enter a center for the " + subtype + ":");
                     break;
                 case 6:
                     ActiveJob = Job.CreatePoint;
-                    OpenTapPrompt("Enter a point for the center");
+                    OpenTapPrompt("Enter a point for the " + subtype + ":");
                     break;
             }
         }
