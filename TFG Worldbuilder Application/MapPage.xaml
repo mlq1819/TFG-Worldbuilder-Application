@@ -223,9 +223,12 @@
                 <Line x:Name="VerticalCenterLine" Stroke="Gray" StrokeThickness="1" X1="{x:Bind Path=Context.CenterX, Mode=OneWay}" Y1="0" X2="{x:Bind Path=Context.CenterX, Mode=OneWay}" Y2="{x:Bind Path=Context.MaxX, Mode=OneWay}"/>
                 <Line x:Name="HorizontalCenterLine" Stroke="Gray" StrokeThickness="1" X1="0" Y1="{x:Bind Path=Context.CenterY, Mode=OneWay}" X2="{x:Bind Path=Context.MaxX, Mode=OneWay}" Y2="{x:Bind Path=Context.CenterY, Mode=OneWay}"/>
                 <Grid x:Name="Scale" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="50" Width="200">
-                    <Line VerticalAlignment="Top" Stroke="Gray" StrokeThickness="2" X1="0" Y1="0" X2="200" Y2="0"/>
-                    <Line Stroke="Gray" VerticalAlignment="Top" StrokeThickness="2" X1="0" Y1="0" X2="0" Y2="20"/>
-                    <Line Stroke="Gray" VerticalAlignment="Top" StrokeThickness="2" X1="200" Y1="0" X2="200" Y2="20"/>
+                    <Line Stroke="Black" VerticalAlignment="Top" StrokeThickness="3" X1="0" Y1="0" X2="200" Y2="0"/>
+                    <Line Stroke="Black" VerticalAlignment="Top" StrokeThickness="3" X1="0" Y1="0" X2="0" Y2="20"/>
+                    <Line Stroke="Black" VerticalAlignment="Top" StrokeThickness="3" X1="200" Y1="0" X2="200" Y2="20"/>
+                    <Line Stroke="White" VerticalAlignment="Top" StrokeThickness="1" X1="0" Y1="0" X2="200" Y2="0"/>
+                    <Line Stroke="White" VerticalAlignment="Top" StrokeThickness="1" X1="0" Y1="0" X2="0" Y2="20"/>
+                    <Line Stroke="White" VerticalAlignment="Top" StrokeThickness="1" X1="200" Y1="0" X2="200" Y2="20"/>
                     <TextBlock x:Name="ScaleText" VerticalAlignment="Bottom" HorizontalAlignment="Center" Text="{x:Bind Context.ScaleString, Mode=OneWay}" Margin="0,5,0,0"/>
                 </Grid>
             </Canvas>

@@ -113,6 +113,7 @@
     </Compile>
     <Compile Include="PointManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SubtypeArchive.cs" />
     <Compile Include="ViewMenuControl.xaml.cs">
       <DependentUpon>ViewMenuControl.xaml</DependentUpon>
     </Compile>
