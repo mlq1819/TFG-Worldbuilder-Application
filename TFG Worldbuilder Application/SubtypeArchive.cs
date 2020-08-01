@@ -63,7 +63,7 @@ namespace TFG_Worldbuilder_Application
             else
             {
                 Tuple<int, LevelType, string, string> current = Get(level.subtype);
-                if(current.Item1 == level.level && current.Item2 == level.leveltype)
+                if(current != null && current.Item1 == level.level && current.Item2 == level.leveltype)
                 {
                     level.Recolor(level.subtype);
                 }
